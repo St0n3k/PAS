@@ -1,10 +1,12 @@
 package pl.lodz.nbd.manager;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Room;
 import pl.lodz.nbd.repository.impl.RoomRepository;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoomManager {
 
     private RoomRepository roomRepository;

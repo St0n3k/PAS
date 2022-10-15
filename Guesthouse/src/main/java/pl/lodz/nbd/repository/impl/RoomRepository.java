@@ -1,5 +1,6 @@
 package pl.lodz.nbd.repository.impl;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import pl.lodz.nbd.common.EntityManagerCreator;
 import pl.lodz.nbd.model.Room;
@@ -7,6 +8,7 @@ import pl.lodz.nbd.repository.Repository;
 
 import java.util.List;
 
+@ApplicationScoped
 public class RoomRepository implements Repository<Room> {
     @Override
     public Room add(Room room) {

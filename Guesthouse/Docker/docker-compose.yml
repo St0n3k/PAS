@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  db:
+  testDb:
     image: postgres
     restart: always
     environment:
@@ -10,6 +10,17 @@ services:
       POSTGRES_PASSWORD: nbdpassword
     ports:
       - "5432:5432"
+    volumes:
+      - pg:/var/lib/postgresql/data
+  productionDb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: proddb
+      POSTGRES_USER: prod
+      POSTGRES_PASSWORD: prodpassword
+    ports:
+      - "5431:5432"
     volumes:
       - pg:/var/lib/postgresql/data
 volumes:

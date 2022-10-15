@@ -1,6 +1,7 @@
 package pl.lodz.nbd.manager;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Address;
 import pl.lodz.nbd.model.Client;
 import pl.lodz.nbd.model.ClientTypes.ClientType;
@@ -9,10 +10,12 @@ import pl.lodz.nbd.repository.impl.ClientRepository;
 import pl.lodz.nbd.repository.impl.ClientTypeRepository;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClientManager {
 
     private ClientRepository clientRepository;
     private ClientTypeRepository clientTypeRepository;
+
 
     public Client registerClient(String firstName, String lastName, String personalId, String city, String street, int number) {
 

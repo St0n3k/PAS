@@ -1,6 +1,8 @@
 package pl.lodz.nbd.manager;
 
+import jakarta.servlet.annotation.WebServlet;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Client;
 import pl.lodz.nbd.model.ClientTypes.ClientType;
 import pl.lodz.nbd.model.Rent;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@WebServlet
 public class RentManager {
 
     private ClientRepository clientRepository;
