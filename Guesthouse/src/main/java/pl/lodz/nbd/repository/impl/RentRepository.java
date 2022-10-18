@@ -1,9 +1,11 @@
 package pl.lodz.nbd.repository.impl;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.RollbackException;
-import pl.lodz.nbd.common.EntityManagerCreator;
+import jakarta.transaction.Transactional;
 import pl.lodz.nbd.model.Rent;
 import pl.lodz.nbd.model.Room;
 import pl.lodz.nbd.repository.Repository;
@@ -11,14 +13,17 @@ import pl.lodz.nbd.repository.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@ApplicationScoped
+@Transactional
 public class RentRepository implements Repository<Rent> {
 
+    @PersistenceContext(unitName = "guesthouse")
+    EntityManager em;
 
+    @Transactional
     @Override
     public Rent add(Rent rent) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
-
+        try {
             Room room = em.find(Room.class, rent.getRoom().getId());
 
             em.lock(room, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
@@ -32,7 +37,6 @@ public class RentRepository implements Repository<Rent> {
 
             em.persist(rent);
 
-            em.getTransaction().commit();
             return rent;
         } catch (RollbackException e) {
             System.out.println("Repeating transaction");
@@ -47,10 +51,8 @@ public class RentRepository implements Repository<Rent> {
 
     @Override
     public boolean remove(Rent rent) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
+        try {
             em.remove(em.merge(rent));
-            em.getTransaction().commit();
             return true;
         } catch (Exception e) {
             return false;
@@ -59,43 +61,48 @@ public class RentRepository implements Repository<Rent> {
 
     @Override
     public Rent getById(Long id) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.find(Rent.class, id);
+        } catch (Exception e) {
+            return null;
         }
     }
 
     @Override
     public List<Rent> getAll() {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.createNamedQuery("Rent.getAll", Rent.class).getResultList();
+        } catch (Exception e) {
+            return null;
         }
     }
 
     public List<Rent> getByRoomNumber(int roomNumber) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.createNamedQuery("Rent.getByRoomNumber", Rent.class).setParameter("roomNumber", roomNumber).getResultList();
+        } catch (Exception e) {
+            return null;
         }
     }
 
     public List<Rent> getByClientPersonalId(String personalId) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.createNamedQuery("Rent.getByClientPersonalId", Rent.class).setParameter("personalId", personalId).getResultList();
+        } catch (Exception e) {
+            return null;
         }
     }
 
     public Rent update(Rent rent) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
-            Rent newRent = em.merge(rent);
-            em.getTransaction().commit();
-            return newRent;
+        try {
+            return em.merge(rent);
         } catch (Exception e) {
             return null;
         }
     }
 
     public boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             List<Rent> rentsColliding =
                     em.createNamedQuery("Rent.getRentsColliding", Rent.class)
                             .setParameter("beginDate", beginDate)

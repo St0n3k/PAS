@@ -1,19 +1,25 @@
 package pl.lodz.nbd.repository.impl;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
-import pl.lodz.nbd.common.EntityManagerCreator;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import pl.lodz.nbd.model.Client;
 import pl.lodz.nbd.repository.Repository;
 
 import java.util.List;
 
+@ApplicationScoped
+@Transactional
 public class ClientRepository implements Repository<Client> {
+
+    @PersistenceContext(unitName = "guesthouse")
+    EntityManager em;
+
     @Override
     public Client add(Client client) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
+        try {
             em.persist(client);
-            em.getTransaction().commit();
             return client;
         } catch (Exception e) {
             return null;
@@ -22,10 +28,8 @@ public class ClientRepository implements Repository<Client> {
 
     @Override
     public boolean remove(Client client) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
+        try {
             em.remove(em.merge(client));
-            em.getTransaction().commit();
             return true;
         } catch (Exception e) {
             return false;
@@ -34,20 +38,24 @@ public class ClientRepository implements Repository<Client> {
 
     @Override
     public Client getById(Long id) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.find(Client.class, id);
+        } catch (Exception e) {
+            return null;
         }
     }
 
     @Override
     public List<Client> getAll() {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.createNamedQuery("Client.getAll", Client.class).getResultList();
+        } catch (Exception e) {
+            return null;
         }
     }
 
     public Client getClientByPersonalId(String personalId) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             List<Client> result = em.createNamedQuery("Client.getByPersonalId", Client.class).setParameter("personalId", personalId).getResultList();
 
             if (result.isEmpty()) {
@@ -63,11 +71,8 @@ public class ClientRepository implements Repository<Client> {
 
     @Override
     public Client update(Client client) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
-            Client newClient = em.merge(client);
-            em.getTransaction().commit();
-            return newClient;
+        try {
+            return em.merge(client);
         } catch (Exception e) {
             return null;
         }

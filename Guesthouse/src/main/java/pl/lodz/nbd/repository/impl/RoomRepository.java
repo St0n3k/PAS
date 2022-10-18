@@ -2,20 +2,29 @@ package pl.lodz.nbd.repository.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
-import pl.lodz.nbd.common.EntityManagerCreator;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import pl.lodz.nbd.model.Room;
 import pl.lodz.nbd.repository.Repository;
 
 import java.util.List;
 
 @ApplicationScoped
+@Transactional
 public class RoomRepository implements Repository<Room> {
+
+    @PersistenceContext(unitName = "guesthouse")
+    private EntityManager em;
+
+    public void addRoom(Room room) {
+        System.out.println("Room is being persisted");
+        em.persist(room);
+    }
+
     @Override
     public Room add(Room room) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
+        try {
             em.persist(room);
-            em.getTransaction().commit();
             return room;
         } catch (Exception e) {
             return null;
@@ -24,10 +33,8 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public boolean remove(Room room) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
+        try {
             em.remove(em.merge(room));
-            em.getTransaction().commit();
             return true;
         } catch (Exception e) {
             return false;
@@ -36,18 +43,17 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public Room getById(Long id) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.find(Room.class, id);
+        } catch (Exception e) {
+            return null;
         }
     }
 
     @Override
     public Room update(Room room) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
-            em.getTransaction().begin();
-            Room newRoom = em.merge(room);
-            em.getTransaction().commit();
-            return newRoom;
+        try {
+            return em.merge(room);
         } catch (Exception e) {
             return null;
         }
@@ -55,13 +61,15 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public List<Room> getAll() {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             return em.createNamedQuery("Room.getAll", Room.class).getResultList();
+        } catch (Exception e) {
+            return null;
         }
     }
 
     public Room getByRoomNumber(int roomNumber) {
-        try (EntityManager em = EntityManagerCreator.getEntityManager()) {
+        try {
             List<Room> result = em
                     .createNamedQuery("Room.getByRoomNumber", Room.class)
                     .setParameter("roomNumber", roomNumber)
@@ -75,6 +83,5 @@ public class RoomRepository implements Repository<Room> {
         } catch (Exception e) {
             return null;
         }
-
     }
 }

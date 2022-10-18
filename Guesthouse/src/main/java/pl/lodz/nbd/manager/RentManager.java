@@ -1,6 +1,7 @@
 package pl.lodz.nbd.manager;
 
-import jakarta.servlet.annotation.WebServlet;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Client;
@@ -17,11 +18,14 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@WebServlet
+@ApplicationScoped
 public class RentManager {
 
+    @Inject
     private ClientRepository clientRepository;
+    @Inject
     private RoomRepository roomRepository;
+    @Inject
     private RentRepository rentRepository;
 
     public List<Rent> getAllRentsOfRoom(int roomNumber) {

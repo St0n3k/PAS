@@ -1,5 +1,7 @@
 package pl.lodz.nbd.manager;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Room;
@@ -7,8 +9,10 @@ import pl.lodz.nbd.repository.impl.RoomRepository;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@ApplicationScoped
 public class RoomManager {
 
+    @Inject
     private RoomRepository roomRepository;
 
     public Room addRoom(double price, int size, int number) {

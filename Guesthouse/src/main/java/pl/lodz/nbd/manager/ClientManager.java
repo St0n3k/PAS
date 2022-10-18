@@ -1,5 +1,7 @@
 package pl.lodz.nbd.manager;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.nbd.model.Address;
@@ -11,9 +13,12 @@ import pl.lodz.nbd.repository.impl.ClientTypeRepository;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@ApplicationScoped
 public class ClientManager {
 
+    @Inject
     private ClientRepository clientRepository;
+    @Inject
     private ClientTypeRepository clientTypeRepository;
 
 

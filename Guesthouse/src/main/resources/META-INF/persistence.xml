@@ -3,13 +3,13 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="test_guesthouse">
+    <persistence-unit name="guesthouse">
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->
-            <property name="javax.persistence.jdbc.url"
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->
+            <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:postgresql://localhost:5432/nbddb"/> <!-- BD Mane -->
-            <property name="javax.persistence.jdbc.user" value="nbd"/> <!-- DB User -->
-            <property name="javax.persistence.jdbc.password" value="nbdpassword"/> <!-- DB Password -->
+            <property name="jakarta.persistence.jdbc.user" value="nbd"/> <!-- DB User -->
+            <property name="jakarta.persistence.jdbc.password" value="nbdpassword"/> <!-- DB Password -->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> <!-- DB Dialect -->
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/> <!-- create / create-drop / update -->
@@ -22,22 +22,5 @@
         </properties>
     </persistence-unit>
 
-    <persistence-unit name="prod_guesthouse">
-        <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:postgresql://localhost:5431/proddb"/> <!-- BD Mane -->
-            <property name="javax.persistence.jdbc.user" value="prod"/> <!-- DB User -->
-            <property name="javax.persistence.jdbc.password" value="prodpassword"/> <!-- DB Password -->
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> <!-- DB Dialect -->
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/> <!-- create / create-drop / update -->
-
-            <property name="hibernate.show_sql" value="false"/> <!-- Show SQL in console -->
-            <property name="hibernate.format_sql" value="false"/> <!-- Show SQL formatted -->
-
-            <property name="javax.persistence.sql-load-script-source"
-                      value="META-INF/sql/initial_data.sql"/>
-        </properties>
-    </persistence-unit>
 </persistence>
