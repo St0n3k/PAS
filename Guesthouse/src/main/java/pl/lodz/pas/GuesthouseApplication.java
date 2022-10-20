@@ -1,4 +1,4 @@
-package pl.lodz.nbd;
+package pl.lodz.pas;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

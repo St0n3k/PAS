@@ -1,13 +1,11 @@
-package pl.lodz.nbd.model;
+package pl.lodz.pas.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.nbd.common.MyValidator;
-
-import java.util.UUID;
+import pl.lodz.pas.common.MyValidator;
 
 @Entity
 @NamedQueries({
@@ -41,7 +39,6 @@ public class Room extends AbstractEntity {
     private int size;
 
     public Room(int roomNumber, double price, int size) {
-        this.setUuid(UUID.randomUUID());
         this.roomNumber = roomNumber;
         this.price = price;
         this.size = size;

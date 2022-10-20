@@ -1,9 +1,9 @@
-package pl.lodz.nbd.model.ClientTypes;
+package pl.lodz.pas.model.ClientTypes;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import pl.lodz.nbd.model.AbstractEntity;
+import pl.lodz.pas.model.AbstractEntity;
 
 @Entity
 @Table(name = "client_type")

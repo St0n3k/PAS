@@ -1,4 +1,4 @@
-package pl.lodz.nbd.common;
+package pl.lodz.pas.common;
 
 import jakarta.validation.*;
 

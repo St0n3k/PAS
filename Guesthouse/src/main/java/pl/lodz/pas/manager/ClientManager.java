@@ -1,19 +1,19 @@
-package pl.lodz.nbd.manager;
+package pl.lodz.pas.manager;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import pl.lodz.nbd.model.Address;
-import pl.lodz.nbd.model.Client;
-import pl.lodz.nbd.model.ClientTypes.ClientType;
-import pl.lodz.nbd.model.ClientTypes.Default;
-import pl.lodz.nbd.repository.impl.ClientRepository;
-import pl.lodz.nbd.repository.impl.ClientTypeRepository;
+import pl.lodz.pas.model.Address;
+import pl.lodz.pas.model.Client;
+import pl.lodz.pas.model.ClientTypes.ClientType;
+import pl.lodz.pas.model.ClientTypes.Default;
+import pl.lodz.pas.repository.impl.ClientRepository;
+import pl.lodz.pas.repository.impl.ClientTypeRepository;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ApplicationScoped
+@RequestScoped
 public class ClientManager {
 
     @Inject

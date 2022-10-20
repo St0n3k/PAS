@@ -1,16 +1,15 @@
 version: '3.8'
 
 services:
-  db:
+  pasDb:
     image: postgres
-    restart: always
     environment:
-      POSTGRES_DB: nbddb
-      POSTGRES_USER: nbd
-      POSTGRES_PASSWORD: nbdpassword
+      POSTGRES_DB: pas
+      POSTGRES_USER: pas
+      POSTGRES_PASSWORD: pas
     ports:
-      - "5432:5432"
+      - "5430:5432"
     volumes:
-      - pg:/var/lib/postgresql/data
+      - pas:/var/lib/postgresql/data
 volumes:
-  pg:
+  pas:

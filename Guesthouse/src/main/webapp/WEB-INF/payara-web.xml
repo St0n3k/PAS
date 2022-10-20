@@ -3,5 +3,5 @@
         "https://docs.payara.fish/schemas/payara-web-app_4.dtd">
 <payara-web-app error-url="">
     <class-loader delegate="true"/>
-    <context-root>Guesthouse</context-root>
+    <context-root>/api</context-root>
 </payara-web-app>

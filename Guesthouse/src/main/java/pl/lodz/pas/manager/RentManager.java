@@ -1,16 +1,16 @@
-package pl.lodz.nbd.manager;
+package pl.lodz.pas.manager;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import pl.lodz.nbd.model.Client;
-import pl.lodz.nbd.model.ClientTypes.ClientType;
-import pl.lodz.nbd.model.Rent;
-import pl.lodz.nbd.model.Room;
-import pl.lodz.nbd.repository.impl.ClientRepository;
-import pl.lodz.nbd.repository.impl.RentRepository;
-import pl.lodz.nbd.repository.impl.RoomRepository;
+import pl.lodz.pas.model.Client;
+import pl.lodz.pas.model.ClientTypes.ClientType;
+import pl.lodz.pas.model.Rent;
+import pl.lodz.pas.model.Room;
+import pl.lodz.pas.repository.impl.ClientRepository;
+import pl.lodz.pas.repository.impl.RentRepository;
+import pl.lodz.pas.repository.impl.RoomRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ApplicationScoped
+@RequestScoped
 public class RentManager {
 
     @Inject

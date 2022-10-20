@@ -6,7 +6,7 @@
 
     <packaging>war</packaging>
 
-    <groupId>pl.lodz.nbd</groupId>
+    <groupId>pl.lodz.pas</groupId>
     <artifactId>Guesthouse</artifactId>
     <version>1.0</version>
 
@@ -16,7 +16,7 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core-jakarta</artifactId>

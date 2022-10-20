@@ -1,11 +1,11 @@
-package pl.lodz.nbd.repository.impl;
+package pl.lodz.pas.repository.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.nbd.model.Room;
-import pl.lodz.nbd.repository.Repository;
+import pl.lodz.pas.model.Room;
+import pl.lodz.pas.repository.Repository;
 
 import java.util.List;
 

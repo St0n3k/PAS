@@ -1,6 +1,4 @@
-package pl.lodz.nbd.repository;
-
-import jakarta.persistence.EntityManager;
+package pl.lodz.pas.repository;
 
 import java.util.List;
 

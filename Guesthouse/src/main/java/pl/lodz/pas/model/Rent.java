@@ -1,4 +1,4 @@
-package pl.lodz.nbd.model;
+package pl.lodz.pas.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import pl.lodz.nbd.common.MyValidator;
+import pl.lodz.pas.common.MyValidator;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @NamedQueries({
@@ -61,7 +60,6 @@ public class Rent extends AbstractEntity {
 
     public Rent(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client, Room room) {
         if (beginTime.isAfter(endTime)) throw new RuntimeException("Wrong chronological order");
-        this.setUuid(UUID.randomUUID());
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.board = board;
