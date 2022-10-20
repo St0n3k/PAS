@@ -20,9 +20,28 @@ public class TestManager {
     @GET
     @Path("/{name}")
     public String test(@PathParam("name") String name) {
+        try {
+            Room room = roomManager.addRoom(999, 911, 911);
+            return "Room was added " + room.getId();
+        } catch (Exception e) {
+            return "Something bad happened during adding room";
+        }
+    }
 
-        Room room = roomManager.addRoom(999, 911, 911);
-        return "Hello " + room.getPrice();
+    @GET
+    @Path("room/{number}")
+    public Room getByNumber(@PathParam("number") int number) {
+        return roomManager.getByRoomNumber(number);
+    }
+
+    @GET
+    @Path("room/{number}/update/{size}")
+    public Room updateRoom(@PathParam("number") int number, @PathParam("size") int newSize) {
+        Room room = roomManager.getByRoomNumber(number);
+        room.setSize(newSize);
+        roomManager.updateRoom(room);
+
+        return roomManager.getByRoomNumber(number);
     }
 
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public class ClientTypeRepository implements Repository<ClientType> {
 
-    @PersistenceContext(unitName = "guesthouse")
+    @PersistenceContext
     EntityManager em;
 
     @Override

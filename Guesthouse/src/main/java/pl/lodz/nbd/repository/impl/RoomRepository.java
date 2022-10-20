@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public class RoomRepository implements Repository<Room> {
 
-    @PersistenceContext(unitName = "guesthouse")
+    @PersistenceContext
     private EntityManager em;
 
     public void addRoom(Room room) {

@@ -17,7 +17,7 @@ import java.util.List;
 @Transactional
 public class RentRepository implements Repository<Rent> {
 
-    @PersistenceContext(unitName = "guesthouse")
+    @PersistenceContext
     EntityManager em;
 
     @Transactional
