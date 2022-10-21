@@ -2,6 +2,7 @@ package pl.lodz.pas.manager;
 
 import io.restassured.http.ContentType;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import pl.lodz.pas.model.Room;
 
@@ -10,16 +11,17 @@ import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
 class RoomManagerTest {
+    Room room = new Room(1, 200.0, 10);
     @Test
     public void getRoomTest() {
         when()
-                .get("/api/rooms/{id}", 1912)
+                .get("/api/rooms/{id}", room.getRoomNumber())
         .then()
                 .assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON)
-                .assertThat().body("roomNumber", response -> equalTo(1912))
-                .assertThat().body("price", response -> equalTo(200.0F))
-                .assertThat().body("size", response -> equalTo(10));
+                .assertThat().body("roomNumber", response -> equalTo(room.getRoomNumber()))
+                .assertThat().body("price", response -> equalTo((float)room.getPrice()))
+                .assertThat().body("size", response -> equalTo(room.getSize()));
     }
 
     @Test
@@ -32,8 +34,8 @@ class RoomManagerTest {
     }
 
     @Test
+    @Order(1)
     public void addRoomTest() {
-        Room room = new Room(1912, 200.0, 10);
         JSONObject req = new JSONObject(room);
         given()
                 .contentType(ContentType.JSON)
