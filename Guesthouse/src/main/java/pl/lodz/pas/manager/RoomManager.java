@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.pas.dto.UpdateRoomDTO;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
@@ -27,16 +28,25 @@ public class RoomManager {
         return roomRepository.add(room);
     }
 
-    //TODO changing only one field of room (and change method to PUT)
-    @POST
+    @PUT
     @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Room updateRoom(@PathParam("number") int number, Room room) {
+    public Room updateRoom(@PathParam("number") int number, UpdateRoomDTO updateRoomDTO) {
         Room existingRoom = roomRepository.getByRoomNumber(number);
-        room.setId(existingRoom.getId());
 
-        return roomRepository.update(room);
+        Double newPrice = updateRoomDTO.getPrice();
+        Integer newNumber = updateRoomDTO.getRoomNumber();
+        Integer newSize = updateRoomDTO.getSize();
+
+        existingRoom.setPrice(newPrice == null? existingRoom.getPrice() : newPrice);
+        existingRoom.setSize(newSize == null? existingRoom.getSize() : newSize);
+
+        if (newNumber != null && roomRepository.getByRoomNumber(newNumber) == null) {
+            existingRoom.setRoomNumber(newNumber);
+        }
+
+        return roomRepository.update(existingRoom);
     }
 
     @GET
