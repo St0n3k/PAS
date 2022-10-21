@@ -13,7 +13,6 @@ class RoomManagerTest {
     @Test
     public void getRoomTest() {
         Room room = new Room(1912, 200.0, 10);
-        JSONObject req = new JSONObject(room);
         when().get("/api/rooms/{id}", 1912)
                 .then().assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON)
@@ -24,8 +23,6 @@ class RoomManagerTest {
 
     @Test
     public void getRoomsTest() {
-        Room room = new Room(1912, 200.0, 10);
-        JSONObject req = new JSONObject(room);
         when().get("/api/rooms")
                 .then().assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON);

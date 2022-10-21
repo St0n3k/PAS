@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import pl.lodz.pas.common.MyValidator;
 import pl.lodz.pas.model.ClientTypes.ClientType;
 
+//TODO implement different user level classes
+
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Client.getAll",
@@ -16,7 +18,7 @@ import pl.lodz.pas.model.ClientTypes.ClientType;
 })
 @Data
 @NoArgsConstructor
-public class Client extends AbstractEntity {
+public class Client extends User {
 
     @Id
     @GeneratedValue(generator = "clientId")

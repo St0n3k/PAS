@@ -8,7 +8,7 @@ import pl.lodz.pas.model.Client;
 import pl.lodz.pas.model.ClientTypes.ClientType;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
-import pl.lodz.pas.repository.impl.ClientRepository;
+import pl.lodz.pas.repository.impl.UserRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class RentManager {
 
     @Inject
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
     @Inject
     private RoomRepository roomRepository;
     @Inject
@@ -49,7 +49,7 @@ public class RentManager {
         //Guard clause
         if (beginTime.isAfter(endTime)) return null;
 
-        Client client = clientRepository.getClientByPersonalId(clientPersonalId);
+        Client client = userRepository.getClientByPersonalId(clientPersonalId);
         Room room = roomRepository.getByRoomNumber(roomNumber);
 
         if (client == null || room == null) return null;

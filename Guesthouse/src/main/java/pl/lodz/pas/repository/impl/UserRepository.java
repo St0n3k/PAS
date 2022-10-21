@@ -5,31 +5,32 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.pas.model.Client;
+import pl.lodz.pas.model.User;
 import pl.lodz.pas.repository.Repository;
 
 import java.util.List;
 
 @ApplicationScoped
 @Transactional
-public class ClientRepository implements Repository<Client> {
+public class UserRepository implements Repository<User> {
 
     @PersistenceContext
     EntityManager em;
 
     @Override
-    public Client add(Client client) {
+    public User add(User user) {
         try {
-            em.persist(client);
-            return client;
+            em.persist(user);
+            return user;
         } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public boolean remove(Client client) {
+    public boolean remove(User user) {
         try {
-            em.remove(em.merge(client));
+            em.remove(em.merge(user));
             return true;
         } catch (Exception e) {
             return false;
@@ -46,9 +47,9 @@ public class ClientRepository implements Repository<Client> {
     }
 
     @Override
-    public List<Client> getAll() {
+    public List<User> getAll() {
         try {
-            return em.createNamedQuery("Client.getAll", Client.class).getResultList();
+            return em.createNamedQuery("User.getAll", User.class).getResultList();
         } catch (Exception e) {
             return null;
         }
@@ -69,10 +70,31 @@ public class ClientRepository implements Repository<Client> {
 
     }
 
-    @Override
-    public Client update(Client client) {
+    public User getUserByUsername(String username){
         try {
-            return em.merge(client);
+            List<User> result = em.createNamedQuery("User.getByUsername", User.class).setParameter("username", username).getResultList();
+            if (result.isEmpty()) {
+                return null;
+            } else {
+                return result.get(0);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<User> getAllUsers(){
+        try {
+            return em.createNamedQuery("User.getAll", User.class).getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public User update(User user) {
+        try {
+            return em.merge(user);
         } catch (Exception e) {
             return null;
         }
