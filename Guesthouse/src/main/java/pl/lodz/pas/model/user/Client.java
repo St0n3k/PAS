@@ -1,21 +1,16 @@
-package pl.lodz.pas.model;
+package pl.lodz.pas.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.common.MyValidator;
-import pl.lodz.pas.model.ClientTypes.ClientType;
+import pl.lodz.pas.model.Address;
+import pl.lodz.pas.model.user.ClientTypes.ClientType;
 
 //TODO implement different user level classes
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "Client.getAll",
-                query = "SELECT c FROM Client c"),
-        @NamedQuery(name = "Client.getByPersonalId",
-                query = "SELECT c FROM Client c WHERE c.personalId = :personalId")
-})
 @Data
 @NoArgsConstructor
 public class Client extends User {
@@ -47,7 +42,13 @@ public class Client extends User {
     @Embedded
     private Address address;
 
-    public Client(String firstName, String lastName, String personalId, Address address, ClientType clientType) {
+    @Override
+    public String getRole() {
+        return "CLIENT";
+    }
+
+    public Client(String username, String firstName, String lastName, String personalId, Address address, ClientType clientType) {
+        super(username);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;

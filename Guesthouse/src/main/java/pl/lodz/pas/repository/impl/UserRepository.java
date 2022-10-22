@@ -4,8 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.Client;
-import pl.lodz.pas.model.User;
+import pl.lodz.pas.model.user.Client;
+import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.Repository;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public class UserRepository implements Repository<User> {
 
     }
 
-    public User getUserByUsername(String username){
+    public User getUserByUsername(String username) {
         try {
             List<User> result = em.createNamedQuery("User.getByUsername", User.class).setParameter("username", username).getResultList();
             if (result.isEmpty()) {
@@ -83,7 +83,7 @@ public class UserRepository implements Repository<User> {
         }
     }
 
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         try {
             return em.createNamedQuery("User.getAll", User.class).getResultList();
         } catch (Exception e) {

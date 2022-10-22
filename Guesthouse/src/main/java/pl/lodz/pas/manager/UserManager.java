@@ -6,13 +6,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.pas.dto.RegisterClientDTO;
+import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.model.Address;
-import pl.lodz.pas.model.Client;
-import pl.lodz.pas.model.ClientTypes.ClientType;
-import pl.lodz.pas.model.ClientTypes.Default;
-import pl.lodz.pas.model.User;
-import pl.lodz.pas.repository.impl.UserRepository;
+import pl.lodz.pas.model.user.Client;
+import pl.lodz.pas.model.user.ClientTypes.ClientType;
+import pl.lodz.pas.model.user.ClientTypes.Default;
+import pl.lodz.pas.model.user.Employee;
+import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
+import pl.lodz.pas.repository.impl.UserRepository;
 
 import java.util.List;
 
@@ -21,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-@Path("/users")
+@Path("/")
 public class UserManager {
 
     @Inject
@@ -30,35 +33,49 @@ public class UserManager {
     private ClientTypeRepository clientTypeRepository;
 
     @POST
+    @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public User registerUser(User user){
-        return userRepository.add(user);
+    public User registerClient(RegisterClientDTO rcDTO) {
+        Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
+        ClientType defaultClientType = clientTypeRepository.getByType(Default.class);
+        Client client = new Client(
+                rcDTO.getUsername(),
+                rcDTO.getFirstName(),
+                rcDTO.getLastName(),
+                rcDTO.getPersonalID(),
+                address,
+                defaultClientType);
+        return userRepository.add(client);
     }
 
-    @GET
-    @Path("/{username}")
+    @POST
+    @Path("/employees")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public User getUserByUsername(@PathParam("username") String username){
+    //This endpoint will be available only for admin
+    public User registerEmployee(RegisterEmployeeDTO reDTO) {
+        Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
+        return userRepository.add(employee);
+    }
+
+
+    @GET
+    @Path("/users/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public User getUserByUsername(@PathParam("username") String username) {
         return userRepository.getUserByUsername(username);
     }
 
     @GET
+    @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<User> getUserByUsername(){
+    public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
-//    public Client registerClient(String firstName, String lastName, String personalId, String city, String street, int number) {
-//
-//        //Values are validated in constructors
-//        Address address = new Address(city, street, number);
-//        ClientType defaultClientType = clientTypeRepository.getByType(Default.class);
-//        Client client = new Client(firstName, lastName, personalId, address, defaultClientType);
-//
-//        return userRepository.add(client);
-//    }
+
 
     public Client getByPersonalId(String personalId) {
         return userRepository.getClientByPersonalId(personalId);

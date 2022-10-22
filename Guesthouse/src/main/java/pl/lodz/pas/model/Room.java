@@ -19,7 +19,7 @@ import pl.lodz.pas.common.MyValidator;
 public class Room extends AbstractEntity {
 
     @Id
-    @GeneratedValue(generator = "roomId")
+    @GeneratedValue(generator = "roomId", strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private Long id;
 

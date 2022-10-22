@@ -1,4 +1,4 @@
-package pl.lodz.pas.model.ClientTypes;
+package pl.lodz.pas.model.user.ClientTypes;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.ClientTypes.ClientType;
+import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.Repository;
 
 import java.util.List;

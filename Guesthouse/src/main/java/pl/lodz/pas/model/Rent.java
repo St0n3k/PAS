@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import pl.lodz.pas.common.MyValidator;
+import pl.lodz.pas.model.user.Client;
 
 import java.time.LocalDateTime;
 
