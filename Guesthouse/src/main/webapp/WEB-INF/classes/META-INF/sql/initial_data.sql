@@ -8,6 +8,8 @@ INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Silver', 0.1
 INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Gold', 0.15, 'Gold');
 
 INSERT INTO users (version, type, username, active) VALUES (0, 'Admin', 'admin', true);
+INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, active) VALUES (0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16, true);
+INSERT INTO users (version, type, username, first_name, last_name, active) VALUES (0, 'Employee', 'employee', 'Robert', 'Lewandowski', true);
 
 INSERT INTO room (version, price, room_number, size) VALUES (0, 623.24, 643, 6);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 707.19, 836, 1);

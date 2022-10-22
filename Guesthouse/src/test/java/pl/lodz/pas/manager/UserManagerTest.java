@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 
 class UserManagerTest {
 
@@ -40,7 +41,7 @@ class UserManagerTest {
                 .contentType(ContentType.JSON)
                 .body(req.toString())
                 .when().post("/api/users")
-                .then().statusCode(200);
+                .then().assertThat().statusCode(200);
     }
 
     @Test
@@ -50,13 +51,34 @@ class UserManagerTest {
                 .assertThat().contentType(ContentType.JSON);
     }
 
-//    @Test
-//    public void getUserTest() {
-//        User user = new User("test");
-//        when().get("/api/users/{username}", "test")
-//                .then().assertThat().statusCode(200)
-//                .assertThat().contentType(ContentType.JSON)
-//                .assertThat().body("username", response -> equalTo("test"))
-//                .assertThat().body("active", response -> equalTo(true));
-//    }
+    @Test
+    public void getAdminTest() {
+        when()
+                .get("/api/users/{username}", "admin")
+                .then()
+                .assertThat().statusCode(200)
+                .assertThat().body("username", equalTo("admin"))
+                .assertThat().body("role", equalTo("ADMIN"))
+                .assertThat().body("active", equalTo(true));
+    }
+
+    @Test
+    public void getClientTest() {
+        when().get("/api/users/{username}", "client")
+                .then().assertThat().statusCode(200)
+                .assertThat().contentType(ContentType.JSON)
+                .assertThat().body("username", equalTo("client"))
+                .assertThat().body("role", equalTo("CLIENT"))
+                .assertThat().body("active", equalTo(true));
+    }
+
+    @Test
+    public void getEmployeeTest() {
+        when().get("/api/users/{username}", "employee")
+                .then().assertThat().statusCode(200)
+                .assertThat().contentType(ContentType.JSON)
+                .assertThat().body("username", equalTo("employee"))
+                .assertThat().body("role", equalTo("EMPLOYEE"))
+                .assertThat().body("active", equalTo(true));
+    }
 }
