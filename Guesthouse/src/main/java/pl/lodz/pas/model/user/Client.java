@@ -32,7 +32,6 @@ public class Client extends User {
     @Column(name = "personal_id", unique = true)
     private String personalId;
 
-    //@NotNull
     @JoinColumn(name = "client_type")
     @NotNull
     @ManyToOne

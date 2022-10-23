@@ -117,4 +117,30 @@ public class RentRepository implements Repository<Rent> {
         }
     }
 
+    /**
+     * Removes Rent with given ID.
+     * @param rentId
+     * @return true if rent existed and was removed, false otherwise.
+     */
+    public boolean removeById(Long rentId) {
+        try {
+            int deletedCount = em.createNamedQuery("Rent.removeById")
+                    .setParameter("id", rentId)
+                    .executeUpdate();
+            return deletedCount == 1;
+        } catch (Exception e) {
+            return false;
+        }
+//        try {
+//            Rent r = em.find(Rent.class, rentId);
+//            System.out.println(r);
+//            if (r == null) {
+//                return false;
+//            }
+//            em.remove(r);
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+    }
 }
