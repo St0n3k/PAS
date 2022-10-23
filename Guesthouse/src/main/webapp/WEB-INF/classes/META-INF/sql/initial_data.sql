@@ -9,6 +9,7 @@ INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Gold', 0.15,
 
 INSERT INTO users (version, type, username, active) VALUES (0, 'Admin', 'admin', true);
 INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, client_type, active) VALUES (0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16, 1, true);
+
 INSERT INTO users (version, type, username, first_name, last_name, active) VALUES (0, 'Employee', 'employee', 'Robert', 'Lewandowski', true);
 
 INSERT INTO room (version, price, room_number, size) VALUES (0, 623.24, 643, 6);
@@ -27,4 +28,4 @@ INSERT INTO room (version, price, room_number, size) VALUES (0, 903.54, 793, 5);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 352.18, 372, 8);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 785.55, 124, 8);
 
-
+INSERT INTO public.rent (rent_id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (1, 0, '2023-10-02 11:00:00.000000', true, '2023-10-05 10:00:00.000000', 2019.72, 2, 1);
