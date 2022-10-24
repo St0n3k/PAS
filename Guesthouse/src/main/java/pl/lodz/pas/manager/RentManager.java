@@ -41,11 +41,6 @@ public class RentManager {
     @Inject
     private RentRepository rentRepository;
 
-    public List<Rent> getAllRentsOfRoom(int roomNumber) {
-        // TODO Move to RentManager
-        return rentRepository.getByRoomNumber(roomNumber);
-    }
-
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,11 +51,6 @@ public class RentManager {
             throw new NotFoundException();
         }
         return rent;
-    }
-
-    public List<Rent> getAllRentsOfClient(String personalId) {
-        // TODO Move to ClientManager
-        return rentRepository.getByClientPersonalId(personalId);
     }
 
     @DELETE

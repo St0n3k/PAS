@@ -77,9 +77,9 @@ public class RentRepository implements Repository<Rent> {
         }
     }
 
-    public List<Rent> getByRoomNumber(int roomNumber) {
+    public List<Rent> getByRoomId(Long roomId) {
         try {
-            return em.createNamedQuery("Rent.getByRoomNumber", Rent.class).setParameter("roomNumber", roomNumber).getResultList();
+            return em.createNamedQuery("Rent.getByRoomId", Rent.class).setParameter("roomId", roomId).getResultList();
         } catch (Exception e) {
             return null;
         }

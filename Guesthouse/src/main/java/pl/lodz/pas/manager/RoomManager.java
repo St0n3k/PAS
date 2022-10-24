@@ -7,7 +7,9 @@ import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.UpdateRoomDTO;
+import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
+import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
 import java.util.List;
@@ -20,6 +22,16 @@ public class RoomManager {
 
     @Inject
     private RoomRepository roomRepository;
+
+    @Inject
+    private RentRepository rentRepository;
+
+    @GET
+    @Path("/{roomId}/rents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Rent> getAllRentsOfRoom(@PathParam("roomId")Long roomId) {
+        return rentRepository.getByRoomId(roomId);
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

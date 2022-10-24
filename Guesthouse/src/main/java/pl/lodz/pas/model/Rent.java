@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @NamedQueries({
         @NamedQuery(name = "Rent.getAll",
                 query = "SELECT r FROM Rent r"),
-        @NamedQuery(name = "Rent.getByRoomNumber",
-                query = "SELECT r FROM Rent r WHERE r.room.roomNumber = :roomNumber"),
+        @NamedQuery(name = "Rent.getByRoomId",
+                query = "SELECT r FROM Rent r WHERE r.room.id = :roomId"),
         @NamedQuery(name = "Rent.getByClientPersonalId",
                 query = "SELECT r FROM Rent r WHERE r.client.personalId = :personalId"),
         @NamedQuery(name = "Rent.getRentsColliding",
