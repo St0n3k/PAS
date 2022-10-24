@@ -2,31 +2,21 @@ package pl.lodz.pas.manager;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.CreateRentDTO;
-import pl.lodz.pas.model.user.Client;
-import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
-import pl.lodz.pas.repository.impl.UserRepository;
+import pl.lodz.pas.model.user.Client;
+import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
+import pl.lodz.pas.repository.impl.UserRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -87,10 +77,12 @@ public class RentManager {
         Rent rent = new Rent(createRentDTO.getBeginTime(), createRentDTO.getEndTime(), createRentDTO.isBoard(),
                 finalCost, client, room);
 
-        return rentRepository.add(rent);
+        synchronized (rentRepository) {
+            return rentRepository.add(rent);
+        }
     }
 
-    @PUT
+    @PATCH
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
     public Rent updateRentBoard(@PathParam("id") Long id, Boolean board) {
@@ -99,8 +91,6 @@ public class RentManager {
         }
         Rent rentToModify = rentRepository.getById(id);
 
-
-        System.out.println(rentToModify);
 
         if (rentToModify == null) {
             throw new NotFoundException();

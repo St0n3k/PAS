@@ -4,8 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.RollbackException;
 import jakarta.transaction.Transactional;
+import org.hibernate.StaleObjectStateException;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
@@ -20,25 +20,24 @@ public class RentRepository implements Repository<Rent> {
     @PersistenceContext
     EntityManager em;
 
-    @Transactional
+
     @Override
     public Rent add(Rent rent) {
         try {
             Room room = em.find(Room.class, rent.getRoom().getId());
 
             em.lock(room, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-
             boolean isColliding = isColliding(
                     rent.getBeginTime(),
                     rent.getEndTime(),
-                    room.getRoomNumber());
+                    rent.getRoom().getRoomNumber());
 
             if (isColliding) return null;
 
             em.persist(rent);
 
             return rent;
-        } catch (RollbackException e) {
+        } catch (StaleObjectStateException e) {
             System.out.println("Repeating transaction");
             //We have to set id to null, because in transaction,
             //rent gets id on persist, but on failed transaction it not gets back to null
@@ -119,6 +118,7 @@ public class RentRepository implements Repository<Rent> {
 
     /**
      * Removes Rent with given ID.
+     *
      * @param rentId
      * @return true if rent existed and was removed, false otherwise.
      */

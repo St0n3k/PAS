@@ -3,6 +3,7 @@ package pl.lodz.pas.manager;
 import io.restassured.http.ContentType;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import pl.lodz.pas.dto.RegisterClientDTO;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -13,12 +14,11 @@ class UserManagerTest {
     //TODO make more test cases
 
     @Test
-    public void addEmployeeTest() {
+    public void shouldAddEmployeeWithStatusCode200() {
         JSONObject req = new JSONObject();
         req.put("username", "jacek1");
         req.put("firstName", "Jacek");
         req.put("lastName", "Murański");
-        System.out.println(req);
         given()
                 .contentType(ContentType.JSON)
                 .body(req.toString())
@@ -27,16 +27,18 @@ class UserManagerTest {
     }
 
     @Test
-    public void addClientTest() {
-        JSONObject req = new JSONObject();
-        req.put("username", "marek3");
-        req.put("firstName", "Mariusz");
-        req.put("lastName", "Pasek");
-        req.put("personalID", "0124738");
-        req.put("city", "Łódź");
-        req.put("street", "Wesoła");
-        req.put("number", 7);
-        System.out.println(req);
+    public void shouldAddClientWithStatusCode200() {
+        RegisterClientDTO dto = new RegisterClientDTO(
+                "marek3",
+                "Mariusz",
+                "Pasek",
+                "0124738",
+                "Łódź",
+                "Wesoła",
+                7);
+
+        JSONObject req = new JSONObject(dto);
+
         given()
                 .contentType(ContentType.JSON)
                 .body(req.toString())
@@ -45,14 +47,14 @@ class UserManagerTest {
     }
 
     @Test
-    public void getUsersTest() {
+    public void shouldReturnUserListWithStatusCode200() {
         when().get("/api/users")
                 .then().assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON);
     }
 
     @Test
-    public void getAdminTest() {
+    public void shouldReturnUserByUsername() {
         when()
                 .get("/api/users/{username}", "admin")
                 .then()
@@ -61,24 +63,5 @@ class UserManagerTest {
                 .assertThat().body("role", equalTo("ADMIN"))
                 .assertThat().body("active", equalTo(true));
     }
-
-    @Test
-    public void getClientTest() {
-        when().get("/api/users/{username}", "client")
-                .then().assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON)
-                .assertThat().body("username", equalTo("client"))
-                .assertThat().body("role", equalTo("CLIENT"))
-                .assertThat().body("active", equalTo(true));
-    }
-
-    @Test
-    public void getEmployeeTest() {
-        when().get("/api/users/{username}", "employee")
-                .then().assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON)
-                .assertThat().body("username", equalTo("employee"))
-                .assertThat().body("role", equalTo("EMPLOYEE"))
-                .assertThat().body("active", equalTo(true));
-    }
+    
 }

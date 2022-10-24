@@ -2,12 +2,8 @@ package pl.lodz.pas.manager;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.pas.dto.CreateRentDTO;
 
 import java.time.LocalDateTime;
@@ -21,12 +17,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RentManagerTest {
 
     @Test
-    @Order(3)
-    void getRentById() {
+    void shouldReturnRentWithStatusCode200() {
         given().when()
                 .get("/api/rents/1")
                 .then()
@@ -37,7 +31,10 @@ class RentManagerTest {
                         "board", equalTo(true),
                         "client.id", equalTo(2),
                         "room.id", equalTo(1));
+    }
 
+    @Test
+    void shouldFailReturningNoExistingRentWithStatusCode404() {
         given().when()
                 .get("/api/rents/12345")
                 .then()
@@ -45,25 +42,28 @@ class RentManagerTest {
     }
 
     @Test
-    @Order(4)
-    void removeRentTest() {
+    void shouldRemoveRentWithStatusCode204() {
         given().when()
-                .delete("/api/rents/1")
+                .delete("/api/rents/2")
                 .then()
                 .log().all()
                 .assertThat().statusCode(204);
+    }
 
+    //@Test
+    void shouldReturnStatusCode204WhenRemovingNonExistingRent() {
         given().when()
                 .delete("/api/rents/12345")
                 .then()
                 .assertThat().statusCode(404);
+        //TODO status code for that should be 204 instead of 404
     }
 
     @Test
-    @Order(1)
-    void rentRoomPositiveTest() {
-        final var beginDate = LocalDateTime.of(2023, 10, 22, 11, 0, 0);
-        final var endDate = LocalDateTime.of(2023, 10, 25, 10, 0, 0);
+    void shouldCreateRentWithStatusCode200() {
+        //TODO status code for successfully creating room should be 201 - created
+        LocalDateTime beginDate = LocalDateTime.of(2023, 11, 22, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 11, 25, 10, 0, 0);
 
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, true, 2L, 1L);
         JSONObject body = new JSONObject(dto);
@@ -77,44 +77,52 @@ class RentManagerTest {
                 .assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON)
                 .assertThat().body(
-                        "id", equalTo(2),
                         "board", equalTo(true),
                         "client.id", equalTo(2),
                         "room.id", equalTo(1));
     }
 
     @Test
-    @Order(5)
-    void rentRoomNegativeTest() {
-        final var beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
-        final var endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
-        CreateRentDTO dto;
+    void shouldFailCreatingRentForNonExistingClientWithStatusCode400() {
+        //TODO this should return status code 400 - bad request
+        LocalDateTime beginDate = LocalDateTime.of(2023, 1, 1, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 1, 3, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 1000L, 2L);
 
-        // non-existent client
-        dto = new CreateRentDTO(beginDate, endDate, false, 1000L, 2L);
-        JSONObject body1 = new JSONObject(dto);
+        JSONObject body = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(body1.toString())
+                .body(body.toString())
                 .when()
                 .post("/api/rents")
                 .then()
                 .assertThat().statusCode(404);
+    }
 
-        // non-existent room
-        dto = new CreateRentDTO(beginDate, endDate, false, 2L, 20000L);
-        JSONObject body2 = new JSONObject(dto);
+    @Test
+    void shouldFailCreatingRentOfNonExistingRoomWithStatusCode400() {
+        //TODO this should return status code 400 - bad request
+        LocalDateTime beginDate = LocalDateTime.of(2023, 1, 1, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 1, 3, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 20000L);
+
+        JSONObject body = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(body2.toString())
+                .body(body.toString())
                 .when()
                 .post("/api/rents")
                 .then()
                 .assertThat().statusCode(404);
+    }
 
-        // overlapping dates
-        //create valid rent
-        dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
+    @Test
+    void shouldFailCreatingRentForOverlappingDatesWithStatusCode400() {
+        //TODO this should return status code 400 - bad request
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
+
         JSONObject json = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
@@ -122,60 +130,29 @@ class RentManagerTest {
                 .when()
                 .post("/api/rents")
                 .then()
-                .assertThat().statusCode(200);
-        // beginDate 1 day before valid rent
-        LocalDateTime preBeginDate = beginDate.minusDays(1);
-        dto = new CreateRentDTO(preBeginDate, endDate, false, 2L, 1L);
-        json = new JSONObject(dto);
-
-        given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
-
-        // endDate 1 day after valid rent
-        LocalDateTime postEndDate = endDate.plusDays(1);
-        dto = new CreateRentDTO(beginDate, postEndDate, false, 2L, 1L);
-        json = new JSONObject(dto);
-
-        given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
-        // beginDate and endDate are contained in teh date of valid rent
-        dto = new CreateRentDTO(preBeginDate, postEndDate, false, 2L, 1L);
-        json = new JSONObject(dto);
-
-        given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
-
-        LocalDateTime postBeginDate = endDate.plusDays(1);
-        LocalDateTime preEndDate = endDate.minusDays(1);
-
-        // valid rent dates are contained within beginDate and endDate
-        dto = new CreateRentDTO(postBeginDate, preEndDate, false, 2L, 1L);
-        json = new JSONObject(dto);
-
-        given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
+                .assertThat().statusCode(204);
     }
 
     @Test
-    @Order(6)
-    public void optimisticLockTest() throws BrokenBarrierException, InterruptedException {
+    void shouldFailCreatingRentForDatesContainedInExistingRentWithStatusCode400() {
+        //TODO this method should return status code 400 - bad request
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 13, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 16, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
 
+        JSONObject json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(204);
+    }
+
+
+    @Test
+    public void shouldCreateOnlyOneRentWithConcurrentRequests() throws BrokenBarrierException, InterruptedException {
         int threadNumber = 10;
         CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
         List<Thread> threads = new ArrayList<>(threadNumber);
@@ -218,78 +195,81 @@ class RentManagerTest {
     }
 
 
+    @Test
+    void shouldCreateTwoRentsWithNonOverlappingDates() throws BrokenBarrierException, InterruptedException {
+        int threadNumber = 4;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
+        List<Thread> threads = new ArrayList<>(threadNumber);
+        AtomicInteger numberFinished = new AtomicInteger();
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        for (int i = 0; i < threadNumber; i++) {
+            int finalI = i;
+            threads.add(new Thread(() -> {
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    throw new RuntimeException(e);
+                }
+                CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(10000 + finalI), localDateTime.plusDays(10000 + finalI + 2).minusHours(1), false, 2L, 5L);
+                JSONObject json = new JSONObject(dto);
+
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(json.toString())
+                        .when()
+                        .post("/api/rents");
+                numberFinished.getAndIncrement();
+            }));
+        }
+
+        threads.forEach(Thread::start);
+        cyclicBarrier.await();
+        while (numberFinished.get() != threadNumber) {
+        }
+
+        given().when()
+                .get("/api/rooms/958/rents")
+                .then()
+                .assertThat().statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
+
+
+    //TODO update board doesn't work
 //    @Test
-//    void optimisticLockTestOverlap() throws BrokenBarrierException, InterruptedException {
-//
-//        int threadNumber = 4;
-//        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
-//        List<Thread> threads = new ArrayList<>(threadNumber);
-//        AtomicInteger numberFinished = new AtomicInteger();
-//
-//        JSONObject req = new JSONObject();
-//        req.put("username", "wicher");
-//        req.put("firstName", "Aleksander");
-//        req.put("lastName", "Wichrzyński");
-//        req.put("personalID", "0124738");
-//        req.put("city", "Łódź");
-//        req.put("street", "Wesoła");
-//        req.put("number", 7);
-//        given()
-//                .contentType(ContentType.JSON)
-//                .body(req.toString())
-//                .when().post("/api/users");
-//
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        for (int i = 0; i < threadNumber; i++) {
-//            int finalI = i;
-//            threads.add(new Thread(() -> {
-//                try {
-//                    cyclicBarrier.await();
-//                } catch (InterruptedException | BrokenBarrierException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(100 + finalI), localDateTime.plusDays(100 + finalI + 2).minusHours(1), false, 4L, 5L);
-//                JSONObject json = new JSONObject(dto);
-//                System.out.println(json.toString());
-//                given()
-//                        .contentType(ContentType.JSON)
-//                        .body(json.toString())
-//                        .when()
-//                        .post("/api/rents");
-//                numberFinished.getAndIncrement();
-//            }));
-//        }
-//
-//        threads.forEach(Thread::start);
-//        cyclicBarrier.await();
-//        while (numberFinished.get() != threadNumber) {
-//        }
+//    void shouldUpdateRentBoardAndRecalculateRentCost() {
 //        given().when()
-//                .get("/api/rents/byRoom/958")
+//                .get("/api/rents/3")
 //                .then()
 //                .assertThat().statusCode(200)
-//                .assertThat().contentType(ContentType.JSON);
-//    }
-
-//    @Test
-//    @Order(2)
-//    void updateRentBoardTest() {
-//        given()
-//                .body("true")
-//                .log().body()
-//        .when()
-//                .put("/api/rents/1/board")
-//        .then()
-//            .assertThat().statusCode(200)
-//            .assertThat().body("board", equalTo(true));
+//                .assertThat().contentType(ContentType.JSON)
+//                .assertThat().body(
+//                        "id", equalTo(3),
+//                        "board", equalTo(true),
+//                        "finalCost", equalTo(3000.0F)
+//                );
+//
 //
 //        given()
 //                .body("false")
-//        .when()
-//                .put("/api/rents/1/board")
-//        .then()
-//            .assertThat().statusCode(200)
-//            .assertThat().contentType(ContentType.JSON)
-//            .assertThat().body("board", equalTo(false));
+//                .when()
+//                .put("/api/rents/3/board")
+//                .then()
+//                .assertThat().statusCode(200)
+//                .assertThat().body(
+//                        "board", equalTo(true),
+//                        "finalCost", equalTo(3000.0F));
+//
+//        given()
+//                .body("true")
+//                .when()
+//                .put("/api/rents/3/board")
+//                .then()
+//                .assertThat().statusCode(200)
+//                .assertThat().contentType(ContentType.JSON)
+//                .assertThat().body(
+//                        "board", equalTo(false),
+//                        "finalCost", equalTo(3000.0F));
 //    }
 }

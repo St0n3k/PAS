@@ -12,7 +12,7 @@ INSERT INTO users (version, type, username, first_name, last_name, personal_id, 
 
 INSERT INTO users (version, type, username, first_name, last_name, active) VALUES (0, 'Employee', 'employee', 'Robert', 'Lewandowski', true);
 
-INSERT INTO room (version, price, room_number, size) VALUES (0, 623.24, 643, 6);
+INSERT INTO room (version, price, room_number, size) VALUES (0, 250.00, 643, 6);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 707.19, 836, 1);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 170.08, 644, 2);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 821.95, 504, 9);
@@ -28,4 +28,6 @@ INSERT INTO room (version, price, room_number, size) VALUES (0, 903.54, 793, 5);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 352.18, 372, 8);
 INSERT INTO room (version, price, room_number, size) VALUES (0, 785.55, 124, 8);
 
-INSERT INTO public.rent (rent_id, version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (1, 0, '2023-10-02 11:00:00.000000', true, '2023-10-05 10:00:00.000000', 2019.72, 2, 1);
+INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2023-10-02 11:00:00.000000', true, '2023-10-05 10:00:00.000000', 1000, 2, 1);
+INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2023-10-06 11:00:00.000000', true, '2023-10-10 10:00:00.000000', 2000, 2, 1);
+INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2023-10-11 11:00:00.000000', true, '2023-10-21 10:00:00.000000', 3000, 2, 1);

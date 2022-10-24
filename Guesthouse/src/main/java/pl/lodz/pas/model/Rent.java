@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
         @NamedQuery(name = "Rent.getByClientPersonalId",
                 query = "SELECT r FROM Rent r WHERE r.client.personalId = :personalId"),
         @NamedQuery(name = "Rent.getRentsColliding",
-                query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((r.beginTime between :beginDate and :endDate) OR (r.endTime between :beginDate and :endDate)))"),
+                query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((:beginDate between r.beginTime and r.endTime) OR (:endDate between r.beginTime and r.endTime)))"),
         @NamedQuery(name = "Rent.removeById",
                 query = "DELETE FROM Rent r WHERE r.id = :id")
 })
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 public class Rent extends AbstractEntity {
 
     @Id
-    @GeneratedValue(generator = "rentId")
+    @GeneratedValue(generator = "rentId", strategy = GenerationType.IDENTITY)
     @Column(name = "rent_id")
     private Long id;
 
