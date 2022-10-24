@@ -55,10 +55,9 @@ public class UserRepository implements Repository<User> {
         }
     }
 
-    public Client getClientByPersonalId(String personalId) {
+    public User getUserByUsername(String username) {
         try {
-            List<Client> result = em.createNamedQuery("Client.getByPersonalId", Client.class).setParameter("personalId", personalId).getResultList();
-
+            List<User> result = em.createNamedQuery("User.getByUsername", User.class).setParameter("username", username).getResultList();
             if (result.isEmpty()) {
                 return null;
             } else {
@@ -67,16 +66,15 @@ public class UserRepository implements Repository<User> {
         } catch (Exception e) {
             return null;
         }
-
     }
 
-    public User getUserByUsername(String username) {
+    public List<User> matchUserByUsername(String username) {
         try {
-            List<User> result = em.createNamedQuery("User.getByUsername", User.class).setParameter("username", username).getResultList();
+            List<User> result = em.createNamedQuery("User.matchByUsername", User.class).setParameter("username", '%' + username + '%').getResultList();
             if (result.isEmpty()) {
                 return null;
             } else {
-                return result.get(0);
+                return result;
             }
         } catch (Exception e) {
             return null;

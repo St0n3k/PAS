@@ -8,8 +8,6 @@ import pl.lodz.pas.common.MyValidator;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.user.ClientTypes.ClientType;
 
-//TODO implement different user level classes
-
 @Entity
 @Data
 @NoArgsConstructor

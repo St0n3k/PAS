@@ -22,7 +22,9 @@ import java.time.LocalDateTime;
         @NamedQuery(name = "Rent.getRentsColliding",
                 query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((r.beginTime between :beginDate and :endDate) OR (r.endTime between :beginDate and :endDate)))"),
         @NamedQuery(name = "Rent.removeById",
-                query = "DELETE FROM Rent r WHERE r.id = :id")
+                query = "DELETE FROM Rent r WHERE r.id = :id"),
+        @NamedQuery(name = "Rent.getByClientUsername",
+                query = "SELECT r FROM Rent r WHERE r.client.username = :username"),
 })
 @Data
 @NoArgsConstructor

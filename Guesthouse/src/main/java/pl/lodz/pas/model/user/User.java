@@ -16,7 +16,9 @@ import pl.lodz.pas.model.AbstractEntity;
         @NamedQuery(name = "User.getByUserId",
                 query = "SELECT u FROM User u WHERE u.id = :userId"),
         @NamedQuery(name = "User.getByUsername",
-                query = "SELECT u FROM User u WHERE u.username = :username")
+                query = "SELECT u FROM User u WHERE u.username = :username"),
+        @NamedQuery(name = "User.matchByUsername",
+                query = "SELECT u FROM User u WHERE u.username LIKE :username")
 })
 
 @Data
