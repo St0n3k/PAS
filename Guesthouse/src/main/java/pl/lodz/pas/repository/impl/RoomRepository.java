@@ -9,6 +9,8 @@ import pl.lodz.pas.repository.Repository;
 
 import java.util.List;
 
+//TODO removing a room should check if there are no rents for this room
+
 @ApplicationScoped
 @Transactional
 public class RoomRepository implements Repository<Room> {

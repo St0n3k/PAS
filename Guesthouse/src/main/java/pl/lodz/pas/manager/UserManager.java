@@ -21,7 +21,9 @@ import pl.lodz.pas.repository.impl.UserRepository;
 
 import java.util.List;
 
-//TODO implement methods to serve different user level classes
+//TODO implement getById endpoint
+//TODO activate/deactive user endpoint
+//TODO implement endpoint for archived/active rents for a user
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -17,6 +17,10 @@ import pl.lodz.pas.repository.impl.UserRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+
+//TODO removing a rent should check if the rent is ended
+//TODO beginDate should not be in the past while adding a rent
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,6 +45,13 @@ public class RentManager {
             throw new NotFoundException();
         }
         return rent;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Rent> getAllRents(Long id) {
+        List<Rent> list = rentRepository.getAll();
+        return list;
     }
 
     @DELETE

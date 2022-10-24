@@ -14,6 +14,9 @@ import pl.lodz.pas.repository.impl.RoomRepository;
 
 import java.util.List;
 
+//TODO implement getById endpoint
+//TODO implement endpoint for archived/active rents for a room
+
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
@@ -29,7 +32,7 @@ public class RoomManager {
     @GET
     @Path("/{roomId}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Rent> getAllRentsOfRoom(@PathParam("roomId")Long roomId) {
+    public List<Rent> getAllRentsOfRoom(@PathParam("roomId") Long roomId) {
         return rentRepository.getByRoomId(roomId);
     }
 
@@ -51,8 +54,8 @@ public class RoomManager {
         Integer newNumber = updateRoomDTO.getRoomNumber();
         Integer newSize = updateRoomDTO.getSize();
 
-        existingRoom.setPrice(newPrice == null? existingRoom.getPrice() : newPrice);
-        existingRoom.setSize(newSize == null? existingRoom.getSize() : newSize);
+        existingRoom.setPrice(newPrice == null ? existingRoom.getPrice() : newPrice);
+        existingRoom.setSize(newSize == null ? existingRoom.getSize() : newSize);
 
         if (newNumber != null && roomRepository.getByRoomNumber(newNumber) == null) {
             existingRoom.setRoomNumber(newNumber);
