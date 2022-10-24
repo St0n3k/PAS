@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.model.Address;
+import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.user.Client;
 import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.model.user.ClientTypes.Default;
 import pl.lodz.pas.model.user.Employee;
 import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
+import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
 
 import java.util.List;
@@ -30,7 +32,14 @@ public class UserManager {
     @Inject
     private UserRepository userRepository;
     @Inject
+    private RentRepository rentRepository;
+    @Inject
     private ClientTypeRepository clientTypeRepository;
+
+    public List<Rent> getAllRentsOfClient(String personalId) {
+        // TODO Move to ClientManager
+        return rentRepository.getByClientPersonalId(personalId);
+    }
 
     @POST
     @Path("/users")

@@ -1,16 +1,23 @@
 package pl.lodz.pas.manager;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import pl.lodz.pas.dto.CreateRentDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class RentManagerTest {
@@ -102,6 +109,103 @@ class RentManagerTest {
                 .then()
                 .assertThat().statusCode(404);
     }
+
+    @Test
+    public void optimisticLockTest() throws BrokenBarrierException, InterruptedException {
+
+        int threadNumber = 10;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
+        List<Thread> threads = new ArrayList<>(threadNumber);
+        AtomicInteger numberFinished = new AtomicInteger();
+        LocalDateTime begin = LocalDateTime.now().plusDays(40);
+        LocalDateTime end = LocalDateTime.now().plusDays(41);
+        for (int i = 0; i < threadNumber; i++) {
+            threads.add(new Thread(() -> {
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    throw new RuntimeException(e);
+                }
+                CreateRentDTO dto = new CreateRentDTO(begin, end, false, 2L, 6L);
+                JSONObject json = new JSONObject(dto);
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(json.toString())
+                        .when()
+                        .post("/api/rents")
+                        .then()
+                        .extract().response();
+                numberFinished.getAndIncrement();
+            }));
+        }
+
+        threads.forEach(Thread::start);
+        cyclicBarrier.await();
+        while (numberFinished.get() != threadNumber) {
+        }
+
+        Response response = given().when()
+                .get("/api/rooms/6/rents")
+                .then()
+                .assertThat().statusCode(200)
+                .assertThat().contentType(ContentType.JSON)
+                .extract().response();
+        List<String> jsonResponse = response.jsonPath().getList("$");
+        assertEquals(1, jsonResponse.size());
+    }
+
+//    @Test
+//    void optimisticLockTestOverlap() throws BrokenBarrierException, InterruptedException {
+//
+//        int threadNumber = 4;
+//        CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
+//        List<Thread> threads = new ArrayList<>(threadNumber);
+//        AtomicInteger numberFinished = new AtomicInteger();
+//
+//        JSONObject req = new JSONObject();
+//        req.put("username", "wicher");
+//        req.put("firstName", "Aleksander");
+//        req.put("lastName", "Wichrzyński");
+//        req.put("personalID", "0124738");
+//        req.put("city", "Łódź");
+//        req.put("street", "Wesoła");
+//        req.put("number", 7);
+//        given()
+//                .contentType(ContentType.JSON)
+//                .body(req.toString())
+//                .when().post("/api/users");
+//
+//        LocalDateTime localDateTime = LocalDateTime.now();
+//        for (int i = 0; i < threadNumber; i++) {
+//            int finalI = i;
+//            threads.add(new Thread(() -> {
+//                try {
+//                    cyclicBarrier.await();
+//                } catch (InterruptedException | BrokenBarrierException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(100 + finalI), localDateTime.plusDays(100 + finalI + 2).minusHours(1), false, 4L, 5L);
+//                JSONObject json = new JSONObject(dto);
+//                System.out.println(json.toString());
+//                given()
+//                        .contentType(ContentType.JSON)
+//                        .body(json.toString())
+//                        .when()
+//                        .post("/api/rents");
+//                numberFinished.getAndIncrement();
+//            }));
+//        }
+//
+//        threads.forEach(Thread::start);
+//        cyclicBarrier.await();
+//        while (numberFinished.get() != threadNumber) {
+//        }
+//        given().when()
+//                .get("/api/rents/byRoom/958")
+//                .then()
+//                .assertThat().statusCode(200)
+//                .assertThat().contentType(ContentType.JSON);
+//    }
 
 //    @Test
 //    @Order(2)
