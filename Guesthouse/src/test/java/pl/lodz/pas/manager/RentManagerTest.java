@@ -4,8 +4,10 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.pas.dto.CreateRentDTO;
 
 import java.time.LocalDateTime;
@@ -19,7 +21,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RentManagerTest {
 
     @Test
@@ -75,13 +77,14 @@ class RentManagerTest {
                 .assertThat().statusCode(200)
                 .assertThat().contentType(ContentType.JSON)
                 .assertThat().body(
-                        "id", equalTo(1),
+                        "id", equalTo(2),
                         "board", equalTo(true),
                         "client.id", equalTo(2),
                         "room.id", equalTo(1));
     }
 
     @Test
+    @Order(5)
     void rentRoomNegativeTest() {
         final var beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
         final var endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
@@ -108,9 +111,69 @@ class RentManagerTest {
                 .post("/api/rents")
                 .then()
                 .assertThat().statusCode(404);
+
+        // overlapping dates
+        //create valid rent
+        dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
+        JSONObject json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(200);
+        // beginDate 1 day before valid rent
+        LocalDateTime preBeginDate = beginDate.minusDays(1);
+        dto = new CreateRentDTO(preBeginDate, endDate, false, 2L, 1L);
+        json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(404);
+
+        // endDate 1 day after valid rent
+        LocalDateTime postEndDate = endDate.plusDays(1);
+        dto = new CreateRentDTO(beginDate, postEndDate, false, 2L, 1L);
+        json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(404);
+        // beginDate and endDate are contained in teh date of valid rent
+        dto = new CreateRentDTO(preBeginDate, postEndDate, false, 2L, 1L);
+        json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(404);
+
+        LocalDateTime postBeginDate = endDate.plusDays(1);
+        LocalDateTime preEndDate = endDate.minusDays(1);
+
+        // valid rent dates are contained within beginDate and endDate
+        dto = new CreateRentDTO(postBeginDate, preEndDate, false, 2L, 1L);
+        json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(404);
     }
 
     @Test
+    @Order(6)
     public void optimisticLockTest() throws BrokenBarrierException, InterruptedException {
 
         int threadNumber = 10;
@@ -153,6 +216,7 @@ class RentManagerTest {
         List<String> jsonResponse = response.jsonPath().getList("$");
         assertEquals(1, jsonResponse.size());
     }
+
 
 //    @Test
 //    void optimisticLockTestOverlap() throws BrokenBarrierException, InterruptedException {
