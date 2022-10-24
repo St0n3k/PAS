@@ -84,9 +84,9 @@ public class RentRepository implements Repository<Rent> {
         }
     }
 
-    public List<Rent> getByClientPersonalId(String personalId) {
+    public List<Rent> getByClientUsername(String username) {
         try {
-            return em.createNamedQuery("Rent.getByClientPersonalId", Rent.class).setParameter("personalId", personalId).getResultList();
+            return em.createNamedQuery("Rent.getByClientUsername", Rent.class).setParameter("username", username).getResultList();
         } catch (Exception e) {
             return null;
         }

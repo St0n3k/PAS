@@ -36,9 +36,11 @@ public class UserManager {
     @Inject
     private ClientTypeRepository clientTypeRepository;
 
-    public List<Rent> getAllRentsOfClient(String personalId) {
-        // TODO Move to ClientManager
-        return rentRepository.getByClientPersonalId(personalId);
+    @GET
+    @Path("/users/{username}/rents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Rent> getAllRentsOfClient(@PathParam("username") String username) {
+        return rentRepository.getByClientUsername(username);
     }
 
     @POST
@@ -78,16 +80,19 @@ public class UserManager {
     }
 
     @GET
+    @Path("/users/search/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<User> matchUserByUsername(@PathParam("username") String username) {
+        return userRepository.matchUserByUsername(username);
+    }
+
+    @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
-    }
-
-
-    public Client getByPersonalId(String personalId) {
-        return userRepository.getClientByPersonalId(personalId);
     }
 
     public boolean removeClient(Client client) {
