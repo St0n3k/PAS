@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,10 +46,12 @@ public class Rent extends AbstractEntity {
 
     @NotNull
     @Column(name = "begin_time")
+    @Future
     private LocalDateTime beginTime;
 
     @NotNull
     @Column(name = "end_time")
+    @Future
     private LocalDateTime endTime;
 
     @NotNull
@@ -72,9 +76,9 @@ public class Rent extends AbstractEntity {
 
     public Rent(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
                 Room room) {
-        if (beginTime.isAfter(endTime)) {
-            throw new RuntimeException("Wrong chronological order");
-        }
+        // if (beginTime.isAfter(endTime)) {
+        //     throw new RuntimeException("Wrong chronological order");
+        // }
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.board = board;
@@ -82,5 +86,10 @@ public class Rent extends AbstractEntity {
         this.client = client;
         this.room = room;
         MyValidator.validate(this);
+    }
+
+    @AssertTrue
+    private boolean isEndDateAfterBeginDate() {
+        return endTime.isAfter(beginTime);
     }
 }

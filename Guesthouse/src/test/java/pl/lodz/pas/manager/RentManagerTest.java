@@ -279,4 +279,49 @@ class RentManagerTest {
                    "board", equalTo(true),
                    "finalCost", equalTo(3000.0F));
     }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBeginDateIsPast() {
+        LocalDateTime begin = LocalDateTime.now().minusDays(2);
+        LocalDateTime end = LocalDateTime.now().plusDays(2);
+
+        CreateRentDTO dto = new CreateRentDTO(begin, end, false, 2L, 10L);
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+               .body(requestBody.toString())
+               .when().post("api/rents")
+               .then()
+               .statusCode(400);
+    }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBeginDateIsAfterEndDate() {
+        LocalDateTime begin = LocalDateTime.of(2023, 6, 30, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2023, 6, 25, 10, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(begin, end, false, 2L, 10L);
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+               .body(requestBody.toString())
+               .when().post("api/rents")
+               .then()
+               .statusCode(400);
+    }
+
+    @Test
+    void shouldFailWithStatusCode400WhenBothDatesArePast() {
+        LocalDateTime begin = LocalDateTime.of(2020, 6, 30, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2020, 6, 29, 10, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(begin, end, false, 2L, 10L);
+        JSONObject requestBody = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+               .body(requestBody.toString())
+               .when().post("api/rents")
+               .then()
+               .statusCode(400);
+    }
 }

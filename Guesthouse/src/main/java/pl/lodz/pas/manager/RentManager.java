@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -29,7 +30,6 @@ import pl.lodz.pas.repository.impl.RoomRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
 
 //TODO removing a rent should check if the rent is ended
-//TODO beginDate should not be in the past while adding a rent
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -76,12 +76,7 @@ public class RentManager {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(CreateRentDTO createRentDTO) {
-        //Guard clause
-        if (createRentDTO.getBeginTime().isAfter(createRentDTO.getEndTime())) {
-            throw new BadRequestException();
-        }
-
+    public Response rentRoom(@Valid CreateRentDTO createRentDTO) {
         Client client = userRepository.getById(createRentDTO.getClientId());
         Room room = roomRepository.getById(createRentDTO.getRoomId());
 
