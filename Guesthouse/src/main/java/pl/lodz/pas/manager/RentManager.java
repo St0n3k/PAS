@@ -76,9 +76,7 @@ public class RentManager {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Rent rentRoom(CreateRentDTO createRentDTO) {
-        // TODO change status code to 201 Created
-
+    public Response rentRoom(CreateRentDTO createRentDTO) {
         //Guard clause
         if (createRentDTO.getBeginTime().isAfter(createRentDTO.getEndTime())) {
             throw new BadRequestException();
@@ -88,10 +86,10 @@ public class RentManager {
         Room room = roomRepository.getById(createRentDTO.getRoomId());
 
         if (client == null) {
-            throw new NotFoundException("Client not found");
+            throw new BadRequestException("Client not found");
         }
         if (room == null) {
-            throw new NotFoundException("Room not found");
+            throw new BadRequestException("Room not found");
         }
 
         double finalCost = calculateTotalCost(createRentDTO.getBeginTime(), createRentDTO.getEndTime(),
@@ -100,7 +98,13 @@ public class RentManager {
                              finalCost, client, room);
 
         synchronized (rentRepository) {
-            return rentRepository.add(rent);
+            Rent created = rentRepository.add(rent);
+
+            if (created == null) {
+                throw new BadRequestException();
+            }
+
+            return Response.status(Response.Status.CREATED).entity(created).build();
         }
     }
 

@@ -45,7 +45,6 @@ class RentManagerTest {
         given().when()
                .delete("/api/rents/2")
                .then()
-               .log().all()
                .assertThat().statusCode(204);
     }
 
@@ -58,8 +57,7 @@ class RentManagerTest {
     }
 
     @Test
-    void shouldCreateRentWithStatusCode200() {
-        //TODO status code for successfully creating room should be 201 - created
+    void shouldCreateRentWithStatusCode201() {
         LocalDateTime beginDate = LocalDateTime.of(2023, 11, 22, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 11, 25, 10, 0, 0);
 
@@ -72,7 +70,7 @@ class RentManagerTest {
             .when()
             .post("/api/rents")
             .then()
-            .assertThat().statusCode(200)
+            .assertThat().statusCode(201)
             .assertThat().contentType(ContentType.JSON)
             .assertThat().body(
                 "board", equalTo(true),
@@ -82,7 +80,6 @@ class RentManagerTest {
 
     @Test
     void shouldFailCreatingRentForNonExistingClientWithStatusCode400() {
-        //TODO this should return status code 400 - bad request
         LocalDateTime beginDate = LocalDateTime.of(2023, 1, 1, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 1, 3, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 1000L, 2L);
@@ -94,12 +91,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(404);
+               .assertThat().statusCode(400);
     }
 
     @Test
     void shouldFailCreatingRentOfNonExistingRoomWithStatusCode400() {
-        //TODO this should return status code 400 - bad request
         LocalDateTime beginDate = LocalDateTime.of(2023, 1, 1, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 1, 3, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 20000L);
@@ -111,12 +107,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(404);
+               .assertThat().statusCode(400);
     }
 
     @Test
     void shouldFailCreatingRentForOverlappingDatesWithStatusCode400() {
-        //TODO this should return status code 400 - bad request
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -128,12 +123,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(204);
+               .assertThat().statusCode(400);
     }
 
     @Test
     void shouldFailCreatingRentForDatesContainedInExistingRentWithStatusCode400() {
-        //TODO this method should return status code 400 - bad request
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 13, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 16, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -145,12 +139,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(204);
+               .assertThat().statusCode(400);
     }
 
     @Test
     void shouldFailCreatingRentForDatesContainingExistingRentWithStatusCode400() {
-        //TODO this method should return status code 400 - bad request
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 6, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -162,7 +155,7 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(204);
+               .assertThat().statusCode(400);
     }
 
 
