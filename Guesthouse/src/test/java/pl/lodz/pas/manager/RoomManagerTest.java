@@ -1,6 +1,7 @@
 package pl.lodz.pas.manager;
 
 import io.restassured.http.ContentType;
+import jakarta.ws.rs.core.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import pl.lodz.pas.model.Room;
@@ -17,7 +18,7 @@ class RoomManagerTest {
         when()
                 .get("/api/rooms/{id}", 643)
                 .then()
-                .assertThat().statusCode(200)
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
                 .assertThat().contentType(ContentType.JSON)
                 .assertThat().body("roomNumber", equalTo(643))
                 .assertThat().body("price", equalTo(250.0F))
@@ -25,18 +26,17 @@ class RoomManagerTest {
     }
 
     @Test
-    public void shouldReturnListOfRooms() {
+    public void shouldReturnListOfRoomsWithStatusCode200() {
         when()
                 .get("/api/rooms")
                 .then()
-                .assertThat().statusCode(200)
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
                 .assertThat().contentType(ContentType.JSON);
         //TODO add some assertions
     }
 
     @Test
     public void shouldCreateRoomWithStatusCode201() {
-        //TODO change status code to 201 - created
 
         Room room = new Room(1, 600.0, 1);
 
@@ -47,13 +47,13 @@ class RoomManagerTest {
                 .when()
                 .post("/api/rooms")
                 .then()
-                .statusCode(200);
+                .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
     @Test
-    public void shouldFailCreatingRoomWithExistingNumberWithStatusCode400() {
-        Room room = new Room(1, 200.0, 10);
-        //TODO change returned status code to 400 - bad request (or 409)?
+    public void shouldFailCreatingRoomWithExistingNumberWithStatusCode409() {
+        Room room = new Room(643, 200.0, 10);
+
         JSONObject req = new JSONObject(room);
         given()
                 .contentType(ContentType.JSON)
@@ -61,6 +61,6 @@ class RoomManagerTest {
                 .when()
                 .post("/api/rooms")
                 .then()
-                .statusCode(204);
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 }

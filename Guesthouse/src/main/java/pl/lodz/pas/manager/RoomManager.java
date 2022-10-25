@@ -4,6 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.UpdateRoomDTO;
@@ -32,21 +33,32 @@ public class RoomManager {
     @GET
     @Path("/{roomId}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Rent> getAllRentsOfRoom(@PathParam("roomId") Long roomId) {
-        return rentRepository.getByRoomId(roomId);
+    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId) {
+        try {
+            List<Rent> rents = rentRepository.getByRoomId(roomId);
+            return Response.status(Response.Status.OK).entity(rents).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Room addRoom(Room room) {
-        return roomRepository.add(room);
+    public Response addRoom(Room room) {
+        try {
+            Room result = roomRepository.add(room);
+            return Response.status(Response.Status.CREATED).entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
     }
 
     @PUT
     @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    //TODO refactor to return Response
     public Room updateRoom(@PathParam("number") int number, UpdateRoomDTO updateRoomDTO) {
         Room existingRoom = roomRepository.getByRoomNumber(number);
 
@@ -68,22 +80,34 @@ public class RoomManager {
     @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Room getByRoomNumber(@PathParam("number") int number) {
-        return roomRepository.getByRoomNumber(number);
+    public Response getByRoomNumber(@PathParam("number") int number) {
+        try {
+            Room room = roomRepository.getByRoomNumber(number);
+            return Response.status(Response.Status.OK).entity(room).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public boolean removeRoom(@QueryParam("number") int number) {
-        Room room = roomRepository.getByRoomNumber(number);
-        return roomRepository.remove(room);
+    public Response removeRoom(@QueryParam("number") int number) {
+        try {
+            Room room = roomRepository.getByRoomNumber(number);
+            roomRepository.remove(room);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<Room> getAllRooms() {
-        return roomRepository.getAll();
+    public Response getAllRooms() {
+        List<Room> rooms = roomRepository.getAll();
+        return Response.status(Response.Status.OK).entity(rooms).build();
     }
 }

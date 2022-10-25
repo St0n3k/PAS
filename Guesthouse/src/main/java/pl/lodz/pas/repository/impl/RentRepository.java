@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.hibernate.StaleObjectStateException;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
@@ -80,7 +81,7 @@ public class RentRepository implements Repository<Rent> {
         try {
             return em.createNamedQuery("Rent.getByRoomId", Rent.class).setParameter("roomId", roomId).getResultList();
         } catch (Exception e) {
-            return null;
+            throw new NotFoundException();
         }
     }
 
@@ -88,7 +89,7 @@ public class RentRepository implements Repository<Rent> {
         try {
             return em.createNamedQuery("Rent.getByClientUsername", Rent.class).setParameter("username", username).getResultList();
         } catch (Exception e) {
-            return null;
+            throw new NotFoundException();
         }
     }
 
