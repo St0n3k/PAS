@@ -1,6 +1,15 @@
 package pl.lodz.pas.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,21 +18,19 @@ import org.hibernate.annotations.OnDeleteAction;
 import pl.lodz.pas.common.MyValidator;
 import pl.lodz.pas.model.user.Client;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Rent.getAll",
+    @NamedQuery(name = "Rent.getAll",
                 query = "SELECT r FROM Rent r"),
-        @NamedQuery(name = "Rent.getByRoomId",
+    @NamedQuery(name = "Rent.getByRoomId",
                 query = "SELECT r FROM Rent r WHERE r.room.id = :roomId"),
-        @NamedQuery(name = "Rent.getByClientPersonalId",
+    @NamedQuery(name = "Rent.getByClientPersonalId",
                 query = "SELECT r FROM Rent r WHERE r.client.personalId = :personalId"),
-        @NamedQuery(name = "Rent.getRentsColliding",
-                query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((:beginDate between r.beginTime and r.endTime) OR (:endDate between r.beginTime and r.endTime) OR (r.beginTime between :beginDate and :endDate) OR (r.endTime between :beginDate and :endDate)))"),
-        @NamedQuery(name = "Rent.removeById",
+    @NamedQuery(name = "Rent.getRentsColliding",
+                query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((:beginDate between r.beginTime and r.endTime) OR (:endDate between r.beginTime and r.endTime) OR (r.beginTime between :beginDate and :endDate) OR (r.endTime BETWEEN :beginDate and :endDate)))"),
+    @NamedQuery(name = "Rent.removeById",
                 query = "DELETE FROM Rent r WHERE r.id = :id"),
-        @NamedQuery(name = "Rent.getByClientUsername",
+    @NamedQuery(name = "Rent.getByClientUsername",
                 query = "SELECT r FROM Rent r WHERE r.client.username = :username"),
 })
 @Data
@@ -63,8 +70,11 @@ public class Rent extends AbstractEntity {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    public Rent(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client, Room room) {
-        if (beginTime.isAfter(endTime)) throw new RuntimeException("Wrong chronological order");
+    public Rent(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
+                Room room) {
+        if (beginTime.isAfter(endTime)) {
+            throw new RuntimeException("Wrong chronological order");
+        }
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.board = board;

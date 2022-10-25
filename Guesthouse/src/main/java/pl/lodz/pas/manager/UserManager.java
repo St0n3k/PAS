@@ -1,8 +1,14 @@
 package pl.lodz.pas.manager;
 
+import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,8 +24,6 @@ import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
-
-import java.util.List;
 
 //TODO implement getById endpoint
 //TODO activate/deactive user endpoint
@@ -53,12 +57,12 @@ public class UserManager {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         ClientType defaultClientType = clientTypeRepository.getByType(Default.class);
         Client client = new Client(
-                rcDTO.getUsername(),
-                rcDTO.getFirstName(),
-                rcDTO.getLastName(),
-                rcDTO.getPersonalID(),
-                address,
-                defaultClientType);
+            rcDTO.getUsername(),
+            rcDTO.getFirstName(),
+            rcDTO.getLastName(),
+            rcDTO.getPersonalID(),
+            address,
+            defaultClientType);
         return userRepository.add(client);
     }
 
@@ -101,14 +105,14 @@ public class UserManager {
         return userRepository.remove(client);
     }
 
-//    public Client updateClient(Client client) {
-//        return userRepository.update(client);
-//    }
+    //    public Client updateClient(Client client) {
+    //        return userRepository.update(client);
+    //    }
 
-//    public Client changeTypeTo(Class type, Client client) {
-//        client.setClientType(clientTypeRepository.getByType(type));
-//
-//        client = updateClient(client);
-//        return client;
-//    }
+    //    public Client changeTypeTo(Class type, Client client) {
+    //        client.setClientType(clientTypeRepository.getByType(type));
+    //
+    //        client = updateClient(client);
+    //        return client;
+    //    }
 }

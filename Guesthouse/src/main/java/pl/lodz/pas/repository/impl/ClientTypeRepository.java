@@ -1,13 +1,12 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.Repository;
-
-import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -66,7 +65,9 @@ public class ClientTypeRepository implements Repository<ClientType> {
 
     public ClientType getByType(Class type) {
         try {
-            List<ClientType> result = em.createNamedQuery("ClientType.getByType", ClientType.class).setParameter("type", type.getSimpleName()).getResultList();
+            List<ClientType> result = em.createNamedQuery("ClientType.getByType", ClientType.class)
+                                        .setParameter("type", type.getSimpleName())
+                                        .getResultList();
 
             if (result.isEmpty()) {
                 return null;

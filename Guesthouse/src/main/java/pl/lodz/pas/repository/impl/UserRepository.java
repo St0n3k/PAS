@@ -1,5 +1,6 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -7,8 +8,6 @@ import jakarta.transaction.Transactional;
 import pl.lodz.pas.model.user.Client;
 import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.Repository;
-
-import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -57,7 +56,9 @@ public class UserRepository implements Repository<User> {
 
     public User getUserByUsername(String username) {
         try {
-            List<User> result = em.createNamedQuery("User.getByUsername", User.class).setParameter("username", username).getResultList();
+            List<User> result = em.createNamedQuery("User.getByUsername", User.class)
+                                  .setParameter("username", username)
+                                  .getResultList();
             if (result.isEmpty()) {
                 return null;
             } else {
@@ -70,7 +71,9 @@ public class UserRepository implements Repository<User> {
 
     public List<User> matchUserByUsername(String username) {
         try {
-            List<User> result = em.createNamedQuery("User.matchByUsername", User.class).setParameter("username", '%' + username + '%').getResultList();
+            List<User> result = em.createNamedQuery("User.matchByUsername", User.class)
+                                  .setParameter("username", '%' + username + '%')
+                                  .getResultList();
             if (result.isEmpty()) {
                 return null;
             } else {

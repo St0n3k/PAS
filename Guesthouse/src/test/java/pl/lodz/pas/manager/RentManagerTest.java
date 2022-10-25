@@ -1,10 +1,8 @@
 package pl.lodz.pas.manager;
 
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
-import pl.lodz.pas.dto.CreateRentDTO;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,50 +10,51 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import pl.lodz.pas.dto.CreateRentDTO;
 
 class RentManagerTest {
 
     @Test
     void shouldReturnRentWithStatusCode200() {
         given().when()
-                .get("/api/rents/1")
-                .then()
-                .assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON)
-                .assertThat().body(
-                        "id", equalTo(1),
-                        "board", equalTo(true),
-                        "client.id", equalTo(2),
-                        "room.id", equalTo(1));
+               .get("/api/rents/1")
+               .then()
+               .assertThat().statusCode(200)
+               .assertThat().contentType(ContentType.JSON)
+               .assertThat().body(
+                   "id", equalTo(1),
+                   "board", equalTo(true),
+                   "client.id", equalTo(2),
+                   "room.id", equalTo(1));
     }
 
     @Test
     void shouldFailReturningNoExistingRentWithStatusCode404() {
         given().when()
-                .get("/api/rents/12345")
-                .then()
-                .assertThat().statusCode(404);
+               .get("/api/rents/12345")
+               .then()
+               .assertThat().statusCode(404);
     }
 
     @Test
     void shouldRemoveRentWithStatusCode204() {
         given().when()
-                .delete("/api/rents/2")
-                .then()
-                .log().all()
-                .assertThat().statusCode(204);
+               .delete("/api/rents/2")
+               .then()
+               .log().all()
+               .assertThat().statusCode(204);
     }
 
     //@Test
     void shouldReturnStatusCode204WhenRemovingNonExistingRent() {
         given().when()
-                .delete("/api/rents/12345")
-                .then()
-                .assertThat().statusCode(404);
+               .delete("/api/rents/12345")
+               .then()
+               .assertThat().statusCode(404);
         //TODO status code for that should be 204 instead of 404
     }
 
@@ -69,17 +68,17 @@ class RentManagerTest {
         JSONObject body = new JSONObject(dto);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(body.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON)
-                .assertThat().body(
-                        "board", equalTo(true),
-                        "client.id", equalTo(2),
-                        "room.id", equalTo(1));
+            .contentType(ContentType.JSON)
+            .body(body.toString())
+            .when()
+            .post("/api/rents")
+            .then()
+            .assertThat().statusCode(200)
+            .assertThat().contentType(ContentType.JSON)
+            .assertThat().body(
+                "board", equalTo(true),
+                "client.id", equalTo(2),
+                "room.id", equalTo(1));
     }
 
     @Test
@@ -92,11 +91,11 @@ class RentManagerTest {
         JSONObject body = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(body.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
+               .body(body.toString())
+               .when()
+               .post("/api/rents")
+               .then()
+               .assertThat().statusCode(404);
     }
 
     @Test
@@ -109,11 +108,11 @@ class RentManagerTest {
         JSONObject body = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(body.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(404);
+               .body(body.toString())
+               .when()
+               .post("/api/rents")
+               .then()
+               .assertThat().statusCode(404);
     }
 
     @Test
@@ -126,11 +125,11 @@ class RentManagerTest {
         JSONObject json = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(204);
+               .body(json.toString())
+               .when()
+               .post("/api/rents")
+               .then()
+               .assertThat().statusCode(204);
     }
 
     @Test
@@ -143,11 +142,11 @@ class RentManagerTest {
         JSONObject json = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(204);
+               .body(json.toString())
+               .when()
+               .post("/api/rents")
+               .then()
+               .assertThat().statusCode(204);
     }
 
     @Test
@@ -160,11 +159,11 @@ class RentManagerTest {
         JSONObject json = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-                .body(json.toString())
-                .when()
-                .post("/api/rents")
-                .then()
-                .assertThat().statusCode(204);
+               .body(json.toString())
+               .when()
+               .post("/api/rents")
+               .then()
+               .assertThat().statusCode(204);
     }
 
 
@@ -186,12 +185,12 @@ class RentManagerTest {
                 CreateRentDTO dto = new CreateRentDTO(begin, end, false, 2L, 6L);
                 JSONObject json = new JSONObject(dto);
                 given()
-                        .contentType(ContentType.JSON)
-                        .body(json.toString())
-                        .when()
-                        .post("/api/rents")
-                        .then()
-                        .extract().response();
+                    .contentType(ContentType.JSON)
+                    .body(json.toString())
+                    .when()
+                    .post("/api/rents")
+                    .then()
+                    .extract().response();
                 numberFinished.getAndIncrement();
             }));
         }
@@ -202,11 +201,11 @@ class RentManagerTest {
         }
 
         Response response = given().when()
-                .get("/api/rooms/6/rents")
-                .then()
-                .assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON)
-                .extract().response();
+                                   .get("/api/rooms/6/rents")
+                                   .then()
+                                   .assertThat().statusCode(200)
+                                   .assertThat().contentType(ContentType.JSON)
+                                   .extract().response();
         List<String> jsonResponse = response.jsonPath().getList("$");
         assertEquals(1, jsonResponse.size());
     }
@@ -228,14 +227,16 @@ class RentManagerTest {
                 } catch (InterruptedException | BrokenBarrierException e) {
                     throw new RuntimeException(e);
                 }
-                CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(10000 + finalI), localDateTime.plusDays(10000 + finalI + 2).minusHours(1), false, 2L, 5L);
+                CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(10000 + finalI),
+                                                      localDateTime.plusDays(10000 + finalI + 2).minusHours(1), false,
+                                                      2L, 5L);
                 JSONObject json = new JSONObject(dto);
 
                 given()
-                        .contentType(ContentType.JSON)
-                        .body(json.toString())
-                        .when()
-                        .post("/api/rents");
+                    .contentType(ContentType.JSON)
+                    .body(json.toString())
+                    .when()
+                    .post("/api/rents");
                 numberFinished.getAndIncrement();
             }));
         }
@@ -246,47 +247,47 @@ class RentManagerTest {
         }
 
         given().when()
-                .get("/api/rooms/958/rents")
-                .then()
-                .assertThat().statusCode(200)
-                .assertThat().contentType(ContentType.JSON);
+               .get("/api/rooms/958/rents")
+               .then()
+               .assertThat().statusCode(200)
+               .assertThat().contentType(ContentType.JSON);
     }
 
 
     //TODO update board doesn't work
-//    @Test
-//    void shouldUpdateRentBoardAndRecalculateRentCost() {
-//        given().when()
-//                .get("/api/rents/3")
-//                .then()
-//                .assertThat().statusCode(200)
-//                .assertThat().contentType(ContentType.JSON)
-//                .assertThat().body(
-//                        "id", equalTo(3),
-//                        "board", equalTo(true),
-//                        "finalCost", equalTo(3000.0F)
-//                );
-//
-//
-//        given()
-//                .body("false")
-//                .when()
-//                .put("/api/rents/3/board")
-//                .then()
-//                .assertThat().statusCode(200)
-//                .assertThat().body(
-//                        "board", equalTo(true),
-//                        "finalCost", equalTo(3000.0F));
-//
-//        given()
-//                .body("true")
-//                .when()
-//                .put("/api/rents/3/board")
-//                .then()
-//                .assertThat().statusCode(200)
-//                .assertThat().contentType(ContentType.JSON)
-//                .assertThat().body(
-//                        "board", equalTo(false),
-//                        "finalCost", equalTo(3000.0F));
-//    }
+    //    @Test
+    //    void shouldUpdateRentBoardAndRecalculateRentCost() {
+    //        given().when()
+    //                .get("/api/rents/3")
+    //                .then()
+    //                .assertThat().statusCode(200)
+    //                .assertThat().contentType(ContentType.JSON)
+    //                .assertThat().body(
+    //                        "id", equalTo(3),
+    //                        "board", equalTo(true),
+    //                        "finalCost", equalTo(3000.0F)
+    //                );
+    //
+    //
+    //        given()
+    //                .body("false")
+    //                .when()
+    //                .put("/api/rents/3/board")
+    //                .then()
+    //                .assertThat().statusCode(200)
+    //                .assertThat().body(
+    //                        "board", equalTo(true),
+    //                        "finalCost", equalTo(3000.0F));
+    //
+    //        given()
+    //                .body("true")
+    //                .when()
+    //                .put("/api/rents/3/board")
+    //                .then()
+    //                .assertThat().statusCode(200)
+    //                .assertThat().contentType(ContentType.JSON)
+    //                .assertThat().body(
+    //                        "board", equalTo(false),
+    //                        "finalCost", equalTo(3000.0F));
+    //    }
 }

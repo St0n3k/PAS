@@ -1,8 +1,20 @@
 package pl.lodz.pas.manager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -14,10 +26,6 @@ import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 
 //TODO removing a rent should check if the rent is ended
 //TODO beginDate should not be in the past while adding a rent
@@ -84,9 +92,9 @@ public class RentManager {
         }
 
         double finalCost = calculateTotalCost(createRentDTO.getBeginTime(), createRentDTO.getEndTime(),
-                room.getPrice(), createRentDTO.isBoard(), client.getClientType());
+                                              room.getPrice(), createRentDTO.isBoard(), client.getClientType());
         Rent rent = new Rent(createRentDTO.getBeginTime(), createRentDTO.getEndTime(), createRentDTO.isBoard(),
-                finalCost, client, room);
+                             finalCost, client, room);
 
         synchronized (rentRepository) {
             return rentRepository.add(rent);
@@ -108,20 +116,23 @@ public class RentManager {
         }
         rentToModify.setBoard(board);
         double newCost = calculateTotalCost(
-                rentToModify.getBeginTime(),
-                rentToModify.getEndTime(),
-                rentToModify.getRoom().getPrice(),
-                rentToModify.isBoard(),
-                rentToModify.getClient().getClientType()
+            rentToModify.getBeginTime(),
+            rentToModify.getEndTime(),
+            rentToModify.getRoom().getPrice(),
+            rentToModify.isBoard(),
+            rentToModify.getClient().getClientType()
         );
         rentToModify.setFinalCost(newCost);
 
         return rentRepository.update(rentToModify);
     }
 
-    private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board, ClientType clientType) {
+    private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
+                                      ClientType clientType) {
         Duration duration = Duration.between(beginTime, endTime);
-        if (board) costPerDay += 50; //Daily board is worth 50
+        if (board) {
+            costPerDay += 50; //Daily board is worth 50
+        }
         return clientType.applyDiscount(Math.ceil(duration.toHours() / 24.0) * costPerDay);
     }
 

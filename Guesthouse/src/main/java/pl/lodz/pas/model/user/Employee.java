@@ -17,7 +17,7 @@ public class Employee extends User {
     @Column(name = "last_name")
     private String lastName;
 
-    
+
     public Employee(String username, String firstName, String lastName) {
         super(username);
         this.firstName = firstName;
