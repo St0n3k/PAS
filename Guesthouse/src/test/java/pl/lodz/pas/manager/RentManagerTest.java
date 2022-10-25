@@ -49,13 +49,12 @@ class RentManagerTest {
                .assertThat().statusCode(204);
     }
 
-    //@Test
+    @Test
     void shouldReturnStatusCode204WhenRemovingNonExistingRent() {
         given().when()
                .delete("/api/rents/12345")
                .then()
-               .assertThat().statusCode(404);
-        //TODO status code for that should be 204 instead of 404
+               .assertThat().statusCode(204);
     }
 
     @Test
@@ -168,7 +167,7 @@ class RentManagerTest {
 
 
     @Test
-    public void shouldCreateOnlyOneRentWithConcurrentRequests() throws BrokenBarrierException, InterruptedException {
+    void shouldCreateOnlyOneRentWithConcurrentRequests() throws BrokenBarrierException, InterruptedException {
         int threadNumber = 10;
         CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber + 1);
         List<Thread> threads = new ArrayList<>(threadNumber);

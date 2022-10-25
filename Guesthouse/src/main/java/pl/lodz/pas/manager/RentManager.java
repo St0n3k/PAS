@@ -16,6 +16,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.CreateRentDTO;
@@ -46,28 +47,30 @@ public class RentManager {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Rent getRentById(@PathParam("id") Long id) {
+    public Response getRentById(@PathParam("id") Long id) {
         Rent rent = rentRepository.getById(id);
 
         if (rent == null) {
             throw new NotFoundException();
         }
-        return rent;
+
+        return Response.status(Response.Status.OK).entity(rent).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Rent> getAllRents(Long id) {
+    public Response getAllRents() {
         List<Rent> list = rentRepository.getAll();
-        return list;
+
+        return Response.status(Response.Status.OK).entity(list).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public void removeRent(@PathParam("id") Long rentId) {
-        if (!rentRepository.removeById(rentId)) {
-            throw new NotFoundException();
-        }
+    public Response removeRent(@PathParam("id") Long rentId) {
+        rentRepository.removeById(rentId);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @POST
