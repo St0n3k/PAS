@@ -110,7 +110,6 @@ public class RentManager {
         }
         Rent rentToModify = rentRepository.getById(id);
 
-
         if (rentToModify == null) {
             throw new NotFoundException();
         }

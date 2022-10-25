@@ -254,40 +254,37 @@ class RentManagerTest {
     }
 
 
-    //TODO update board doesn't work
-    //    @Test
-    //    void shouldUpdateRentBoardAndRecalculateRentCost() {
-    //        given().when()
-    //                .get("/api/rents/3")
-    //                .then()
-    //                .assertThat().statusCode(200)
-    //                .assertThat().contentType(ContentType.JSON)
-    //                .assertThat().body(
-    //                        "id", equalTo(3),
-    //                        "board", equalTo(true),
-    //                        "finalCost", equalTo(3000.0F)
-    //                );
-    //
-    //
-    //        given()
-    //                .body("false")
-    //                .when()
-    //                .put("/api/rents/3/board")
-    //                .then()
-    //                .assertThat().statusCode(200)
-    //                .assertThat().body(
-    //                        "board", equalTo(true),
-    //                        "finalCost", equalTo(3000.0F));
-    //
-    //        given()
-    //                .body("true")
-    //                .when()
-    //                .put("/api/rents/3/board")
-    //                .then()
-    //                .assertThat().statusCode(200)
-    //                .assertThat().contentType(ContentType.JSON)
-    //                .assertThat().body(
-    //                        "board", equalTo(false),
-    //                        "finalCost", equalTo(3000.0F));
-    //    }
+    @Test
+    void shouldUpdateRentBoardAndRecalculateRentCost() {
+        given().when()
+               .get("/api/rents/3")
+               .then()
+               .assertThat().statusCode(200)
+               .assertThat().contentType(ContentType.JSON)
+               .assertThat().body(
+                   "id", equalTo(3),
+                   "board", equalTo(true),
+                   "finalCost", equalTo(3000.0F)
+               );
+
+
+        given().body("false")
+               .when()
+               .patch("/api/rents/3/board")
+               .then()
+               .assertThat().statusCode(200)
+               .assertThat().body(
+                   "board", equalTo(false),
+                   "finalCost", equalTo(2500.0F));
+
+        given().body("true")
+               .when()
+               .patch("/api/rents/3/board")
+               .then()
+               .assertThat().statusCode(200)
+               .assertThat().contentType(ContentType.JSON)
+               .assertThat().body(
+                   "board", equalTo(true),
+                   "finalCost", equalTo(3000.0F));
+    }
 }
