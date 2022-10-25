@@ -23,7 +23,6 @@ import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
-//TODO implement getById endpoint
 //TODO implement endpoint for archived/active rents for a room
 
 @AllArgsConstructor
@@ -37,6 +36,19 @@ public class RoomManager {
 
     @Inject
     private RentRepository rentRepository;
+
+    @GET
+    @Path("/id/{roomId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRoomById(@PathParam("roomId") Long roomId) {
+        Room room = roomRepository.getById(roomId);
+
+        if (room == null) {
+            throw new NotFoundException();
+        }
+
+        return Response.status(200).entity(room).build();
+    }
 
     @GET
     @Path("/{roomId}/rents")
@@ -66,8 +78,7 @@ public class RoomManager {
     @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //TODO refactor to return Response
-    public Room updateRoom(@PathParam("number") int number, UpdateRoomDTO updateRoomDTO) {
+    public Response updateRoom(@PathParam("number") int number, UpdateRoomDTO updateRoomDTO) {
         Room existingRoom = roomRepository.getByRoomNumber(number);
 
         Double newPrice = updateRoomDTO.getPrice();
@@ -81,7 +92,8 @@ public class RoomManager {
             existingRoom.setRoomNumber(newNumber);
         }
 
-        return roomRepository.update(existingRoom);
+        Room updated = roomRepository.update(existingRoom);
+        return Response.status(200).entity(updated).build();
     }
 
     @GET

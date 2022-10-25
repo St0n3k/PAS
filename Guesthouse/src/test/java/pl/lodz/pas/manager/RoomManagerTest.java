@@ -14,7 +14,7 @@ class RoomManagerTest {
 
 
     @Test
-    public void shouldReturnRoomWithStatusCode200() {
+    void shouldReturnRoomWithStatusCode200() {
         when()
             .get("/api/rooms/{id}", 643)
             .then()
@@ -26,7 +26,7 @@ class RoomManagerTest {
     }
 
     @Test
-    public void shouldReturnListOfRoomsWithStatusCode200() {
+    void shouldReturnListOfRoomsWithStatusCode200() {
         when()
             .get("/api/rooms")
             .then()
@@ -36,7 +36,7 @@ class RoomManagerTest {
     }
 
     @Test
-    public void shouldCreateRoomWithStatusCode201() {
+    void shouldCreateRoomWithStatusCode201() {
 
         Room room = new Room(1, 600.0, 1);
 
@@ -51,7 +51,7 @@ class RoomManagerTest {
     }
 
     @Test
-    public void shouldFailCreatingRoomWithExistingNumberWithStatusCode409() {
+    void shouldFailCreatingRoomWithExistingNumberWithStatusCode409() {
         Room room = new Room(643, 200.0, 10);
 
         JSONObject req = new JSONObject(room);
@@ -62,5 +62,26 @@ class RoomManagerTest {
             .post("/api/rooms")
             .then()
             .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    void shouldGetRoomByIdWithStatusCode200() {
+        given().when()
+               .get("/api/rooms/id/2")
+               .then()
+               .statusCode(200)
+               .contentType(ContentType.JSON)
+               .body("id", equalTo(2),
+                     "price", equalTo(707.19F),
+                     "roomNumber", equalTo(836),
+                     "size", equalTo(1));
+    }
+
+    @Test
+    void shouldGetRoomByIdFailWithStatusCode404() {
+        given().when()
+               .get("/api/rooms/id/123456")
+               .then()
+               .statusCode(404);
     }
 }
