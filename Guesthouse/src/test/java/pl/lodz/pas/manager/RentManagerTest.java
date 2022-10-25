@@ -150,6 +150,23 @@ class RentManagerTest {
                 .assertThat().statusCode(204);
     }
 
+    @Test
+    void shouldFailCreatingRentForDatesContainingExistingRentWithStatusCode400() {
+        //TODO this method should return status code 400 - bad request
+        LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 9, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 10, 6, 10, 0, 0);
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
+
+        JSONObject json = new JSONObject(dto);
+
+        given().contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .assertThat().statusCode(204);
+    }
+
 
     @Test
     public void shouldCreateOnlyOneRentWithConcurrentRequests() throws BrokenBarrierException, InterruptedException {
