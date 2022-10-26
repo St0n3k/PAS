@@ -194,10 +194,6 @@ public class UserManager {
     }
 
 
-    //    public Client updateClient(Client client) {
-    //        return userRepository.update(client);
-    //    }
-
     //    public Client changeTypeTo(Class type, Client client) {
     //        client.setClientType(clientTypeRepository.getByType(type));
     //

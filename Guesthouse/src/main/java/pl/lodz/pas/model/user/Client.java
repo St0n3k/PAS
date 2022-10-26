@@ -1,12 +1,6 @@
 package pl.lodz.pas.model.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,10 +39,6 @@ public class Client extends User {
     @Embedded
     private Address address;
 
-    @Override
-    public String getRole() {
-        return "CLIENT";
-    }
 
     public Client(String username, String firstName, String lastName, String personalId, Address address,
                   ClientType clientType) {
@@ -58,6 +48,7 @@ public class Client extends User {
         this.personalId = personalId;
         this.address = address;
         this.clientType = clientType;
+        this.setRole("CLIENT");
         MyValidator.validate(this);
     }
 }

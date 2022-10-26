@@ -24,10 +24,6 @@ public class Employee extends User {
         super(username);
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    @Override
-    public String getRole() {
-        return "EMPLOYEE";
+        this.setRole("EMPLOYEE");
     }
 }

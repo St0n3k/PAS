@@ -1,16 +1,6 @@
 package pl.lodz.pas.model.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,13 +11,13 @@ import pl.lodz.pas.model.AbstractEntity;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 @NamedQueries({
-    @NamedQuery(name = "User.getAll",
+        @NamedQuery(name = "User.getAll",
                 query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.getByUserId",
+        @NamedQuery(name = "User.getByUserId",
                 query = "SELECT u FROM User u WHERE u.id = :userId"),
-    @NamedQuery(name = "User.getByUsername",
+        @NamedQuery(name = "User.getByUsername",
                 query = "SELECT u FROM User u WHERE u.username = :username"),
-    @NamedQuery(name = "User.matchByUsername",
+        @NamedQuery(name = "User.matchByUsername",
                 query = "SELECT u FROM User u WHERE u.username LIKE :username")
 })
 
@@ -48,9 +38,9 @@ public abstract class User extends AbstractEntity {
     @Column(name = "active")
     private boolean active = true;
 
-    public String getRole() {
-        return "CLIENT";
-    }
+    @NotNull
+    @Column(name = "role")
+    private String role = "CLIENT";
 
     public User(String username) {
         this.username = username;

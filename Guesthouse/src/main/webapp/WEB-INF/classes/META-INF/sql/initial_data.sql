@@ -3,10 +3,10 @@ INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Bronze', 0.0
 INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Silver', 0.1, 'Silver');
 INSERT INTO client_type (version, type, discount, name) VALUES (0, 'Gold', 0.15, 'Gold');
 
-INSERT INTO users (version, type, username, active) VALUES (0, 'Admin', 'admin17', true);
-INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, client_type, active) VALUES (0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16, 1, true);
-INSERT INTO users (version, type, username, first_name, last_name, active) VALUES (0, 'Employee', 'employee', 'Robert', 'Lewandowski', true);
-INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, client_type, active) VALUES (0, 'Client', 'jakub2', 'Jakub', 'Bukaj', '3584873', 'Krakow', 'Smutna', 13, 1, false);
+INSERT INTO users (version, type, username, active, role) VALUES (0, 'Admin', 'admin17', true, 'ADMIN');
+INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, client_type, active, role) VALUES (0, 'Client', 'client', 'Mariusz', 'Pudzianowski', '54352353', 'Warszawa', 'Stalowa', 16, 1, true, 'CLIENT');
+INSERT INTO users (version, type, username, first_name, last_name, active, role) VALUES (0, 'Employee', 'employee', 'Robert', 'Lewandowski', true, 'EMPLOYEE');
+INSERT INTO users (version, type, username, first_name, last_name, personal_id, city, street, house_number, client_type, active, role) VALUES (0, 'Client', 'jakub2', 'Jakub', 'Bukaj', '3584873', 'Krakow', 'Smutna', 13, 1, false, 'CLIENT');
 
 
 INSERT INTO room (version, price, room_number, size) VALUES (0, 250.00, 643, 6);

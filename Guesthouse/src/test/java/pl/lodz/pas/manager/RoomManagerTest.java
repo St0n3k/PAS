@@ -1,19 +1,19 @@
 package pl.lodz.pas.manager;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-
 import io.restassured.http.ContentType;
 import io.restassured.response.ResponseBody;
 import jakarta.ws.rs.core.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import pl.lodz.pas.dto.CreateRentDTO;
-import pl.lodz.pas.model.Rent;
+import pl.lodz.pas.dto.UpdateRoomDTO;
 import pl.lodz.pas.model.Room;
 
 import java.time.LocalDateTime;
+
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 
 class RoomManagerTest {
 
@@ -21,22 +21,22 @@ class RoomManagerTest {
     @Test
     void shouldReturnRoomWithStatusCode200() {
         when()
-            .get("/api/rooms?number=643")
-            .then()
-            .assertThat().statusCode(Response.Status.OK.getStatusCode())
-            .assertThat().contentType(ContentType.JSON)
-            .assertThat().body("roomNumber", equalTo(643))
-            .assertThat().body("price", equalTo(250.0F))
-            .assertThat().body("size", equalTo(6));
+                .get("/api/rooms?number=643")
+                .then()
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
+                .assertThat().contentType(ContentType.JSON)
+                .assertThat().body("roomNumber", equalTo(643))
+                .assertThat().body("price", equalTo(250.0F))
+                .assertThat().body("size", equalTo(6));
     }
 
     @Test
     void shouldReturnListOfRoomsWithStatusCode200() {
         when()
-            .get("/api/rooms")
-            .then()
-            .assertThat().statusCode(Response.Status.OK.getStatusCode())
-            .assertThat().contentType(ContentType.JSON);
+                .get("/api/rooms")
+                .then()
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
+                .assertThat().contentType(ContentType.JSON);
         //TODO add some assertions
     }
 
@@ -47,12 +47,12 @@ class RoomManagerTest {
 
         JSONObject req = new JSONObject(room);
         given()
-            .contentType(ContentType.JSON)
-            .body(req.toString())
-            .when()
-            .post("/api/rooms")
-            .then()
-            .statusCode(Response.Status.CREATED.getStatusCode());
+                .contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
     @Test
@@ -61,54 +61,98 @@ class RoomManagerTest {
 
         JSONObject req = new JSONObject(room);
         given()
-            .contentType(ContentType.JSON)
-            .body(req.toString())
-            .when()
-            .post("/api/rooms")
-            .then()
-            .statusCode(Response.Status.CONFLICT.getStatusCode());
+                .contentType(ContentType.JSON)
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 
     @Test
     void shouldGetRoomByIdWithStatusCode200() {
         given().when()
-               .get("/api/rooms/2")
-               .then()
-               .statusCode(Response.Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("id", equalTo(2),
-                     "price", equalTo(707.19F),
-                     "roomNumber", equalTo(836),
-                     "size", equalTo(1));
+                .get("/api/rooms/2")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(2),
+                        "price", equalTo(707.19F),
+                        "roomNumber", equalTo(836),
+                        "size", equalTo(1));
     }
 
     @Test
     void shouldGetRoomByIdFailWithStatusCode404() {
         given().when()
-               .get("/api/rooms/123456")
-               .then()
-               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+                .get("/api/rooms/123456")
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     void shouldFindPastRentsForRoomWithStatusCode200() {
         given().param("past", true)
-               .when().get("/api/rooms/11/rents")
-               .then()
-               .statusCode(Response.Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("size()", equalTo(1));
+                .when().get("/api/rooms/11/rents")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo(1));
     }
 
     @Test
     void shouldFindActiveRentsForRoomWithStatusCode200() {
         given().param("past", false)
-               .when().get("/api/rooms/11/rents")
-               .then()
-               .statusCode(Response.Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("size()", equalTo(2));
+                .when().get("/api/rooms/11/rents")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo(2));
     }
+
+    @Test
+    void shouldUpdateRoomWithStatusCode200() {
+        UpdateRoomDTO dto = new UpdateRoomDTO(1934, null, 199.99);
+        JSONObject req = new JSONObject(dto);
+
+        when()
+                .get("/api/rooms/9")
+                .then()
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
+                .assertThat().body("price", equalTo(1396.79F))
+                .assertThat().body("size", equalTo(9))
+                .assertThat().body("roomNumber", equalTo(392));
+
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(req.toString())
+                .when().put("/api/rooms/9")
+                .then().assertThat().statusCode(Response.Status.OK.getStatusCode())
+                .assertThat().body("price", equalTo(199.99F))
+                .assertThat().body("size", equalTo(9))
+                .assertThat().body("roomNumber", equalTo(1934));
+    }
+
+    @Test
+    void shouldFailUpdatingRoomNumberDueToExistingRoomNumberWithStatusCode409() {
+        UpdateRoomDTO dto = new UpdateRoomDTO(836, null, null);
+        JSONObject req = new JSONObject(dto);
+
+        when()
+                .get("/api/rooms/10")
+                .then()
+                .assertThat().statusCode(Response.Status.OK.getStatusCode())
+                .assertThat().body("roomNumber", equalTo(244));
+
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(req.toString())
+                .when().put("/api/rooms/10")
+                .then().assertThat().statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
 
     @Test
     void shouldRemoveRoomWithStatusCode204() {
