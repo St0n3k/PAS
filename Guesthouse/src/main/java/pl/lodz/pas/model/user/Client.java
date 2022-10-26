@@ -12,12 +12,7 @@ import pl.lodz.pas.model.user.ClientTypes.ClientType;
 @Data
 @NoArgsConstructor
 public class Client extends User {
-
-    @Id
-    @GeneratedValue(generator = "clientId")
-    @Column(name = "client_id")
-    private Long id;
-
+    
     @NotNull
     @Column(name = "first_name")
     private String firstName;
