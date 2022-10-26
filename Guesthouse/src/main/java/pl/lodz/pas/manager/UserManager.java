@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Objects;
 
 
-//TODO implement endpoint for archived/active rents for a user
-
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
@@ -119,9 +117,19 @@ public class UserManager {
     @GET
     @Path("/{username}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfClient(@PathParam("username") String username) {
-        List<Rent> rents = rentRepository.getByClientUsername(username);
-        return Response.status(Response.Status.OK).entity(rents).build();
+    public Response getAllRentsOfClient(@PathParam("username") Long clientId,
+                                        @QueryParam("past") Boolean past) {
+        try {
+            List<Rent> rents;
+            if (past != null) { // find past or active rents
+                rents = rentRepository.findByRoomAndStatus(clientId, past);
+            } else { // find all rents
+                rents = rentRepository.getByClientId(clientId);
+            }
+            return Response.status(Response.Status.OK).entity(rents).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @PUT
