@@ -37,7 +37,7 @@ public class RoomManager {
     private RentRepository rentRepository;
 
     @GET
-    @Path("/id/{roomId}")
+    @Path("/{roomId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoomById(@PathParam("roomId") Long roomId) {
         Room room = roomRepository.getById(roomId);
@@ -101,18 +101,6 @@ public class RoomManager {
         return Response.status(200).entity(updated).build();
     }
 
-    @GET
-    @Path("/{number}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getByRoomNumber(@PathParam("number") int number) {
-        try {
-            Room room = roomRepository.getByRoomNumber(number);
-            return Response.status(Response.Status.OK).entity(room).build();
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-    }
 
     @DELETE
     @Path("/{id}")
@@ -135,8 +123,17 @@ public class RoomManager {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRooms() {
-        List<Room> rooms = roomRepository.getAll();
-        return Response.status(Response.Status.OK).entity(rooms).build();
+    public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
+        if(number == null){
+            List<Room> rooms = roomRepository.getAll();
+            return Response.status(Response.Status.OK).entity(rooms).build();
+        }else{
+            try {
+                Room room = roomRepository.getByRoomNumber(number);
+                return Response.status(Response.Status.OK).entity(room).build();
+            } catch (NotFoundException e) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
     }
 }
