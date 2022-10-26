@@ -1,19 +1,9 @@
 package pl.lodz.pas.manager;
 
-import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
@@ -23,6 +13,8 @@ import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,10 +29,10 @@ public class RoomManager {
     private RentRepository rentRepository;
 
     @GET
-    @Path("/{roomId}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoomById(@PathParam("roomId") Long roomId) {
-        Room room = roomRepository.getById(roomId);
+    public Response getRoomById(@PathParam("id") Long id) {
+        Room room = roomRepository.getById(id);
 
         if (room == null) {
             throw new NotFoundException();
@@ -80,11 +72,15 @@ public class RoomManager {
     }
 
     @PUT
-    @Path("/{number}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoom(@PathParam("number") int number, UpdateRoomDTO updateRoomDTO) {
-        Room existingRoom = roomRepository.getByRoomNumber(number);
+    public Response updateRoom(@PathParam("id") Long id, UpdateRoomDTO updateRoomDTO) {
+        Room existingRoom = roomRepository.getById(id);
+
+        if (existingRoom == null) {
+            throw new NotFoundException();
+        }
 
         Double newPrice = updateRoomDTO.getPrice();
         Integer newNumber = updateRoomDTO.getRoomNumber();
@@ -95,10 +91,12 @@ public class RoomManager {
 
         if (newNumber != null && roomRepository.getByRoomNumber(newNumber) == null) {
             existingRoom.setRoomNumber(newNumber);
+        } else {
+            return Response.status(Response.Status.CONFLICT).build();
         }
 
         Room updated = roomRepository.update(existingRoom);
-        return Response.status(200).entity(updated).build();
+        return Response.status(Response.Status.OK).entity(updated).build();
     }
 
 
@@ -109,7 +107,7 @@ public class RoomManager {
         try {
             Room room = roomRepository.getById(id);
             List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
-            if(rentsForRoom.isEmpty()){
+            if (rentsForRoom.isEmpty()) {
                 roomRepository.remove(room);
                 return Response.status(Response.Status.NO_CONTENT).build();
             } else {
@@ -124,10 +122,10 @@ public class RoomManager {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
-        if(number == null){
+        if (number == null) {
             List<Room> rooms = roomRepository.getAll();
             return Response.status(Response.Status.OK).entity(rooms).build();
-        }else{
+        } else {
             try {
                 Room room = roomRepository.getByRoomNumber(number);
                 return Response.status(Response.Status.OK).entity(room).build();

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomDTO {
-    Integer roomNumber;
-    Integer size;
-    Double price;
+    private Integer roomNumber;
+    private Integer size;
+    private Double price;
 }
