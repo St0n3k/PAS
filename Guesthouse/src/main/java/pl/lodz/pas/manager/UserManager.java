@@ -3,13 +3,9 @@ package pl.lodz.pas.manager;
 import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
@@ -45,15 +41,16 @@ public class UserManager {
     @GET
     @Path("/users/{username}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Rent> getAllRentsOfClient(@PathParam("username") String username) {
-        return rentRepository.getByClientUsername(username);
+    public Response getAllRentsOfClient(@PathParam("username") String username) {
+        List<Rent> rents = rentRepository.getByClientUsername(username);
+        return Response.status(Response.Status.OK).entity(rents).build();
     }
 
     @POST
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public User registerClient(RegisterClientDTO rcDTO) {
+    public Response registerClient(RegisterClientDTO rcDTO) {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         ClientType defaultClientType = clientTypeRepository.getByType(Default.class);
         Client client = new Client(
@@ -63,7 +60,13 @@ public class UserManager {
             rcDTO.getPersonalID(),
             address,
             defaultClientType);
-        return userRepository.add(client);
+
+        Client addedClient = (Client) userRepository.add(client);
+
+        if (addedClient == null) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+        return Response.status(Response.Status.CREATED).entity(addedClient).build();
     }
 
     @POST
@@ -71,9 +74,15 @@ public class UserManager {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     //This endpoint will be available only for admin
-    public User registerEmployee(RegisterEmployeeDTO reDTO) {
+    public Response registerEmployee(RegisterEmployeeDTO reDTO) {
         Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
-        return userRepository.add(employee);
+
+        Employee addedEmployee = (Employee) userRepository.add(employee);
+
+        if (addedEmployee == null) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+        return Response.status(Response.Status.CREATED).entity(addedEmployee).build();
     }
 
 
@@ -81,29 +90,33 @@ public class UserManager {
     @Path("/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public User getUserByUsername(@PathParam("username") String username) {
-        return userRepository.getUserByUsername(username);
+    public Response getUserByUsername(@PathParam("username") String username) {
+        User user = userRepository.getUserByUsername(username);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return Response.status(Response.Status.OK).entity(user).build();
+
     }
 
     @GET
     @Path("/users/search/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<User> matchUserByUsername(@PathParam("username") String username) {
-        return userRepository.matchUserByUsername(username);
+    public Response matchUserByUsername(@PathParam("username") String username) {
+        List<User> users = userRepository.matchUserByUsername(username);
+        return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+    public Response getAllUsers() {
+        List<User> users = userRepository.getAllUsers();
+        return Response.status(Response.Status.OK).entity(users).build();
     }
 
-    public boolean removeClient(Client client) {
-        return userRepository.remove(client);
-    }
 
     //    public Client updateClient(Client client) {
     //        return userRepository.update(client);

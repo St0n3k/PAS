@@ -74,7 +74,7 @@ class RoomManagerTest {
         given().when()
                .get("/api/rooms/id/2")
                .then()
-               .statusCode(200)
+               .statusCode(Response.Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
                .body("id", equalTo(2),
                      "price", equalTo(707.19F),
@@ -87,7 +87,7 @@ class RoomManagerTest {
         given().when()
                .get("/api/rooms/id/123456")
                .then()
-               .statusCode(404);
+               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -95,7 +95,7 @@ class RoomManagerTest {
         given().param("past", true)
                .when().get("/api/rooms/11/rents")
                .then()
-               .statusCode(200)
+               .statusCode(Response.Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
                .body("size()", equalTo(1));
     }
@@ -105,7 +105,7 @@ class RoomManagerTest {
         given().param("past", false)
                .when().get("/api/rooms/11/rents")
                .then()
-               .statusCode(200)
+               .statusCode(Response.Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
                .body("size()", equalTo(2));
     }
@@ -119,14 +119,14 @@ class RoomManagerTest {
                 .contentType(ContentType.JSON)
                 .when().post("/api/rooms")
                 .then()
-                .statusCode(201)
+                .statusCode(Response.Status.CREATED.getStatusCode())
                 .contentType(ContentType.JSON);
 
         given()
                 .contentType(ContentType.JSON)
                 .when().delete("/api/rooms?number=1234")
                 .then()
-                .statusCode(204);
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
@@ -137,7 +137,8 @@ class RoomManagerTest {
         ResponseBody responseBody = given()
                 .body(json.toString())
                 .contentType(ContentType.JSON)
-                .when().post("/api/rooms").getBody();
+                .when().post("/api/rooms")
+                .getBody();
 
         Room addedRoom = responseBody.as(Room.class);
 
@@ -153,7 +154,7 @@ class RoomManagerTest {
                 .when()
                 .post("/api/rents")
                 .then()
-                .statusCode(201);
+                .statusCode(Response.Status.CREATED.getStatusCode());
 
 
         given()

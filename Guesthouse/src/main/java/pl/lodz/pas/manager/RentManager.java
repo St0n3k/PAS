@@ -106,7 +106,7 @@ public class RentManager {
     @PATCH
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
-    public Rent updateRentBoard(@PathParam("id") Long id, Boolean board) {
+    public Response updateRentBoard(@PathParam("id") Long id, Boolean board) {
         if (board == null) {
             throw new BadRequestException();
         }
@@ -125,7 +125,9 @@ public class RentManager {
         );
         rentToModify.setFinalCost(newCost);
 
-        return rentRepository.update(rentToModify);
+        Rent updatedRent = rentRepository.update(rentToModify);
+
+        return Response.status(Response.Status.OK).entity(updatedRent).build();
     }
 
     private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
