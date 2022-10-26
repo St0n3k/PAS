@@ -21,7 +21,7 @@ class RoomManagerTest {
     @Test
     void shouldReturnRoomWithStatusCode200() {
         when()
-            .get("/api/rooms/{id}", 643)
+            .get("/api/rooms?number=643")
             .then()
             .assertThat().statusCode(Response.Status.OK.getStatusCode())
             .assertThat().contentType(ContentType.JSON)
@@ -72,7 +72,7 @@ class RoomManagerTest {
     @Test
     void shouldGetRoomByIdWithStatusCode200() {
         given().when()
-               .get("/api/rooms/id/2")
+               .get("/api/rooms/2")
                .then()
                .statusCode(Response.Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
@@ -85,7 +85,7 @@ class RoomManagerTest {
     @Test
     void shouldGetRoomByIdFailWithStatusCode404() {
         given().when()
-               .get("/api/rooms/id/123456")
+               .get("/api/rooms/123456")
                .then()
                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
