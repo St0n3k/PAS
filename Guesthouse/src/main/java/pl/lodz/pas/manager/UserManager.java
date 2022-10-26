@@ -87,26 +87,37 @@ public class UserManager {
 
 
     @GET
-    @Path("/users/{username}")
+    @Path("/users/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserByUsername(@PathParam("username") String username, @QueryParam("match") boolean match) {
-        if(!match){
-            User user = userRepository.getUserByUsername(username);
-            if (user == null) {
-                throw new NotFoundException();
-            }
-            return Response.status(Response.Status.OK).entity(user).build();
+    public Response getUser(@PathParam("id") Long id, @QueryParam("username") String username) {
+        User user;
+        if(username != null){
+            user = userRepository.getUserByUsername(username);
+        } else {
+            user = userRepository.getById(id);
         }
-        List<User> users = userRepository.matchUserByUsername(username);
-        return Response.status(Response.Status.OK).entity(users).build();
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return Response.status(Response.Status.OK).entity(user).build();
     }
 
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers() {
-        List<User> users = userRepository.getAllUsers();
+    public Response getAllUsers(@QueryParam("username") String username, @QueryParam("match") boolean match){
+        List<User> users;
+        if(username == null){
+            users = userRepository.getAllUsers();
+        } else {
+            if(!match){
+                User user = userRepository.getUserByUsername(username);
+                return Response.status(Response.Status.OK).entity(user).build();
+            }
+            users = userRepository.matchUserByUsername(username);
+        }
         return Response.status(Response.Status.OK).entity(users).build();
+
     }
 
 

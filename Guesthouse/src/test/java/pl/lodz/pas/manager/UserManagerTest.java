@@ -57,7 +57,7 @@ class UserManagerTest {
     @Test
     public void shouldReturnUserByUsername() {
         when()
-            .get("/api/users/{username}", "admin")
+            .get("/api/users?username=admin")
             .then()
             .assertThat().statusCode(Response.Status.OK.getStatusCode())
             .assertThat().body("username", equalTo("admin"))
