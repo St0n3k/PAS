@@ -152,4 +152,25 @@ class UserManagerTest {
                 .then()
                 .statusCode(Response.Status.CONFLICT.getStatusCode());
     }
+
+    @Test
+    void shouldFailWhileRegisteringClientWithInvalidAttributes() {
+        RegisterClientDTO clientDTO = new RegisterClientDTO(
+                "Wicher2022",
+                "Mariusz!",
+                "Pasek?",
+                "0124a738",
+                "Łódź!",
+                "Wesoła@`'",
+                -1);
+        JSONObject json = new JSONObject(clientDTO);
+        System.out.println(json);
+        given()
+                .body(json.toString())
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/api/users/clients")
+                .then()
+                .assertThat().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
 }

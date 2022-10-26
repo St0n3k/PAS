@@ -206,4 +206,18 @@ class RoomManagerTest {
                 .then()
                 .statusCode(Response.Status.CONFLICT.getStatusCode());
     }
+
+    @Test
+    void shouldFailWhileUpdatingRoomWithInvalidAttribues() {
+        UpdateRoomDTO roomDTO = new UpdateRoomDTO(75, 0, -1.);
+        JSONObject json = new JSONObject(roomDTO);
+        System.out.println(json);
+        given()
+                .body(json.toString())
+                .contentType(ContentType.JSON)
+                .when()
+                .put("/api/rooms/5")
+                .then()
+                .assertThat().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
 }
