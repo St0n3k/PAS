@@ -324,4 +324,12 @@ class RentManagerTest {
                .then()
                .statusCode(400);
     }
+
+    @Test
+    void shouldFailWithStatusCode409WhenRemovingAnActiveRent(){
+        given().when()
+                .delete("/api/rents/7")
+                .then()
+                .assertThat().statusCode(409);
+    }
 }

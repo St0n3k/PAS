@@ -30,3 +30,4 @@ INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, r
 INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2022-10-11 11:00:00.000000', FALSE, '2023-02-01 10:00:00.000000', 30000, 2, 11);
 INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2022-05-01 11:00:00.000000', FALSE, '2022-05-09 10:00:00.000000', 3000, 2, 11);
 INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2024-10-11 11:00:00.000000', FALSE, '2024-11-21 10:00:00.000000', 3000, 2, 11);
+INSERT INTO rent (version, begin_time, board, end_time, final_cost, client_id, room_id) VALUES (0, '2020-10-11 11:00:00.000000', FALSE, '2020-11-21 10:00:00.000000', 3000, 2, 11);
