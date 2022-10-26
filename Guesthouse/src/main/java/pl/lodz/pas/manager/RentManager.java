@@ -96,7 +96,7 @@ public class RentManager {
             Rent created = rentRepository.add(rent);
 
             if (created == null) {
-                throw new BadRequestException();
+                return Response.status(Response.Status.CONFLICT).build();
             }
 
             return Response.status(Response.Status.CREATED).entity(created).build();

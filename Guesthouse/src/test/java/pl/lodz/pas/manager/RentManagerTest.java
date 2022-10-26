@@ -11,9 +11,9 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import jakarta.ws.rs.core.Response;
 import pl.lodz.pas.dto.CreateRentDTO;
 
 class RentManagerTest {
@@ -23,7 +23,7 @@ class RentManagerTest {
         given().when()
                .get("/api/rents/1")
                .then()
-               .assertThat().statusCode(200)
+               .assertThat().statusCode(Response.Status.OK.getStatusCode())
                .assertThat().contentType(ContentType.JSON)
                .assertThat().body(
                    "id", equalTo(1),
@@ -37,7 +37,7 @@ class RentManagerTest {
         given().when()
                .get("/api/rents/12345")
                .then()
-               .assertThat().statusCode(404);
+               .assertThat().statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -45,7 +45,7 @@ class RentManagerTest {
         given().when()
                .delete("/api/rents/2")
                .then()
-               .assertThat().statusCode(204);
+               .assertThat().statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
@@ -53,7 +53,7 @@ class RentManagerTest {
         given().when()
                .delete("/api/rents/12345")
                .then()
-               .assertThat().statusCode(204);
+               .assertThat().statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
@@ -70,7 +70,7 @@ class RentManagerTest {
             .when()
             .post("/api/rents")
             .then()
-            .assertThat().statusCode(201)
+            .assertThat().statusCode(Response.Status.CREATED.getStatusCode())
             .assertThat().contentType(ContentType.JSON)
             .assertThat().body(
                 "board", equalTo(true),
@@ -91,7 +91,7 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(400);
+               .assertThat().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -107,11 +107,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(400);
+               .assertThat().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
-    void shouldFailCreatingRentForOverlappingDatesWithStatusCode400() {
+    void shouldFailCreatingRentForOverlappingDatesWithStatusCode409() {
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 3, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -123,11 +123,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(400);
+               .assertThat().statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 
     @Test
-    void shouldFailCreatingRentForDatesContainedInExistingRentWithStatusCode400() {
+    void shouldFailCreatingRentForDatesContainedInExistingRentWithStatusCode409() {
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 13, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 16, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -139,11 +139,11 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(400);
+               .assertThat().statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 
     @Test
-    void shouldFailCreatingRentForDatesContainingExistingRentWithStatusCode400() {
+    void shouldFailCreatingRentForDatesContainingExistingRentWithStatusCode409() {
         LocalDateTime beginDate = LocalDateTime.of(2023, 10, 1, 9, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2023, 10, 6, 10, 0, 0);
         CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, false, 2L, 1L);
@@ -155,7 +155,7 @@ class RentManagerTest {
                .when()
                .post("/api/rents")
                .then()
-               .assertThat().statusCode(400);
+               .assertThat().statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 
 
@@ -192,10 +192,10 @@ class RentManagerTest {
         while (numberFinished.get() != threadNumber) {
         }
 
-        Response response = given().when()
+        io.restassured.response.Response response =  given().when()
                                    .get("/api/rooms/6/rents")
                                    .then()
-                                   .assertThat().statusCode(200)
+                                   .assertThat().statusCode(Response.Status.OK.getStatusCode())
                                    .assertThat().contentType(ContentType.JSON)
                                    .extract().response();
         List<String> jsonResponse = response.jsonPath().getList("$");
@@ -241,7 +241,7 @@ class RentManagerTest {
         given().when()
                .get("/api/rooms/958/rents")
                .then()
-               .assertThat().statusCode(200)
+               .assertThat().statusCode(Response.Status.OK.getStatusCode())
                .assertThat().contentType(ContentType.JSON);
     }
 
@@ -251,7 +251,7 @@ class RentManagerTest {
         given().when()
                .get("/api/rents/3")
                .then()
-               .assertThat().statusCode(200)
+               .assertThat().statusCode(Response.Status.OK.getStatusCode())
                .assertThat().contentType(ContentType.JSON)
                .assertThat().body(
                    "id", equalTo(3),
@@ -264,7 +264,7 @@ class RentManagerTest {
                .when()
                .patch("/api/rents/3/board")
                .then()
-               .assertThat().statusCode(200)
+               .assertThat().statusCode(Response.Status.OK.getStatusCode())
                .assertThat().body(
                    "board", equalTo(false),
                    "finalCost", equalTo(2500.0F));
@@ -273,7 +273,7 @@ class RentManagerTest {
                .when()
                .patch("/api/rents/3/board")
                .then()
-               .assertThat().statusCode(200)
+               .assertThat().statusCode(Response.Status.OK.getStatusCode())
                .assertThat().contentType(ContentType.JSON)
                .assertThat().body(
                    "board", equalTo(true),
@@ -292,7 +292,7 @@ class RentManagerTest {
                .body(requestBody.toString())
                .when().post("api/rents")
                .then()
-               .statusCode(400);
+               .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -307,7 +307,7 @@ class RentManagerTest {
                .body(requestBody.toString())
                .when().post("api/rents")
                .then()
-               .statusCode(400);
+               .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -322,6 +322,6 @@ class RentManagerTest {
                .body(requestBody.toString())
                .when().post("api/rents")
                .then()
-               .statusCode(400);
+               .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 }

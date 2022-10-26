@@ -89,7 +89,6 @@ public class UserManager {
     @GET
     @Path("/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByUsername(@PathParam("username") String username) {
         User user = userRepository.getUserByUsername(username);
         if (user == null) {
@@ -102,7 +101,6 @@ public class UserManager {
     @GET
     @Path("/users/search/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response matchUserByUsername(@PathParam("username") String username) {
         List<User> users = userRepository.matchUserByUsername(username);
         return Response.status(Response.Status.OK).entity(users).build();
@@ -111,7 +109,6 @@ public class UserManager {
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getAllUsers() {
         List<User> users = userRepository.getAllUsers();
         return Response.status(Response.Status.OK).entity(users).build();

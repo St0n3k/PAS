@@ -1,5 +1,6 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -19,14 +20,17 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public Room add(Room room) {
-        em.persist(room);
+        try {
+            em.persist(room);
+        } catch (Exception e) {
+            return null;
+        }
         return room;
     }
 
     @Override
     public boolean remove(Room room) {
         try {
-
             em.remove(em.merge(room));
             return true;
         } catch (Exception e) {
@@ -54,19 +58,28 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public List<Room> getAll() {
-        return em.createNamedQuery("Room.getAll", Room.class).getResultList();
+        try {
+            return em.createNamedQuery("Room.getAll", Room.class).getResultList();
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     public Room getByRoomNumber(int roomNumber) {
-        List<Room> result = em
-                                .createNamedQuery("Room.getByRoomNumber", Room.class)
-                                .setParameter("roomNumber", roomNumber)
-                                .getResultList();
+        try {
+            List<Room> result = em
+                    .createNamedQuery("Room.getByRoomNumber", Room.class)
+                    .setParameter("roomNumber", roomNumber)
+                    .getResultList();
 
-        if (result.isEmpty()) {
-            throw new NotFoundException("Room not found");
-        } else {
-            return result.get(0);
+            if (result.isEmpty()) {
+                return null;
+            } else {
+                return result.get(0);
+            }
+        } catch (Exception e) {
+            return null;
         }
+
     }
 }

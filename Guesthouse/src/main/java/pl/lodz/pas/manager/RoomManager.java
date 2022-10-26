@@ -3,6 +3,7 @@ package pl.lodz.pas.manager;
 import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -45,7 +46,7 @@ public class RoomManager {
             throw new NotFoundException();
         }
 
-        return Response.status(200).entity(room).build();
+        return Response.status(Response.Status.OK).entity(room).build();
     }
 
     @GET
@@ -69,13 +70,13 @@ public class RoomManager {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addRoom(Room room) {
-        try {
-            Room result = roomRepository.add(room);
-            return Response.status(Response.Status.CREATED).entity(result).build();
-        } catch (Exception e) {
+    public Response addRoom(@Valid Room room) {
+        Room result = roomRepository.add(room);
+
+        if (result == null) {
             return Response.status(Response.Status.CONFLICT).build();
         }
+        return Response.status(Response.Status.CREATED).entity(result).build();
     }
 
     @PUT
@@ -103,7 +104,6 @@ public class RoomManager {
     @GET
     @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getByRoomNumber(@PathParam("number") int number) {
         try {
             Room room = roomRepository.getByRoomNumber(number);
@@ -116,7 +116,6 @@ public class RoomManager {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response removeRoom(@QueryParam("number") int number) {
         try {
             Room room = roomRepository.getByRoomNumber(number);
@@ -135,7 +134,6 @@ public class RoomManager {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getAllRooms() {
         List<Room> rooms = roomRepository.getAll();
         return Response.status(Response.Status.OK).entity(rooms).build();

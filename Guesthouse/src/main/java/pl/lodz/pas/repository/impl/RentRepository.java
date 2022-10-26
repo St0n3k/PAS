@@ -105,7 +105,7 @@ public class RentRepository implements Repository<Rent> {
         }
     }
 
-    public boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
+    private boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
         try {
             List<Rent> rentsColliding = em.createNamedQuery("Rent.getRentsColliding", Rent.class)
                                           .setParameter("beginDate", beginDate)
