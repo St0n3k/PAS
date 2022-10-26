@@ -90,20 +90,14 @@ public class UserManager {
     @Path("/users/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByUsername(@PathParam("username") String username) {
-        User user = userRepository.getUserByUsername(username);
-        if (user == null) {
-            throw new NotFoundException();
+    public Response getUserByUsername(@PathParam("username") String username, @QueryParam("match") boolean match) {
+        if(!match){
+            User user = userRepository.getUserByUsername(username);
+            if (user == null) {
+                throw new NotFoundException();
+            }
+            return Response.status(Response.Status.OK).entity(user).build();
         }
-        return Response.status(Response.Status.OK).entity(user).build();
-
-    }
-
-    @GET
-    @Path("/users/search/{username}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response matchUserByUsername(@PathParam("username") String username) {
         List<User> users = userRepository.matchUserByUsername(username);
         return Response.status(Response.Status.OK).entity(users).build();
     }

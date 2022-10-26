@@ -114,17 +114,16 @@ class RoomManagerTest {
     void shouldRemoveRoomWithStatusCode204() {
         Room room = new Room(1234, 200.0, 4);
         JSONObject json = new JSONObject(room);
-        given()
+        ResponseBody responseBody = given()
                 .body(json.toString())
                 .contentType(ContentType.JSON)
-                .when().post("/api/rooms")
-                .then()
-                .statusCode(Response.Status.CREATED.getStatusCode())
-                .contentType(ContentType.JSON);
+                .when().post("/api/rooms/").getBody();
+
+        Room addedRoom = responseBody.as(Room.class);
 
         given()
                 .contentType(ContentType.JSON)
-                .when().delete("/api/rooms?number=1234")
+                .when().delete("/api/rooms/" + addedRoom.getId())
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
@@ -159,7 +158,7 @@ class RoomManagerTest {
 
         given()
                 .contentType(ContentType.JSON)
-                .when().delete("/api/rooms?number=4321")
+                .when().delete("/api/rooms/" + addedRoom.getId())
                 .then()
                 .statusCode(Response.Status.CONFLICT.getStatusCode());
     }

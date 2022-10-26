@@ -328,7 +328,7 @@ class RentManagerTest {
     @Test
     void shouldFailWithStatusCode409WhenRemovingAnActiveRent(){
         given().when()
-                .delete("/api/rents/7")
+                .delete("/api/rents/5")
                 .then()
                 .assertThat().statusCode(409);
     }

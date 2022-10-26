@@ -115,11 +115,12 @@ public class RoomManager {
     }
 
     @DELETE
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeRoom(@QueryParam("number") int number) {
+    public Response removeRoom(@PathParam("id") Long id) {
         try {
-            Room room = roomRepository.getByRoomNumber(number);
+            Room room = roomRepository.getById(id);
             List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
             if(rentsForRoom.isEmpty()){
                 roomRepository.remove(room);
