@@ -20,6 +20,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import pl.lodz.pas.common.MyValidator;
 import pl.lodz.pas.model.user.Client;
 
+// TODO if possible, refactor to use single query with addidtional parameter
+
 @Entity
 @NamedQueries({
     @NamedQuery(name = "Rent.getAll",
@@ -29,11 +31,21 @@ import pl.lodz.pas.model.user.Client;
     @NamedQuery(name = "Rent.getByClientPersonalId",
                 query = "SELECT r FROM Rent r WHERE r.client.personalId = :personalId"),
     @NamedQuery(name = "Rent.getRentsColliding",
-                query = "SELECT r FROM Rent r WHERE (r.room.roomNumber = :roomNumber AND ((:beginDate between r.beginTime and r.endTime) OR (:endDate between r.beginTime and r.endTime) OR (r.beginTime between :beginDate and :endDate) OR (r.endTime BETWEEN :beginDate and :endDate)))"),
+                query = """
+                    SELECT r FROM Rent r
+                    WHERE r.room.roomNumber = :roomNumber
+                          AND ((:beginDate BETWEEN r.beginTime AND r.endTime)
+                          OR (:endDate BETWEEN r.beginTime AND r.endTime)
+                          OR (r.beginTime between :beginDate and :endDate)
+                          OR (r.endTime BETWEEN :beginDate AND :endDate))"""),
     @NamedQuery(name = "Rent.removeById",
                 query = "DELETE FROM Rent r WHERE r.id = :id"),
     @NamedQuery(name = "Rent.getByClientUsername",
                 query = "SELECT r FROM Rent r WHERE r.client.username = :username"),
+    @NamedQuery(name = "Rent.getPastRentsByRoom",
+                query = "SELECT r from Rent r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.room.id = :id"),
+    @NamedQuery(name = "Rent.getActiveRentsByRoom",
+                query = "SELECT r from Rent r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.room.id = :id")
 })
 @Data
 @NoArgsConstructor
@@ -76,9 +88,6 @@ public class Rent extends AbstractEntity {
 
     public Rent(LocalDateTime beginTime, LocalDateTime endTime, boolean board, double finalCost, Client client,
                 Room room) {
-        // if (beginTime.isAfter(endTime)) {
-        //     throw new RuntimeException("Wrong chronological order");
-        // }
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.board = board;

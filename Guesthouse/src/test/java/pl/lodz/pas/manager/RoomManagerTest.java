@@ -84,4 +84,25 @@ class RoomManagerTest {
                .then()
                .statusCode(404);
     }
+
+    @Test
+    void shouldFindPastRentsForRoomWithStatusCode200() {
+        given().param("past", true)
+               .when().get("/api/rooms/11/rents")
+               .then()
+               .statusCode(200)
+               .contentType(ContentType.JSON)
+               .body("size()", equalTo(1));
+    }
+
+    @Test
+    void shouldFindActiveRentsForRoomWithStatusCode200() {
+        given().param("past", false)
+               .when().get("/api/rooms/11/rents")
+               .then()
+               .statusCode(200)
+               .contentType(ContentType.JSON)
+               .body("size()", equalTo(2));
+    }
+
 }

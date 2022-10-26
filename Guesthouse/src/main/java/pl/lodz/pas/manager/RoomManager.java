@@ -23,8 +23,6 @@ import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
-//TODO implement endpoint for archived/active rents for a room
-
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
@@ -53,9 +51,15 @@ public class RoomManager {
     @GET
     @Path("/{roomId}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId) {
+    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
+                                      @QueryParam("past") Boolean past) {
         try {
-            List<Rent> rents = rentRepository.getByRoomId(roomId);
+            List<Rent> rents;
+            if (past != null) { // find past or active rents
+                rents = rentRepository.findByRoomAndStatus(roomId, past);
+            } else { // find all rents
+                rents = rentRepository.getByRoomId(roomId);
+            }
             return Response.status(Response.Status.OK).entity(rents).build();
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND).build();

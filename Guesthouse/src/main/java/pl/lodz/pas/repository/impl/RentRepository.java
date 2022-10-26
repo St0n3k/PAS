@@ -1,11 +1,13 @@
 package pl.lodz.pas.repository.impl;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.hibernate.StaleObjectStateException;
@@ -27,10 +29,9 @@ public class RentRepository implements Repository<Rent> {
             Room room = em.find(Room.class, rent.getRoom().getId());
 
             em.lock(room, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-            boolean isColliding = isColliding(
-                rent.getBeginTime(),
-                rent.getEndTime(),
-                rent.getRoom().getRoomNumber());
+            boolean isColliding = isColliding(rent.getBeginTime(),
+                                              rent.getEndTime(),
+                                              rent.getRoom().getRoomNumber());
 
             if (isColliding) {
                 return null;
@@ -74,7 +75,7 @@ public class RentRepository implements Repository<Rent> {
         try {
             return em.createNamedQuery("Rent.getAll", Rent.class).getResultList();
         } catch (Exception e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -106,12 +107,11 @@ public class RentRepository implements Repository<Rent> {
 
     public boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
         try {
-            List<Rent> rentsColliding =
-                em.createNamedQuery("Rent.getRentsColliding", Rent.class)
-                  .setParameter("beginDate", beginDate)
-                  .setParameter("endDate", endDate)
-                  .setParameter("roomNumber", roomNumber)
-                  .getResultList();
+            List<Rent> rentsColliding = em.createNamedQuery("Rent.getRentsColliding", Rent.class)
+                                          .setParameter("beginDate", beginDate)
+                                          .setParameter("endDate", endDate)
+                                          .setParameter("roomNumber", roomNumber)
+                                          .getResultList();
 
             return !rentsColliding.isEmpty();
         } catch (Exception e) {
@@ -135,16 +135,22 @@ public class RentRepository implements Repository<Rent> {
         } catch (Exception e) {
             return false;
         }
-        //        try {
-        //            Rent r = em.find(Rent.class, rentId);
-        //            System.out.println(r);
-        //            if (r == null) {
-        //                return false;
-        //            }
-        //            em.remove(r);
-        //            return true;
-        //        } catch (Exception e) {
-        //            return false;
-        //        }
+    }
+
+    /**
+     * @param roomId ID of the room.
+     * @param past Flag indicating, whether past or active rents are returned.
+     * @return Past rents if past is false, active (future) rents otherwise.
+     */
+    public List<Rent> findByRoomAndStatus(Long roomId, boolean past) {
+        TypedQuery<Rent> query;
+        if (past) {
+            query = em.createNamedQuery("Rent.getPastRentsByRoom", Rent.class);
+        } else {
+            query = em.createNamedQuery("Rent.getActiveRentsByRoom", Rent.class);
+        }
+
+        return query.setParameter("id", roomId)
+                    .getResultList();
     }
 }
