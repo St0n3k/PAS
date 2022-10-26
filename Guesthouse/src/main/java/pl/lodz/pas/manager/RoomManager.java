@@ -28,6 +28,18 @@ public class RoomManager {
     @Inject
     private RentRepository rentRepository;
 
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addRoom(@Valid Room room) {
+        Room result = roomRepository.add(room);
+
+        if (result == null) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+        return Response.status(Response.Status.CREATED).entity(result).build();
+    }
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +51,22 @@ public class RoomManager {
         }
 
         return Response.status(Response.Status.OK).entity(room).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
+        if (number == null) {
+            List<Room> rooms = roomRepository.getAll();
+            return Response.status(Response.Status.OK).entity(rooms).build();
+        } else {
+            try {
+                Room room = roomRepository.getByRoomNumber(number);
+                return Response.status(Response.Status.OK).entity(room).build();
+            } catch (NotFoundException e) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
     }
 
     @GET
@@ -59,23 +87,11 @@ public class RoomManager {
         }
     }
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addRoom(@Valid Room room) {
-        Room result = roomRepository.add(room);
-
-        if (result == null) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
-        return Response.status(Response.Status.CREATED).entity(result).build();
-    }
-
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoom(@PathParam("id") Long id, UpdateRoomDTO updateRoomDTO) {
+    public Response updateRoom(@PathParam("id") Long id, @Valid UpdateRoomDTO updateRoomDTO) {
         Room existingRoom = roomRepository.getById(id);
 
         if (existingRoom == null) {
@@ -116,22 +132,6 @@ public class RoomManager {
 
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NO_CONTENT).build();
-        }
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
-        if (number == null) {
-            List<Room> rooms = roomRepository.getAll();
-            return Response.status(Response.Status.OK).entity(rooms).build();
-        } else {
-            try {
-                Room room = roomRepository.getByRoomNumber(number);
-                return Response.status(Response.Status.OK).entity(room).build();
-            } catch (NotFoundException e) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
         }
     }
 }
