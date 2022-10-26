@@ -1,8 +1,5 @@
 package pl.lodz.pas.repository.impl;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -14,6 +11,10 @@ import org.hibernate.StaleObjectStateException;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -30,8 +31,8 @@ public class RentRepository implements Repository<Rent> {
 
             em.lock(room, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
             boolean isColliding = isColliding(rent.getBeginTime(),
-                                              rent.getEndTime(),
-                                              rent.getRoom().getRoomNumber());
+                    rent.getEndTime(),
+                    rent.getRoom().getRoomNumber());
 
             if (isColliding) {
                 return null;
@@ -90,8 +91,18 @@ public class RentRepository implements Repository<Rent> {
     public List<Rent> getByClientUsername(String username) {
         try {
             return em.createNamedQuery("Rent.getByClientUsername", Rent.class)
-                     .setParameter("username", username)
-                     .getResultList();
+                    .setParameter("username", username)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new NotFoundException();
+        }
+    }
+
+    public List<Rent> getByClientId(Long clientId) {
+        try {
+            return em.createNamedQuery("Rent.getByClientId", Rent.class)
+                    .setParameter("id", clientId)
+                    .getResultList();
         } catch (Exception e) {
             throw new NotFoundException();
         }
@@ -108,10 +119,10 @@ public class RentRepository implements Repository<Rent> {
     private boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
         try {
             List<Rent> rentsColliding = em.createNamedQuery("Rent.getRentsColliding", Rent.class)
-                                          .setParameter("beginDate", beginDate)
-                                          .setParameter("endDate", endDate)
-                                          .setParameter("roomNumber", roomNumber)
-                                          .getResultList();
+                    .setParameter("beginDate", beginDate)
+                    .setParameter("endDate", endDate)
+                    .setParameter("roomNumber", roomNumber)
+                    .getResultList();
 
             return !rentsColliding.isEmpty();
         } catch (Exception e) {
@@ -129,8 +140,8 @@ public class RentRepository implements Repository<Rent> {
     public boolean removeById(Long rentId) {
         try {
             int deletedCount = em.createNamedQuery("Rent.removeById")
-                                 .setParameter("id", rentId)
-                                 .executeUpdate();
+                    .setParameter("id", rentId)
+                    .executeUpdate();
             return deletedCount == 1;
         } catch (Exception e) {
             return false;
@@ -139,7 +150,7 @@ public class RentRepository implements Repository<Rent> {
 
     /**
      * @param roomId ID of the room.
-     * @param past Flag indicating, whether past or active rents are returned.
+     * @param past   Flag indicating, whether past or active rents are returned.
      * @return Past rents if past is false, active (future) rents otherwise.
      */
     public List<Rent> findByRoomAndStatus(Long roomId, boolean past) {
@@ -151,6 +162,18 @@ public class RentRepository implements Repository<Rent> {
         }
 
         return query.setParameter("id", roomId)
-                    .getResultList();
+                .getResultList();
+    }
+
+    public List<Rent> findByClientAndStatus(Long clientId, boolean past) {
+        TypedQuery<pl.lodz.pas.model.Rent> query;
+        if (past) {
+            query = em.createNamedQuery("Rent.getPastRentsByClient", pl.lodz.pas.model.Rent.class);
+        } else {
+            query = em.createNamedQuery("Rent.getActiveRentsByClient", pl.lodz.pas.model.Rent.class);
+        }
+
+        return query.setParameter("id", clientId)
+                .getResultList();
     }
 }

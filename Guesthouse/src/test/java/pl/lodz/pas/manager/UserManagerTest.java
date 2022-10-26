@@ -130,4 +130,26 @@ class UserManagerTest {
                 .assertThat().body("active", equalTo(false));
     }
 
+    @Test
+    public void shouldFailWhenCreatingUserWithSameUsernameWithStatusCode409() {
+        RegisterClientDTO clientDTO = new RegisterClientDTO("test1234", "Kamil", "Graczyk",
+                "777999", "Łódź", "Piotrkowska", 20);
+        JSONObject json = new JSONObject(clientDTO);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/users/clients")
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json.toString())
+                .when()
+                .post("/api/users/clients")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
 }

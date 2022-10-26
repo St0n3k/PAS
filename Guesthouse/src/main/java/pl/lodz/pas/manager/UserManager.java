@@ -2,6 +2,7 @@ package pl.lodz.pas.manager;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -24,8 +25,6 @@ import pl.lodz.pas.repository.impl.UserRepository;
 import java.util.List;
 import java.util.Objects;
 
-//TODO activate/deactive user endpoint
-//TODO implement endpoint for archived/active rents for a user
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +44,7 @@ public class UserManager {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerClient(RegisterClientDTO rcDTO) {
+    public Response registerClient(@Valid RegisterClientDTO rcDTO) {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         ClientType defaultClientType = clientTypeRepository.getByType(Default.class);
         Client client = new Client(
@@ -69,7 +68,7 @@ public class UserManager {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     //This endpoint will be available only for admin
-    public Response registerEmployee(RegisterEmployeeDTO reDTO) {
+    public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) {
         Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
 
         Employee addedEmployee = (Employee) userRepository.add(employee);
@@ -115,11 +114,29 @@ public class UserManager {
 
     }
 
+    @GET
+    @Path("/{username}/rents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRentsOfClient(@PathParam("username") Long clientId,
+                                        @QueryParam("past") Boolean past) {
+        try {
+            List<Rent> rents;
+            if (past != null) { // find past or active rents
+                rents = rentRepository.findByRoomAndStatus(clientId, past);
+            } else { // find all rents
+                rents = rentRepository.getByClientId(clientId);
+            }
+            return Response.status(Response.Status.OK).entity(rents).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("id") Long id, UpdateUserDTO dto) {
+    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto) {
         User user = userRepository.getById(id);
 
         if (user == null) {
@@ -185,19 +202,4 @@ public class UserManager {
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
-    @GET
-    @Path("/{username}/rents")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfClient(@PathParam("username") String username) {
-        List<Rent> rents = rentRepository.getByClientUsername(username);
-        return Response.status(Response.Status.OK).entity(rents).build();
-    }
-
-
-    //    public Client changeTypeTo(Class type, Client client) {
-    //        client.setClientType(clientTypeRepository.getByType(type));
-    //
-    //        client = updateClient(client);
-    //        return client;
-    //    }
 }

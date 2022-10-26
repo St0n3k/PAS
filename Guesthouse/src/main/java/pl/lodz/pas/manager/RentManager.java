@@ -3,7 +3,16 @@ package pl.lodz.pas.manager;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
@@ -33,43 +42,6 @@ public class RentManager {
     private RoomRepository roomRepository;
     @Inject
     private RentRepository rentRepository;
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRentById(@PathParam("id") Long id) {
-        Rent rent = rentRepository.getById(id);
-
-        if (rent == null) {
-            throw new NotFoundException();
-        }
-
-        return Response.status(Response.Status.OK).entity(rent).build();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRents() {
-        List<Rent> list = rentRepository.getAll();
-
-        return Response.status(Response.Status.OK).entity(list).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response removeRent(@PathParam("id") Long rentId) {
-        Rent rent = rentRepository.getById(rentId);
-        if (rent == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-        LocalDateTime now = LocalDateTime.now();
-        if (rent.getBeginTime().isAfter(now)) {
-            rentRepository.removeById(rentId);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-        return Response.status(Response.Status.CONFLICT).build();
-
-    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +73,28 @@ public class RentManager {
         }
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRentById(@PathParam("id") Long id) {
+        Rent rent = rentRepository.getById(id);
+
+        if (rent == null) {
+            throw new NotFoundException();
+        }
+
+        return Response.status(Response.Status.OK).entity(rent).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllRents() {
+        List<Rent> list = rentRepository.getAll();
+
+        return Response.status(Response.Status.OK).entity(list).build();
+    }
+
+
     @PATCH
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
@@ -126,6 +120,22 @@ public class RentManager {
         Rent updatedRent = rentRepository.update(rentToModify);
 
         return Response.status(Response.Status.OK).entity(updatedRent).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response removeRent(@PathParam("id") Long rentId) {
+        Rent rent = rentRepository.getById(rentId);
+        if (rent == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (rent.getBeginTime().isAfter(now)) {
+            rentRepository.removeById(rentId);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        return Response.status(Response.Status.CONFLICT).build();
+
     }
 
     private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
