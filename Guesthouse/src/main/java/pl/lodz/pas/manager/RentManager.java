@@ -29,8 +29,6 @@ import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
 
-//TODO removing a rent should check if the rent is ended
-
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
@@ -68,9 +66,17 @@ public class RentManager {
     @DELETE
     @Path("/{id}")
     public Response removeRent(@PathParam("id") Long rentId) {
-        rentRepository.removeById(rentId);
+        Rent rent = rentRepository.getById(rentId);
+        if(rent == null){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if(rent.getBeginTime().isAfter(now)){
+            rentRepository.removeById(rentId);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        return Response.status(Response.Status.CONFLICT).build();
 
-        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @POST
