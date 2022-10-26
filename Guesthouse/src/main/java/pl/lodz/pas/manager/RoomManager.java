@@ -120,8 +120,14 @@ public class RoomManager {
     public Response removeRoom(@QueryParam("number") int number) {
         try {
             Room room = roomRepository.getByRoomNumber(number);
-            roomRepository.remove(room);
-            return Response.status(Response.Status.NO_CONTENT).build();
+            List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
+            if(rentsForRoom.isEmpty()){
+                roomRepository.remove(room);
+                return Response.status(Response.Status.NO_CONTENT).build();
+            } else {
+                return Response.status(Response.Status.CONFLICT).build();
+            }
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }

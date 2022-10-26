@@ -9,8 +9,6 @@ import jakarta.ws.rs.NotFoundException;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
 
-//TODO removing a room should check if there are no rents for this room
-
 @ApplicationScoped
 @Transactional
 public class RoomRepository implements Repository<Room> {
@@ -28,6 +26,7 @@ public class RoomRepository implements Repository<Room> {
     @Override
     public boolean remove(Room room) {
         try {
+
             em.remove(em.merge(room));
             return true;
         } catch (Exception e) {

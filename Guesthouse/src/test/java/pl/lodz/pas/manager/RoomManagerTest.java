@@ -5,10 +5,15 @@ import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.ResponseBody;
 import jakarta.ws.rs.core.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import pl.lodz.pas.dto.CreateRentDTO;
+import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
+
+import java.time.LocalDateTime;
 
 class RoomManagerTest {
 
@@ -105,4 +110,56 @@ class RoomManagerTest {
                .body("size()", equalTo(2));
     }
 
+    @Test
+    void shouldRemoveRoomWithStatusCode204() {
+        Room room = new Room(1234, 200.0, 4);
+        JSONObject json = new JSONObject(room);
+        given()
+                .body(json.toString())
+                .contentType(ContentType.JSON)
+                .when().post("/api/rooms")
+                .then()
+                .statusCode(201)
+                .contentType(ContentType.JSON);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when().delete("/api/rooms?number=1234")
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    void shouldFailRemoveRoomWhenThereAreActiveRentsForItWithStatusCode409() {
+        Room room = new Room(4321, 200.0, 4);
+        JSONObject json = new JSONObject(room);
+
+        ResponseBody responseBody = given()
+                .body(json.toString())
+                .contentType(ContentType.JSON)
+                .when().post("/api/rooms").getBody();
+
+        Room addedRoom = responseBody.as(Room.class);
+
+        LocalDateTime beginDate = LocalDateTime.of(2025, 11, 22, 11, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2025, 11, 25, 10, 0, 0);
+
+        CreateRentDTO dto = new CreateRentDTO(beginDate, endDate, true, 2L, addedRoom.getId());
+        JSONObject body = new JSONObject(dto);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .statusCode(201);
+
+
+        given()
+                .contentType(ContentType.JSON)
+                .when().delete("/api/rooms?number=4321")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
 }
