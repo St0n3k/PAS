@@ -83,6 +83,10 @@ public class RoomManager {
     public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
                                       @QueryParam("past") Boolean past) {
         try {
+            if (!roomRepository.existsById(roomId)) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
             List<Rent> rents;
             if (past != null) { // find past or active rents
                 rents = rentRepository.findByRoomAndStatus(roomId, past);

@@ -67,10 +67,9 @@ public class RoomRepository implements Repository<Room> {
 
     public Room getByRoomNumber(int roomNumber) {
         try {
-            List<Room> result = em
-                    .createNamedQuery("Room.getByRoomNumber", Room.class)
-                    .setParameter("roomNumber", roomNumber)
-                    .getResultList();
+            List<Room> result = em.createNamedQuery("Room.getByRoomNumber", Room.class)
+                                  .setParameter("roomNumber", roomNumber)
+                                  .getResultList();
 
             if (result.isEmpty()) {
                 return null;
@@ -80,6 +79,11 @@ public class RoomRepository implements Repository<Room> {
         } catch (Exception e) {
             return null;
         }
+    }
 
+    public boolean existsById(Long id) {
+        return em.createNamedQuery("Room.existsById", Boolean.class)
+                 .setParameter("id", id)
+                 .getSingleResult();
     }
 }

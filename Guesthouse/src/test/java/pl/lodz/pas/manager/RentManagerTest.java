@@ -2,6 +2,7 @@ package pl.lodz.pas.manager;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -211,7 +212,7 @@ class RentManagerTest {
                                   .then()
                                   .assertThat().statusCode(Status.OK.getStatusCode())
                                   .assertThat().contentType(ContentType.JSON)
-                                  .extract().response(); // TODO check if can be simplified
+                                  .extract().response();
         List<String> jsonResponse = response.jsonPath().getList("$");
         assertEquals(1, jsonResponse.size());
     }
@@ -225,6 +226,7 @@ class RentManagerTest {
         AtomicInteger numberFinished = new AtomicInteger();
 
         LocalDateTime localDateTime = LocalDateTime.now();
+
         for (int i = 0; i < threadNumber; i++) {
             int finalI = i;
             threads.add(new Thread(() -> {
@@ -234,8 +236,8 @@ class RentManagerTest {
                     throw new RuntimeException(e);
                 }
                 CreateRentDTO dto = new CreateRentDTO(localDateTime.plusDays(10000 + finalI),
-                                                      localDateTime.plusDays(10000 + finalI + 2).minusHours(1), false,
-                                                      2L, 5L);
+                                                      localDateTime.plusDays(10000 + finalI + 2).minusHours(1),
+                                                      false, 2L, 5L);
                 JSONObject json = new JSONObject(dto);
 
                 given().contentType(ContentType.JSON)
@@ -251,12 +253,27 @@ class RentManagerTest {
         while (numberFinished.get() != threadNumber) {
         }
 
-        when().get("/api/rooms/958/rents") // TODO this is not correct
+        when().get("/api/rooms/5/rents")
               .then()
-              .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().contentType(ContentType.JSON);
+              .statusCode(Status.OK.getStatusCode())
+              .contentType(ContentType.JSON)
+              .body("size()", equalTo(2));
     }
 
+    @Test
+    void shouldFailWithStatusCode4040WhenGettingRentsOfNonExistentRoom() {
+        when().get("/api/rooms/12345/rents")
+              .then()
+              .statusCode(Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void shouldGetEmptyArrayWithStatusCode200() {
+        when().get("/api/rooms/8/rents")
+              .then()
+              .statusCode(Status.OK.getStatusCode())
+              .body("$", empty());
+    }
 
     @Test
     void shouldUpdateRentBoardAndRecalculateRentCost() {

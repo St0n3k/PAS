@@ -1,6 +1,10 @@
 package pl.lodz.pas.model.user;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +16,7 @@ import pl.lodz.pas.model.user.ClientTypes.ClientType;
 @Data
 @NoArgsConstructor
 public class Client extends User {
-    
+
     @NotNull
     @Column(name = "first_name")
     private String firstName;
