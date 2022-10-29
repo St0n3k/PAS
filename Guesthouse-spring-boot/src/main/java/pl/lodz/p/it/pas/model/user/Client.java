@@ -1,16 +1,13 @@
 package pl.lodz.p.it.pas.model.user;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.pas.common.MyValidator;
 import pl.lodz.p.it.pas.model.Address;
 import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data

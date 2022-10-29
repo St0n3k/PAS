@@ -14,24 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-//
-//import java.time.LocalDateTime;
-//import java.util.Collections;
-//import java.util.List;
-//import jakarta.enterprise.context.ApplicationScoped;
-//import jakarta.persistence.EntityManager;
-//import jakarta.persistence.LockModeType;
-//import jakarta.persistence.PersistenceContext;
-//import jakarta.persistence.TypedQuery;
-//import jakarta.transaction.Transactional;
-//import jakarta.ws.rs.NotFoundException;
-//import org.hibernate.StaleObjectStateException;
-//import pl.lodz.pas.model.Rent;
-//import pl.lodz.pas.model.Room;
-//import pl.lodz.pas.repository.Repository;
-//
-//@ApplicationScoped
-
 @Repository
 @Transactional
 public class RentRepository implements CustomRepository<Rent> {
@@ -61,7 +43,6 @@ public class RentRepository implements CustomRepository<Rent> {
         em.persist(rent);
 
         return rent;
-
     }
 
     @Override

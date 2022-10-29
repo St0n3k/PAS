@@ -1,10 +1,11 @@
 package pl.lodz.p.it.pas.model.user;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data

@@ -1,13 +1,13 @@
 package pl.lodz.p.it.pas.model;
 
-import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 import lombok.Data;
-import org.springframework.data.annotation.Version;
+
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 @MappedSuperclass
 @Data
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity {
 
     @Version
     private long version;

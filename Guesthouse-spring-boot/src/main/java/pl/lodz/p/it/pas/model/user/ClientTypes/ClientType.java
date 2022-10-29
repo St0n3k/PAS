@@ -1,22 +1,21 @@
 package pl.lodz.p.it.pas.model.user.ClientTypes;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import pl.lodz.p.it.pas.model.AbstractEntity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "client_type")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
+@NamedQueries({
+    @NamedQuery(name = "ClientType.getAll",
+                query = "SELECT ct FROM ClientType ct"),
+    @NamedQuery(name = "ClientType.getByType",
+                query = "SELECT ct FROM ClientType ct WHERE ct.name LIKE :type")
+})
 @Data
 public abstract class ClientType extends AbstractEntity {
 

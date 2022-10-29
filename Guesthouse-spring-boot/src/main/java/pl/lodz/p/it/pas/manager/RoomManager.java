@@ -1,13 +1,8 @@
 package pl.lodz.p.it.pas.manager;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
@@ -16,6 +11,10 @@ import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.RoomRepository;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rooms")

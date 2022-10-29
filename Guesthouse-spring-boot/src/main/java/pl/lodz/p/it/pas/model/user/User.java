@@ -1,23 +1,29 @@
 package pl.lodz.p.it.pas.model.user;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import pl.lodz.p.it.pas.model.AbstractEntity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
+@NamedQueries({
+    @NamedQuery(name = "User.getAll",
+                query = "SELECT u FROM User u"),
+    @NamedQuery(name = "User.getByUserId",
+                query = "SELECT u FROM User u WHERE u.id = :userId"),
+    @NamedQuery(name = "User.getByUsername",
+                query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "User.matchByUsername",
+                query = "SELECT u FROM User u WHERE u.username LIKE :username")
+})
+
 @Data
 @NoArgsConstructor
 public abstract class User extends AbstractEntity {

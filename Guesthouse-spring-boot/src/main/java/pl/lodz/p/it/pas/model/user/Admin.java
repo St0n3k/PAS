@@ -1,7 +1,8 @@
 package pl.lodz.p.it.pas.model.user;
 
-import javax.persistence.Entity;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
 
 @Entity
 @NoArgsConstructor
