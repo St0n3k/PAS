@@ -21,7 +21,13 @@ public class RentRepository implements Repository<Rent> {
     @PersistenceContext
     EntityManager em;
 
-
+    /**
+     * Synchronized method which saves Rent object to database
+     * if the dates do not collide with other rents for the same room
+     *
+     * @param rent
+     * @return
+     */
     @Override
     public synchronized Rent add(Rent rent) {
 
@@ -82,6 +88,14 @@ public class RentRepository implements Repository<Rent> {
         return Optional.ofNullable(em.merge(rent));
     }
 
+    /**
+     * Method to check if given period of time is colliding with periods of existing rents for given room
+     *
+     * @param beginDate  begin date of currently created rent
+     * @param endDate    end date of currently created rent
+     * @param roomNumber number of the room
+     * @return false if new rent can be created for given period of time
+     */
     private boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
         List<Rent> rentsColliding = em.createNamedQuery("Rent.getRentsColliding", Rent.class)
                 .setParameter("beginDate", beginDate)
@@ -126,6 +140,11 @@ public class RentRepository implements Repository<Rent> {
                 .getResultList();
     }
 
+    /**
+     * @param clientId ID of the client.
+     * @param past     Flag indicating, whether past or active rents are returned.
+     * @return Past rents if past is false, active (future) rents otherwise.
+     */
     public List<Rent> findByClientAndStatus(Long clientId, boolean past) {
         TypedQuery<Rent> query;
         if (past) {

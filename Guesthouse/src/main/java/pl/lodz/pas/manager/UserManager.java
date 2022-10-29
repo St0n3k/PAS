@@ -41,6 +41,15 @@ public class UserManager {
     private ClientTypeRepository clientTypeRepository;
 
 
+    /**
+     * Endpoint which is used to register new client,
+     * username of client has to be unique, otherwise exception will be thrown
+     *
+     * @param rcDTO object containing information of client
+     * @return status code
+     * 201(CREATED) + saved client if registration was successful
+     * 409(CONFLICT) if registration attempt was unsuccessful (could be due to not unique username)
+     */
     @POST
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
@@ -68,11 +77,20 @@ public class UserManager {
         return Response.status(Response.Status.CREATED).entity(client).build();
     }
 
+
+    /**
+     * Endpoint which is used to register new employee,
+     * username of employee has to be unique, otherwise exception will be thrown
+     *
+     * @param reDTO object containing information of client
+     * @return status code
+     * 201(CREATED) + saved employee if registration was successful
+     * 409(CONFLICT) if registration attempt was unsuccessful (could be due to not unique username)
+     */
     @POST
     @Path("/employees")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //This endpoint will be available only for admin
     public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) {
         Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
         Employee addedEmployee = (Employee) userRepository.add(employee);
@@ -117,10 +135,18 @@ public class UserManager {
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
+
+    /**
+     * Endpoint used for finding all rents of client
+     *
+     * @param clientId id of the client
+     * @param past     flag indicating if the result will be list of past rents or list of future rents
+     * @return
+     */
     @GET
-    @Path("/{username}/rents")
+    @Path("/{id}/rents")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfClient(@PathParam("username") Long clientId,
+    public Response getAllRentsOfClient(@PathParam("id") Long clientId,
                                         @QueryParam("past") Boolean past) {
         if (userRepository.getById(clientId).isEmpty()) {
             throw new NotFoundException();
@@ -134,6 +160,16 @@ public class UserManager {
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
+
+    /**
+     * Endpoint used for updating given user
+     *
+     * @param id  id of the user
+     * @param dto object containing new properties of user
+     * @return status code
+     * 200(OK) if update was successful
+     * 409(CONFLICT) if update was unsuccessful (could be due to new username not being unique)
+     */
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,6 +182,7 @@ public class UserManager {
         }
         User user = optionalUser.get();
 
+        String username = dto.getUsername();
         String firstName = dto.getFirstName();
         String lastName = dto.getLastName();
         String personalId = dto.getPersonalId();
@@ -153,10 +190,17 @@ public class UserManager {
         String street = dto.getStreet();
         Integer number = dto.getNumber();
 
+        if (username != null && userRepository.getUserByUsername(username).isPresent()) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+
         if (Objects.equals(user.getRole(), "EMPLOYEE")) {
             Employee employee = (Employee) user;
+
+            employee.setUsername(username == null ? employee.getUsername() : username);
             employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
             employee.setLastName(lastName == null ? employee.getLastName() : lastName);
+
             optionalUser = userRepository.update(employee);
             if (optionalUser.isEmpty()) {
                 return Response.status(Response.Status.CONFLICT).build();
@@ -167,6 +211,7 @@ public class UserManager {
         if (Objects.equals(user.getRole(), "CLIENT")) {
             Client client = (Client) user;
 
+            client.setUsername(username == null ? client.getUsername() : username);
             client.setFirstName(firstName == null ? client.getFirstName() : firstName);
             client.setLastName(lastName == null ? client.getLastName() : lastName);
             client.setPersonalId(personalId == null ? client.getPersonalId() : personalId);
@@ -185,6 +230,15 @@ public class UserManager {
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
+
+    /**
+     * Endpoint used for activating given user
+     *
+     * @param id id of the user
+     * @return status code
+     * 200(OK) if activation was successful
+     * 409(CONFLICT) if activation was unsuccessful
+     */
     @PUT
     @Path("/{id}/activate")
     @Produces(MediaType.APPLICATION_JSON)
@@ -205,6 +259,15 @@ public class UserManager {
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
+
+    /**
+     * Endpoint used for deactivating given user
+     *
+     * @param id id of the user
+     * @return status code
+     * 200(OK) if deactivation was successful
+     * 409(CONFLICT) if deactivation was unsuccessful
+     */
     @PUT
     @Path("/{id}/deactivate")
     @Produces(MediaType.APPLICATION_JSON)

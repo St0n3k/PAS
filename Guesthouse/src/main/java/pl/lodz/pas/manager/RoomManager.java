@@ -29,6 +29,15 @@ public class RoomManager {
     @Inject
     private RentRepository rentRepository;
 
+
+    /**
+     * Endpoint which is used to save room to database, room number has to be unique, otherwise method will throw exception
+     *
+     * @param room room to be saved
+     * @return status code
+     * 201(CREATED) if room was successfully saved,
+     * 409(CONFLICT) if room was not saved due to constraints(room id / room number)
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -53,6 +62,17 @@ public class RoomManager {
         return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
     }
 
+
+    /**
+     * Endpoint which is used to get all saved rooms if param number is not set,
+     * otherwise it will return room with given room number
+     *
+     * @param number room number to be found in database
+     * @return status code
+     * 200(OK) and list of all rooms
+     * 200(OK) if number parameter was set and room was found
+     * 404(NOT_FOUND) if number parameter was set, but room was not found
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
@@ -68,6 +88,15 @@ public class RoomManager {
         }
     }
 
+
+    /**
+     * Endpoint which returns list of rents of given room
+     *
+     * @param roomId room id
+     * @param past   flag which indicates if the result will be list of past rents or future rents.
+     *               If this parameter is not set, the result of the method will be list of all rents of given room
+     * @return list of rents that meet given criteria
+     */
     @GET
     @Path("/{roomId}/rents")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,6 +119,13 @@ public class RoomManager {
         }
     }
 
+
+    /**
+     * Endpoint which is used to update room properties
+     *
+     * @param id            id of room to be updated
+     * @param updateRoomDTO object containing new properties of existing room
+     */
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -124,6 +160,14 @@ public class RoomManager {
     }
 
 
+    /**
+     * Endpoint for removing room from database. Room can be removed only if there are no current or future rents
+     *
+     * @param id id of the room to be removed
+     * @return status code
+     * 204(NO_CONTENT) if room was removed or was not found
+     * 409(CONFLICT) if there are current or future rents for room with given id
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

@@ -17,6 +17,12 @@ public class UserRepository implements Repository<User> {
     @PersistenceContext
     EntityManager em;
 
+    /**
+     * Method which saves user to database, username of user has to be unique, otherwise exception will be thrown
+     *
+     * @param user user to be saved
+     * @return saved user
+     */
     @Override
     public User add(User user) {
         em.persist(user);
@@ -49,9 +55,13 @@ public class UserRepository implements Repository<User> {
         return Optional.ofNullable(result.get(0));
     }
 
-    public List<User> matchUserByUsername(String username) {
+    /**
+     * @param phrase phrase to be matched among usernames
+     * @return list of users, whose usernames contain given phrase
+     */
+    public List<User> matchUserByUsername(String phrase) {
         return em.createNamedQuery("User.matchByUsername", User.class)
-                .setParameter("username", '%' + username + '%')
+                .setParameter("username", '%' + phrase + '%')
                 .getResultList();
 
     }

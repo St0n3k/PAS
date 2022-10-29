@@ -18,6 +18,12 @@ public class RoomRepository implements Repository<Room> {
     private EntityManager em;
 
 
+    /**
+     * Method which saved room to database, room number has to be unique, otherwise method will throw exception
+     *
+     * @param room room to be saved
+     * @return saved room
+     */
     @Override
     public Room add(Room room) {
         em.persist(room);
@@ -54,6 +60,10 @@ public class RoomRepository implements Repository<Room> {
         return Optional.ofNullable(result.get(0));
     }
 
+    /**
+     * @param id id to be checked among rooms
+     * @return true if a room with given id exists
+     */
     public boolean existsById(Long id) {
         return em.createNamedQuery("Room.existsById", Boolean.class)
                 .setParameter("id", id)
