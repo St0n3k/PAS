@@ -11,15 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRoomDto implements Serializable {
-    @NotNull
     @Min(value = 1)
-    private int roomNumber;
+    private Integer roomNumber;
 
-    @NotNull
     @Min(value = 1)
-    private double price;
+    private Double price;
 
-    @NotNull
     @Min(value = 1)
-    private int size;
+    private Integer size;
 }

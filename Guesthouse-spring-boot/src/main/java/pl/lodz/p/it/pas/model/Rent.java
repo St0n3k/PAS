@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import pl.lodz.p.it.pas.common.MyValidator;
@@ -21,6 +23,35 @@ import pl.lodz.p.it.pas.model.user.Client;
 
 @Entity
 @Data
+@NamedQueries({
+        @NamedQuery(name = "Rent.getAll",
+                query = "SELECT r FROM Rent r"),
+        @NamedQuery(name = "Rent.getByRoomId",
+                query = "SELECT r FROM Rent r WHERE r.room.id = :roomId"),
+        @NamedQuery(name = "Rent.getByClientPersonalId",
+                query = "SELECT r FROM Rent r WHERE r.client.personalId = :personalId"),
+        @NamedQuery(name = "Rent.getRentsColliding",
+                query = """
+                    SELECT r FROM Rent r
+                    WHERE r.room.roomNumber = :roomNumber
+                          AND ((:beginDate BETWEEN r.beginTime AND r.endTime)
+                          OR (:endDate BETWEEN r.beginTime AND r.endTime)
+                          OR (r.beginTime between :beginDate and :endDate)
+                          OR (r.endTime BETWEEN :beginDate AND :endDate))"""),
+        @NamedQuery(name = "Rent.removeById",
+                query = "DELETE FROM Rent r WHERE r.id = :id"),
+        @NamedQuery(name = "Rent.getByClientUsername",
+                query = "SELECT r FROM Rent r WHERE r.client.username = :username"),
+        @NamedQuery(name = "Rent.getByClientId",
+                query = "SELECT r FROM Rent r WHERE r.client.id = :id"),
+        @NamedQuery(name = "Rent.getPastRentsByRoom",
+                query = "SELECT r from Rent r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.room.id = :id"),
+        @NamedQuery(name = "Rent.getActiveRentsByRoom",
+                query = "SELECT r from Rent r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.room.id = :id"),
+        @NamedQuery(name = "Rent.getPastRentsByClient",
+                query = "SELECT r from Rent r WHERE (r.endTime < CURRENT_TIMESTAMP) AND r.client.id = :id"),
+        @NamedQuery(name = "Rent.getActiveRentsByClient",
+                query = "SELECT r from Rent r WHERE (r.endTime > CURRENT_TIMESTAMP) AND r.client.id = :id")})
 @NoArgsConstructor
 public class Rent extends AbstractEntity {
 

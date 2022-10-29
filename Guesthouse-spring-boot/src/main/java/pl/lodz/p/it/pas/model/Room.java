@@ -8,9 +8,19 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import pl.lodz.p.it.pas.common.MyValidator;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Room.getAll",
+                query = "SELECT r FROM Room r"),
+        @NamedQuery(name = "Room.getByRoomNumber",
+                query = "SELECT r FROM Room r WHERE r.roomNumber = :roomNumber"),
+        @NamedQuery(name = "Room.existsById",
+                query = "select (count(r) > 0) from Room r where r.id = :id")
+})
 @Data
 @NoArgsConstructor
 public class Room extends AbstractEntity {
