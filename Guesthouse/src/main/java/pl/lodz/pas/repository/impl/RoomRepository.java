@@ -1,14 +1,14 @@
 package pl.lodz.pas.repository.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.NotFoundException;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -20,70 +20,43 @@ public class RoomRepository implements Repository<Room> {
 
     @Override
     public Room add(Room room) {
-        try {
-            em.persist(room);
-        } catch (Exception e) {
-            return null;
-        }
+        em.persist(room);
         return room;
     }
 
     @Override
-    public boolean remove(Room room) {
-        try {
-            em.remove(em.merge(room));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void remove(Room room) {
+        em.remove(em.merge(room));
     }
 
     @Override
-    public Room getById(Long id) {
-        try {
-            return em.find(Room.class, id);
-        } catch (Exception e) {
-            throw new NotFoundException();
-        }
+    public Optional<Room> getById(Long id) {
+        return Optional.ofNullable(em.find(Room.class, id));
     }
 
     @Override
-    public Room update(Room room) {
-        try {
-            return em.merge(room);
-        } catch (Exception e) {
-            throw new NotFoundException();
-        }
+    public Optional<Room> update(Room room) {
+        return Optional.ofNullable(em.merge(room));
     }
 
     @Override
     public List<Room> getAll() {
-        try {
-            return em.createNamedQuery("Room.getAll", Room.class).getResultList();
-        } catch (Exception e) {
-            return new ArrayList<>();
-        }
+        return em.createNamedQuery("Room.getAll", Room.class).getResultList();
     }
 
-    public Room getByRoomNumber(int roomNumber) {
-        try {
-            List<Room> result = em.createNamedQuery("Room.getByRoomNumber", Room.class)
-                                  .setParameter("roomNumber", roomNumber)
-                                  .getResultList();
-
-            if (result.isEmpty()) {
-                return null;
-            } else {
-                return result.get(0);
-            }
-        } catch (Exception e) {
-            return null;
+    public Optional<Room> getByRoomNumber(int roomNumber) {
+        List<Room> result = em.createNamedQuery("Room.getByRoomNumber", Room.class)
+                .setParameter("roomNumber", roomNumber)
+                .getResultList();
+        if (result.isEmpty()) {
+            return Optional.empty();
         }
+        return Optional.ofNullable(result.get(0));
     }
 
     public boolean existsById(Long id) {
         return em.createNamedQuery("Room.existsById", Boolean.class)
-                 .setParameter("id", id)
-                 .getSingleResult();
+                .setParameter("id", id)
+                .getSingleResult();
     }
 }

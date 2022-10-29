@@ -1,12 +1,14 @@
 package pl.lodz.pas.repository.impl;
 
-import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -17,86 +19,49 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public User add(User user) {
-        try {
-            em.persist(user);
-            return user;
-        } catch (Exception e) {
-            return null;
-        }
+        em.persist(user);
+        return user;
     }
 
     @Override
-    public boolean remove(User user) {
-        try {
-            em.remove(em.merge(user));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void remove(User user) {
+        em.remove(em.merge(user));
     }
 
     @Override
-    public User getById(Long id) {
-        try {
-            return em.find(User.class, id);
-        } catch (Exception e) {
-            return null;
-        }
+    public Optional<User> getById(Long id) {
+        return Optional.ofNullable(em.find(User.class, id));
     }
 
     @Override
     public List<User> getAll() {
-        try {
-            return em.createNamedQuery("User.getAll", User.class).getResultList();
-        } catch (Exception e) {
-            return null;
-        }
+        return em.createNamedQuery("User.getAll", User.class).getResultList();
     }
 
-    public User getUserByUsername(String username) {
-        try {
-            List<User> result = em.createNamedQuery("User.getByUsername", User.class)
-                                  .setParameter("username", username)
-                                  .getResultList();
-            if (result.isEmpty()) {
-                return null;
-            } else {
-                return result.get(0);
-            }
-        } catch (Exception e) {
-            return null;
+    public Optional<User> getUserByUsername(String username) {
+        List<User> result = em
+                .createNamedQuery("User.getByUsername", User.class)
+                .setParameter("username", username)
+                .getResultList();
+        if (result.isEmpty()) {
+            return Optional.empty();
         }
+        return Optional.ofNullable(result.get(0));
     }
 
     public List<User> matchUserByUsername(String username) {
-        try {
-            List<User> result = em.createNamedQuery("User.matchByUsername", User.class)
-                                  .setParameter("username", '%' + username + '%')
-                                  .getResultList();
-            if (result.isEmpty()) {
-                return null;
-            } else {
-                return result;
-            }
-        } catch (Exception e) {
-            return null;
-        }
+        return em.createNamedQuery("User.matchByUsername", User.class)
+                .setParameter("username", '%' + username + '%')
+                .getResultList();
+
     }
 
     public List<User> getAllUsers() {
-        try {
-            return em.createNamedQuery("User.getAll", User.class).getResultList();
-        } catch (Exception e) {
-            return null;
-        }
+        return em.createNamedQuery("User.getAll", User.class).getResultList();
     }
 
     @Override
-    public User update(User user) {
-        try {
-            return em.merge(user);
-        } catch (Exception e) {
-            return null;
-        }
+    public Optional<User> update(User user) {
+        return Optional.ofNullable(em.merge(user));
     }
 }

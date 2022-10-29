@@ -14,6 +14,7 @@ import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.model.user.Client;
 import pl.lodz.pas.model.user.ClientTypes.ClientType;
+import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
@@ -21,6 +22,7 @@ import pl.lodz.pas.repository.impl.UserRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,15 +41,19 @@ public class RentManager {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response rentRoom(@Valid CreateRentDTO createRentDTO) {
-        Client client = (Client) userRepository.getById(createRentDTO.getClientId());
-        Room room = roomRepository.getById(createRentDTO.getRoomId());
+        Optional<User> optionalUser = userRepository.getById(createRentDTO.getClientId());
+        Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
 
-        if (client == null) {
+        if (optionalUser.isEmpty()) {
             throw new BadRequestException("Client not found");
         }
-        if (room == null) {
+        if (optionalRoom.isEmpty()) {
             throw new BadRequestException("Room not found");
         }
+
+        Client client = (Client) optionalUser.get();
+        Room room = optionalRoom.get();
+
         if (!client.isActive()) {
             throw new NotAuthorizedException("Client not active");
         }
@@ -57,35 +63,31 @@ public class RentManager {
         Rent rent = new Rent(createRentDTO.getBeginTime(), createRentDTO.getEndTime(), createRentDTO.isBoard(),
                 finalCost, client, room);
 
-        synchronized (rentRepository) {
-            Rent created = rentRepository.add(rent);
+        Rent created = rentRepository.add(rent); //synchronized method
 
-            if (created == null) {
-                return Response.status(Response.Status.CONFLICT).build();
-            }
-
-            return Response.status(Response.Status.CREATED).entity(created).build();
+        if (created == null) {
+            return Response.status(Response.Status.CONFLICT).build();
         }
+
+        return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRentById(@PathParam("id") Long id) {
-        Rent rent = rentRepository.getById(id);
+        Optional<Rent> optionalRent = rentRepository.getById(id);
 
-        if (rent == null) {
+        if (optionalRent.isEmpty()) {
             throw new NotFoundException();
         }
-
-        return Response.status(Response.Status.OK).entity(rent).build();
+        return Response.status(Response.Status.OK).entity(optionalRent.get()).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRents() {
         List<Rent> list = rentRepository.getAll();
-
         return Response.status(Response.Status.OK).entity(list).build();
     }
 
@@ -97,14 +99,16 @@ public class RentManager {
         if (dto == null) {
             throw new BadRequestException();
         }
-        Rent rentToModify = rentRepository.getById(id);
+        Optional<Rent> optionalRent = rentRepository.getById(id);
 
-        if (rentToModify == null) {
+        if (optionalRent.isEmpty()) {
             throw new NotFoundException();
         }
         if (dto.getBoard() == null) {
             throw new BadRequestException();
         }
+        Rent rentToModify = optionalRent.get();
+
         rentToModify.setBoard(dto.getBoard());
         double newCost = calculateTotalCost(rentToModify.getBeginTime(),
                 rentToModify.getEndTime(),
@@ -113,25 +117,28 @@ public class RentManager {
                 rentToModify.getClient().getClientType());
         rentToModify.setFinalCost(newCost);
 
-        Rent updatedRent = rentRepository.update(rentToModify);
-
+        Optional<Rent> updatedRent = rentRepository.update(rentToModify);
+        if (updatedRent.isEmpty()) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
         return Response.status(Response.Status.OK).entity(updatedRent).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response removeRent(@PathParam("id") Long rentId) {
-        Rent rent = rentRepository.getById(rentId);
-        if (rent == null) {
+        Optional<Rent> optionalRent = rentRepository.getById(rentId);
+        if (optionalRent.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
+        Rent rent = optionalRent.get();
+
         LocalDateTime now = LocalDateTime.now();
         if (rent.getBeginTime().isAfter(now)) {
             rentRepository.removeById(rentId);
             return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.status(Response.Status.CONFLICT).build();
-
     }
 
     private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
@@ -142,5 +149,4 @@ public class RentManager {
         }
         return clientType.applyDiscount(Math.ceil(duration.toHours() / 24.0) * costPerDay);
     }
-
 }

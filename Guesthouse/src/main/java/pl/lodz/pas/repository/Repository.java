@@ -1,15 +1,16 @@
 package pl.lodz.pas.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Repository<T> {
     T add(T item);
 
-    boolean remove(T item);
+    void remove(T item);
 
-    T getById(Long id);
+    Optional<T> getById(Long id);
 
-    T update(T item);
+    Optional<T> update(T item);
 
     List<T> getAll();
 }
