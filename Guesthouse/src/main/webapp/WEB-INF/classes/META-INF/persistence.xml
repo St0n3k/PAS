@@ -5,8 +5,7 @@
              version="3.0">
     <persistence-unit name="guesthouse" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>jdbc/guesthouse</jta-data-source>
-        <!-- Need to configure jdbc connection pool and resource in Payara server before running it -->
+        <jta-data-source>java:global/jdbc/guesthouse</jta-data-source>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>

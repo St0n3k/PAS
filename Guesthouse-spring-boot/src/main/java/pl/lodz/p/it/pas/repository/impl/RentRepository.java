@@ -8,7 +8,6 @@ import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.CustomRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
@@ -33,7 +32,6 @@ public class RentRepository implements CustomRepository<Rent> {
             throw new RuntimeException("Room not found");
         }
 
-        em.lock(room.get(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
         boolean isColliding = isColliding(rent.getBeginTime(),
                                           rent.getEndTime(),
                                           rent.getRoom().getRoomNumber());
