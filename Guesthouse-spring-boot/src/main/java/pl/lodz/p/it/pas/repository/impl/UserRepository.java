@@ -2,6 +2,7 @@ package pl.lodz.p.it.pas.repository.impl;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.ApplicationScope;
 import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.p.it.pas.repository.CustomRepository;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 
 @Repository
+@ApplicationScope
 @Transactional
 public class UserRepository implements CustomRepository<User> {
 
@@ -45,9 +47,14 @@ public class UserRepository implements CustomRepository<User> {
     }
 
     public Optional<User> getUserByUsername(String username) {
-        return Optional.ofNullable(em.createNamedQuery("User.getByUsername", User.class)
+        List<User> result = em
+                .createNamedQuery("User.getByUsername", User.class)
                 .setParameter("username", username)
-                .getSingleResult());
+                .getResultList();
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(result.get(0));
     }
 
     public List<User> matchUserByUsername(String username) {

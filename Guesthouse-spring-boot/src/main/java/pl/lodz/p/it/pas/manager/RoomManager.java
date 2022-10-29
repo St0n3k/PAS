@@ -16,8 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+
 @RequestMapping("/rooms")
+@RestController
 public class RoomManager {
 
     @Autowired
@@ -27,8 +28,8 @@ public class RoomManager {
     private RentRepository rentRepository;
 
 
-    @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) throws Exception {
+    @GetMapping("/{id}")
+    public ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
         Optional<Room> room = roomRepository.getById(id);
 
         if (room.isEmpty()) {
@@ -38,7 +39,7 @@ public class RoomManager {
         }
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public ResponseEntity getAllRooms(@Param("number") Integer number) {
         if (number == null) {
             return new ResponseEntity<>(roomRepository.getAll(), HttpStatus.OK);
@@ -52,7 +53,7 @@ public class RoomManager {
 
     }
 
-    @PostMapping(produces = "application/json")
+    @PostMapping
     public ResponseEntity<Room> addRoom(@Valid @RequestBody CreateRoomDto dto) {
         Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
         try {
@@ -64,7 +65,7 @@ public class RoomManager {
 
     }
 
-    @GetMapping(value = "/{id}/rents", produces = "application/json")
+    @GetMapping("/{id}/rents")
     public ResponseEntity<List<Rent>> getAllRentsOfRoom(@PathVariable("id") Long id, @Param("past") Boolean past) {
         try {
             if (!roomRepository.existsById(id)) {
@@ -83,7 +84,7 @@ public class RoomManager {
         }
     }
 
-    @PutMapping(value = "/{id}", produces = "application/json")
+    @PutMapping("/{id}")
     public ResponseEntity<Room> updateRoom(@PathVariable Long id, @Valid @RequestBody UpdateRoomDto dto) {
         Optional<Room> existingRoom = roomRepository.getById(id);
 
@@ -132,3 +133,4 @@ public class RoomManager {
     }
 
 }
+

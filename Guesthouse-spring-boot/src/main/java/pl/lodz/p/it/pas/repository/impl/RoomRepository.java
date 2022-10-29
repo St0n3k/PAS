@@ -2,6 +2,7 @@ package pl.lodz.p.it.pas.repository.impl;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.ApplicationScope;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.CustomRepository;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 
 @Repository
+@ApplicationScope
 @Transactional
 public class RoomRepository implements CustomRepository<Room> {
 

@@ -2,6 +2,7 @@ package pl.lodz.p.it.pas.repository.impl;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.ApplicationScope;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.CustomRepository;
@@ -15,15 +16,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@ApplicationScope
 @Transactional
 public class RentRepository implements CustomRepository<Rent> {
-//
+
     @PersistenceContext
     EntityManager em;
-//
-//
+
+
     @Override
-    public Rent add(Rent rent) {
+    public synchronized Rent add(Rent rent) {
 
         Optional<Room> room = Optional.ofNullable(em.find(Room.class, rent.getRoom().getId()));
 
@@ -110,7 +112,7 @@ public class RentRepository implements CustomRepository<Rent> {
             return false;
         }
 
-        em.remove(rent);
+        em.remove(rent.get());
         return true;
     }
 
