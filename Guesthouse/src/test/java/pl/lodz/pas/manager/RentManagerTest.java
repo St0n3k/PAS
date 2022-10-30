@@ -261,7 +261,7 @@ class RentManagerTest {
     }
 
     @Test
-    void shouldFailWithStatusCode4040WhenGettingRentsOfNonExistentRoom() {
+    void shouldFailWithStatusCode404WhenGettingRentsOfNonExistentRoom() {
         when().get("/api/rooms/12345/rents")
               .then()
               .statusCode(Status.NOT_FOUND.getStatusCode());
