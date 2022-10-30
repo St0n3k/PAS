@@ -1,9 +1,20 @@
 package pl.lodz.pas.manager;
 
+import java.util.List;
+import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
@@ -13,9 +24,6 @@ import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -57,7 +65,7 @@ public class RoomManager {
         Optional<Room> optionalRoom = roomRepository.getById(id);
 
         if (optionalRoom.isEmpty()) {
-            throw new NotFoundException();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
     }
@@ -67,7 +75,6 @@ public class RoomManager {
      * Endpoint which is used to get all saved rooms if param number is not set,
      * otherwise it will return room with given room number
      *
-     * @param number room number to be found in database
      * @return status code
      * 200(OK) and list of all rooms
      * 200(OK) if number parameter was set and room was found
@@ -75,17 +82,20 @@ public class RoomManager {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRoomsOrByNumber(@QueryParam("number") Integer number) {
-        if (number == null) {
-            List<Room> rooms = roomRepository.getAll();
-            return Response.status(Response.Status.OK).entity(rooms).build();
-        } else {
-            Optional<Room> optionalRoom = roomRepository.getByRoomNumber(number);
-            if (optionalRoom.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
+    public Response getAllRooms() {
+        List<Room> rooms = roomRepository.getAll();
+        return Response.status(Response.Status.OK).entity(rooms).build();
+    }
+
+    @GET
+    @Path("/search/{number}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRoomByNumber(@PathParam("number") Integer number) {
+        Optional<Room> optionalRoom = roomRepository.getByRoomNumber(number);
+        if (optionalRoom.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
     }
 
 
@@ -93,8 +103,8 @@ public class RoomManager {
      * Endpoint which returns list of rents of given room
      *
      * @param roomId room id
-     * @param past   flag which indicates if the result will be list of past rents or future rents.
-     *               If this parameter is not set, the result of the method will be list of all rents of given room
+     * @param past flag which indicates if the result will be list of past rents or future rents.
+     * If this parameter is not set, the result of the method will be list of all rents of given room
      * @return list of rents that meet given criteria
      */
     @GET
@@ -123,7 +133,7 @@ public class RoomManager {
     /**
      * Endpoint which is used to update room properties
      *
-     * @param id            id of room to be updated
+     * @param id id of room to be updated
      * @param updateRoomDTO object containing new properties of existing room
      */
     @PUT

@@ -1,9 +1,21 @@
 package pl.lodz.pas.manager;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
@@ -21,10 +33,6 @@ import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -63,11 +71,11 @@ public class UserManager {
         }
 
         Client client = new Client(rcDTO.getUsername(),
-                rcDTO.getFirstName(),
-                rcDTO.getLastName(),
-                rcDTO.getPersonalID(),
-                address,
-                defaultClientTypeOptional.get());
+                                   rcDTO.getFirstName(),
+                                   rcDTO.getLastName(),
+                                   rcDTO.getPersonalID(),
+                                   address,
+                                   defaultClientTypeOptional.get());
 
         try {
             client = (Client) userRepository.add(client);
@@ -109,7 +117,7 @@ public class UserManager {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
     }
@@ -126,7 +134,7 @@ public class UserManager {
                 Optional<User> optionalUser = userRepository.getUserByUsername(username);
 
                 if (optionalUser.isEmpty()) {
-                    throw new NotFoundException();
+                    return Response.status(Response.Status.NOT_FOUND).build();
                 }
                 return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
             }
@@ -140,7 +148,7 @@ public class UserManager {
      * Endpoint used for finding all rents of client
      *
      * @param clientId id of the client
-     * @param past     flag indicating if the result will be list of past rents or list of future rents
+     * @param past flag indicating if the result will be list of past rents or list of future rents
      * @return
      */
     @GET
@@ -164,7 +172,7 @@ public class UserManager {
     /**
      * Endpoint used for updating given user
      *
-     * @param id  id of the user
+     * @param id id of the user
      * @param dto object containing new properties of user
      * @return status code
      * 200(OK) if update was successful

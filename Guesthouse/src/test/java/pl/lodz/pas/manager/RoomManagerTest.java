@@ -19,7 +19,7 @@ class RoomManagerTest {
 
     @Test
     void shouldReturnRoomWithStatusCode200() {
-        when().get("/api/rooms?number=643")
+        when().get("/api/rooms/search/643")
               .then()
               .assertThat().statusCode(Status.OK.getStatusCode())
               .assertThat().contentType(ContentType.JSON)

@@ -3,10 +3,9 @@ package pl.lodz.p.it.pas.manager;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,14 +29,11 @@ import pl.lodz.p.it.pas.repository.impl.RoomRepository;
 
 @RequestMapping("/rooms")
 @RestController
+@RequiredArgsConstructor
 public class RoomManager {
 
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private RentRepository rentRepository;
-
+    private final RoomRepository roomRepository;
+    private final RentRepository rentRepository;
 
     @GetMapping("/{id}")
     public Room getRoomById(@PathVariable("id") Long id) throws RoomNotFoundException {
@@ -46,14 +42,14 @@ public class RoomManager {
     }
 
     @GetMapping
-    public ResponseEntity getAllRooms(@Param("number") Integer number) throws RoomNotFoundException {
-        if (number == null) {
-            return ResponseEntity.ok(roomRepository.getAll());
-        } else {
-            return roomRepository.getByRoomNumber(number)
-                                 .map(ResponseEntity::ok)
-                                 .orElseThrow(RoomNotFoundException::new);
-        }
+    public List<Room> getAllRooms() {
+        return roomRepository.getAll();
+    }
+
+    @GetMapping("/search/{number}")
+    public Room getByRoomNumber(@PathVariable("number") Integer number) throws RoomNotFoundException {
+        return roomRepository.getByRoomNumber(number)
+                             .orElseThrow(RoomNotFoundException::new);
     }
 
     @PostMapping
@@ -100,7 +96,7 @@ public class RoomManager {
         room.setRoomNumber(newNumber == null ? room.getRoomNumber() : newNumber);
 
         try {
-            return roomRepository.update(room).get();
+            return roomRepository.update(room).orElseThrow();
         } catch (Exception e) {
             throw new UpdateRoomException();
         }
@@ -120,7 +116,6 @@ public class RoomManager {
                 throw new RoomHasActiveReservationsException();
             }
         }
-        ;
     }
 
 }
