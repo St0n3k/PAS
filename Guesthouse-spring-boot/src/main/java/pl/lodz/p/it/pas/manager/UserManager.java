@@ -1,12 +1,20 @@
 package pl.lodz.p.it.pas.manager;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
@@ -21,25 +29,15 @@ import pl.lodz.p.it.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.UserRepository;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
-
-@AllArgsConstructor
-@NoArgsConstructor
 @RequestMapping("/users")
 @RestController
+@RequiredArgsConstructor
 public class UserManager {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RentRepository rentRepository;
-    @Autowired
-    private ClientTypeRepository clientTypeRepository;
-
+    private final UserRepository userRepository;
+    private final RentRepository rentRepository;
+    private final ClientTypeRepository clientTypeRepository;
 
 
     @PostMapping("/clients")
@@ -90,24 +88,25 @@ public class UserManager {
     }
 
     @GetMapping
-    public ResponseEntity getAllUsers(@Param("username") String username, @Param("match") boolean match) {
+    public ResponseEntity<List<User>> getAllUsers(@Param("username") String username) {
         List<User> users;
         if (username == null) {
             users = userRepository.getAllUsers();
         } else {
-            if (!match) {
-                Optional<User> optionalUser = userRepository.getUserByUsername(username);
-
-                if (optionalUser.isEmpty()) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-                return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
-            }
             users = userRepository.matchUserByUsername(username);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/search/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        Optional<User> optionalUser = userRepository.getUserByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(optionalUser.get());
+    }
 
 
     @GetMapping("/{id}/rents")
@@ -128,7 +127,7 @@ public class UserManager {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity updateUser(@PathVariable("id") Long id, @Valid @RequestBody UpdateUserDTO dto) {
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UpdateUserDTO dto) {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {

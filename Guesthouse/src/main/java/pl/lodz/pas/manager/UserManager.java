@@ -125,22 +125,26 @@ public class UserManager {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers(@QueryParam("username") String username, @QueryParam("match") boolean match) {
+    public Response getAllUsers(@QueryParam("username") String username) {
         List<User> users;
         if (username == null) {
             users = userRepository.getAllUsers();
         } else {
-            if (!match) {
-                Optional<User> optionalUser = userRepository.getUserByUsername(username);
-
-                if (optionalUser.isEmpty()) {
-                    return Response.status(Response.Status.NOT_FOUND).build();
-                }
-                return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
-            }
             users = userRepository.matchUserByUsername(username);
         }
         return Response.status(Response.Status.OK).entity(users).build();
+    }
+
+    @GET
+    @Path("/search/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserByUsername(@PathParam("username") String username) {
+        Optional<User> optionalUser = userRepository.getUserByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
     }
 
 
