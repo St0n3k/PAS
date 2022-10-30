@@ -43,7 +43,7 @@ public class RentManager {
         Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
 
         if (optionalUser.isEmpty() || optionalRoom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Client client = (Client) optionalUser.get();

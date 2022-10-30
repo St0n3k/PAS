@@ -201,7 +201,9 @@ public class UserManager {
             employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
             employee.setLastName(lastName == null ? employee.getLastName() : lastName);
 
+
             optionalUser = userRepository.update(employee);
+
             if (optionalUser.isEmpty()) {
                 return Response.status(Response.Status.CONFLICT).build();
             }
@@ -221,6 +223,7 @@ public class UserManager {
             address.setCity(city == null ? address.getCity() : city);
             address.setStreet(street == null ? address.getStreet() : street);
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
+
             optionalUser = userRepository.update(client);
             if (optionalUser.isEmpty()) {
                 return Response.status(Response.Status.CONFLICT).build();

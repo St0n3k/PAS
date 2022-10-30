@@ -109,7 +109,7 @@ class RentManagerTest {
                 .when()
                 .post("/api/rents")
                 .then()
-                .statusCode(Status.BAD_REQUEST.getStatusCode());
+                .statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -125,7 +125,7 @@ class RentManagerTest {
                 .when()
                 .post("/api/rents")
                 .then()
-                .assertThat().statusCode(Status.BAD_REQUEST.getStatusCode());
+                .assertThat().statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test

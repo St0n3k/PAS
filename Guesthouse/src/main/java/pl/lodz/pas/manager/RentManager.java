@@ -2,14 +2,10 @@ package pl.lodz.pas.manager;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.CreateRentDTO;
 import pl.lodz.pas.dto.UpdateRentBoardDTO;
+import pl.lodz.pas.exception.*;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.model.user.Client;
@@ -24,10 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @RequestScoped
-@Path("/rents")
 public class RentManager {
 
     @Inject
@@ -39,33 +34,36 @@ public class RentManager {
 
 
     /**
-     * Endpoint for creating a new rent. Rent will be created if client and room exists in database, and if rent period
+     * Method for creating a new rent. Rent will be created if client and room exists in database, and if rent period
      * is not colliding with existing rents.
      *
      * @param createRentDTO object containing information about rent which creation will be attempted.
-     * @return status code 201 (CREATED) if rent was successfully created,
-     * 409 (CONFLICT) if rent could not be created due to rent time period,
-     * 400 (BAD_REQUEST) if client or room do not exist in database
+     * @return
+     * @throws UserNotFoundException if user was not found
+     * @throws RoomNotFoundException if room was not found
+     * @throws InactiveUserException if user is inactive
+     * @throws ConflictException     if there was date conflict with other rents
      */
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(@Valid CreateRentDTO createRentDTO) {
+    public Rent rentRoom(CreateRentDTO createRentDTO) throws
+            UserNotFoundException,
+            RoomNotFoundException,
+            InactiveUserException,
+            ConflictException {
         Optional<User> optionalUser = userRepository.getById(createRentDTO.getClientId());
         Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
 
         if (optionalUser.isEmpty()) {
-            throw new BadRequestException("Client not found");
+            throw new UserNotFoundException();
         }
         if (optionalRoom.isEmpty()) {
-            throw new BadRequestException("Room not found");
+            throw new RoomNotFoundException();
         }
 
         Client client = (Client) optionalUser.get();
         Room room = optionalRoom.get();
 
         if (!client.isActive()) {
-            throw new NotAuthorizedException("Client not active");
+            throw new InactiveUserException();
         }
 
         double finalCost = calculateTotalCost(createRentDTO.getBeginTime(), createRentDTO.getEndTime(),
@@ -76,53 +74,58 @@ public class RentManager {
         Rent created = rentRepository.add(rent); //synchronized method
 
         if (created == null) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new ConflictException();
         }
 
-        return Response.status(Response.Status.CREATED).entity(created).build();
-    }
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRentById(@PathParam("id") Long id) {
-        Optional<Rent> optionalRent = rentRepository.getById(id);
-
-        if (optionalRent.isEmpty()) {
-            throw new NotFoundException();
-        }
-        return Response.status(Response.Status.OK).entity(optionalRent.get()).build();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRents() {
-        List<Rent> list = rentRepository.getAll();
-        return Response.status(Response.Status.OK).entity(list).build();
+        return rent;
     }
 
 
     /**
-     * Endpoint used to change board option for given rent, cost is recalculated before saving to database
+     * Method used to find rent by id
+     *
+     * @param id id of rent
+     * @return rent
+     * @throws RentNotFoundException if rent with given id was not found
+     */
+    public Rent getRentById(Long id) throws RentNotFoundException {
+        Optional<Rent> optionalRent = rentRepository.getById(id);
+
+        if (optionalRent.isEmpty()) {
+            throw new RentNotFoundException();
+        }
+        return optionalRent.get();
+    }
+
+
+    /**
+     * @return list of all rents in the database
+     */
+    public List<Rent> getAllRents() {
+        return rentRepository.getAll();
+    }
+
+
+    /**
+     * Method used to change board option for given rent, cost is recalculated before saving to database
      *
      * @param id  id of the rent to be updated
      * @param dto object containing the choice of board option (true/false)
      * @return status 200 (OK) if rent was updated, 409 (CONFLICT) otherwise
+     * @throws InvalidInputException if user input is invalid
+     * @throws RentNotFoundException if rent with given id does not exist
      */
-    @PATCH
-    @Path("/{id}/board")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRentBoard(@PathParam("id") Long id, UpdateRentBoardDTO dto) {
+    public Rent updateRentBoard(Long id, UpdateRentBoardDTO dto) throws InvalidInputException, RentNotFoundException {
         if (dto == null) {
-            throw new BadRequestException();
+            throw new InvalidInputException();
         }
         Optional<Rent> optionalRent = rentRepository.getById(id);
 
         if (optionalRent.isEmpty()) {
-            throw new NotFoundException();
+            throw new RentNotFoundException();
         }
         if (dto.getBoard() == null) {
-            throw new BadRequestException();
+            throw new InvalidInputException();
         }
         Rent rentToModify = optionalRent.get();
 
@@ -136,43 +139,41 @@ public class RentManager {
 
         Optional<Rent> updatedRent = rentRepository.update(rentToModify);
         if (updatedRent.isEmpty()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new InvalidInputException();
         }
-        return Response.status(Response.Status.OK).entity(updatedRent).build();
+        return updatedRent.get();
     }
 
     /**
-     * Endpoint for removing future rents, archived rent will not be removed
+     * Method for removing future rents, archived rent will not be removed
      *
      * @param rentId id of the rent to be removed
-     * @return status code 204 (NO_CONTENT) if rent was removed, otherwise 409 (CONFLICT)
+     * @return void
      */
-    @DELETE
-    @Path("/{id}")
-    public Response removeRent(@PathParam("id") Long rentId) {
+    public void removeRent(Long rentId) throws ConflictException {
         Optional<Rent> optionalRent = rentRepository.getById(rentId);
         if (optionalRent.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return;
         }
         Rent rent = optionalRent.get();
 
         LocalDateTime now = LocalDateTime.now();
         if (rent.getBeginTime().isAfter(now)) {
             rentRepository.removeById(rentId);
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return;
         }
-        return Response.status(Response.Status.CONFLICT).build();
+        throw new ConflictException();
     }
 
     /**
-     * Method used to calculate total cost of rent on creation or on board option update
+     * Private method used to calculate total cost of rent on creation or on board option update
      *
      * @param beginTime  begin date of the rent
      * @param endTime    end date of the rent
      * @param costPerDay room price per day
      * @param board      determines if board option is chosen
      * @param clientType client type defines percentage discount for total cost
-     * @return
+     * @return total cost
      */
     private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
                                       ClientType clientType) {
