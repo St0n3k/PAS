@@ -1,20 +1,31 @@
 package pl.lodz.p.it.pas.manager;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
 import pl.lodz.p.it.pas.dto.UpdateRoomDto;
+import pl.lodz.p.it.pas.exception.CreateRoomException;
+import pl.lodz.p.it.pas.exception.RoomHasActiveReservationsException;
+import pl.lodz.p.it.pas.exception.RoomNotFoundException;
+import pl.lodz.p.it.pas.exception.UpdateRoomException;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.RoomRepository;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 
 @RequestMapping("/rooms")
@@ -29,69 +40,56 @@ public class RoomManager {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
-        Optional<Room> room = roomRepository.getById(id);
-
-        if (room.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(room.get(), HttpStatus.OK);
-        }
+    public Room getRoomById(@PathVariable("id") Long id) throws RoomNotFoundException {
+        return roomRepository.getById(id)
+                             .orElseThrow(RoomNotFoundException::new);
     }
 
     @GetMapping
-    public ResponseEntity getAllRooms(@Param("number") Integer number) {
+    public ResponseEntity getAllRooms(@Param("number") Integer number) throws RoomNotFoundException {
         if (number == null) {
-            return new ResponseEntity<>(roomRepository.getAll(), HttpStatus.OK);
+            return ResponseEntity.ok(roomRepository.getAll());
         } else {
-            Optional<Room> room = roomRepository.getByRoomNumber(number);
-            if (room.isPresent()) {
-                return new ResponseEntity<>(room.get(), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return roomRepository.getByRoomNumber(number)
+                                 .map(ResponseEntity::ok)
+                                 .orElseThrow(RoomNotFoundException::new);
         }
-
     }
 
     @PostMapping
-    public ResponseEntity<Room> addRoom(@Valid @RequestBody CreateRoomDto dto) {
-        Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
+    @ResponseStatus(HttpStatus.CREATED)
+    public Room addRoom(@Valid @RequestBody CreateRoomDto dto) throws CreateRoomException {
         try {
-            room = roomRepository.add(room);
+            Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
+            return roomRepository.add(room);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new CreateRoomException();
         }
-        return new ResponseEntity<>(room, HttpStatus.CREATED);
-
     }
 
     @GetMapping("/{id}/rents")
-    public ResponseEntity<List<Rent>> getAllRentsOfRoom(@PathVariable("id") Long id, @Param("past") Boolean past) {
-        try {
-            if (!roomRepository.existsById(id)) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+    public List<Rent> getAllRentsOfRoom(@PathVariable("id") Long id,
+                                        @Param("past") Boolean past)
+        throws RoomNotFoundException {
 
-            List<Rent> rents;
-            if (past != null) { // find past or active rents
-                rents = rentRepository.findByRoomAndStatus(id, past);
-            } else { // find all rents
-                rents = rentRepository.getByRoomId(id);
-            }
-            return new ResponseEntity<>(rents, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!roomRepository.existsById(id)) {
+            throw new RoomNotFoundException();
+        }
+
+        if (past != null) { // find past or active rents
+            return rentRepository.findByRoomAndStatus(id, past);
+        } else { // find all rents
+            return rentRepository.getByRoomId(id);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @Valid @RequestBody UpdateRoomDto dto) {
-        Optional<Room> existingRoom = roomRepository.getById(id);
+    public Room updateRoom(@PathVariable Long id,
+                           @Valid @RequestBody UpdateRoomDto dto)
+        throws RoomNotFoundException, UpdateRoomException {
 
-        if (existingRoom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Room room = existingRoom.get();
+        Room room = roomRepository.getById(id)
+                                  .orElseThrow(RoomNotFoundException::new);
 
         Double newPrice = dto.getPrice();
         Integer newNumber = dto.getRoomNumber();
@@ -101,36 +99,28 @@ public class RoomManager {
         room.setSize(newSize == null ? room.getSize() : newSize);
         room.setRoomNumber(newNumber == null ? room.getRoomNumber() : newNumber);
 
-        Optional<Room> updatedRoom;
         try {
-            updatedRoom = roomRepository.update(room);
+            return roomRepository.update(room).get();
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new UpdateRoomException();
         }
-
-        if (updatedRoom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(updatedRoom.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteRoomById(@PathVariable("id") Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRoomById(@PathVariable("id") Long id) throws RoomHasActiveReservationsException {
         Optional<Room> roomOptional = roomRepository.getById(id);
 
-        if (roomOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (roomOptional.isPresent()) {
+            Room room = roomOptional.get();
+            List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
+            if (rentsForRoom.isEmpty()) {
+                roomRepository.remove(room);
+            } else {
+                throw new RoomHasActiveReservationsException();
+            }
         }
-        Room room = roomOptional.get();
-
-        List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
-        if (rentsForRoom.isEmpty()) {
-            roomRepository.remove(room);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        ;
     }
 
 }
-
