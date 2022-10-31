@@ -1,23 +1,15 @@
 package pl.lodz.p.it.pas.manager;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
+import pl.lodz.p.it.pas.exception.ClientTypeNotFoundException;
+import pl.lodz.p.it.pas.exception.CreateUserException;
+import pl.lodz.p.it.pas.exception.UpdateUserException;
+import pl.lodz.p.it.pas.exception.UserNotFoundException;
 import pl.lodz.p.it.pas.model.Address;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Client;
@@ -29,24 +21,32 @@ import pl.lodz.p.it.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.UserRepository;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-@RequestMapping("/users")
-@RestController
+
 @RequiredArgsConstructor
+@Service
 public class UserManager {
 
+    @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
     private final RentRepository rentRepository;
+
+    @Autowired
     private final ClientTypeRepository clientTypeRepository;
 
 
-    @PostMapping("/clients")
-    public ResponseEntity<Client> registerClient(@Valid @RequestBody RegisterClientDTO rcDTO) {
+    public Client registerClient(RegisterClientDTO rcDTO)
+            throws ClientTypeNotFoundException, CreateUserException {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         Optional<ClientType> defaultClientTypeOptional = clientTypeRepository.getByType(Default.class);
 
         if (defaultClientTypeOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ClientTypeNotFoundException();
         }
 
         Client client = new Client(rcDTO.getUsername(),
@@ -59,61 +59,58 @@ public class UserManager {
         try {
             client = (Client) userRepository.add(client);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new CreateUserException();
         }
-        return new ResponseEntity<>(client, HttpStatus.CREATED);
+        return client;
     }
 
-    @PostMapping("/employees")
-    public ResponseEntity<Employee> registerEmployee(@Valid @RequestBody RegisterEmployeeDTO reDTO) {
+
+    public Employee registerEmployee(RegisterEmployeeDTO reDTO) throws CreateUserException {
         Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
 
         Employee addedEmployee = (Employee) userRepository.add(employee);
 
         if (addedEmployee == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new CreateUserException();
         }
-        return new ResponseEntity<>(employee, HttpStatus.CREATED);
+        return addedEmployee;
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    public User getUserById(Long id) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException();
         }
-        return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        return optionalUser.get();
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(@Param("username") String username) {
+
+    public List<User> getAllUsers(String username) {
         List<User> users;
         if (username == null) {
             users = userRepository.getAllUsers();
         } else {
             users = userRepository.matchUserByUsername(username);
         }
-        return ResponseEntity.ok(users);
+        return users;
     }
 
-    @GetMapping("/search/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+
+    public User getUserByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.getUserByUsername(username);
 
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new UserNotFoundException();
         }
-        return ResponseEntity.ok(optionalUser.get());
+        return optionalUser.get();
     }
 
 
-    @GetMapping("/{id}/rents")
-    public ResponseEntity<List<Rent>> getAllRentsOfClient(@PathVariable("id") Long clientId,
-                                                          @Param("past") Boolean past) {
+    public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
         if (userRepository.getById(clientId).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException();
         }
         List<Rent> rents;
         if (past != null) { // find past or active rents
@@ -121,17 +118,15 @@ public class UserManager {
         } else { // find all rents
             rents = rentRepository.getByClientId(clientId);
         }
-        return new ResponseEntity<>(rents, HttpStatus.OK);
-
+        return rents;
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UpdateUserDTO dto) {
+    public User updateUser(Long id, UpdateUserDTO dto) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
 
@@ -148,7 +143,7 @@ public class UserManager {
             employee.setLastName(lastName == null ? employee.getLastName() : lastName);
             optionalUser = userRepository.update(employee);
             if (optionalUser.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                throw new UpdateUserException();
             }
             user = optionalUser.get();
         }
@@ -167,49 +162,47 @@ public class UserManager {
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
             optionalUser = userRepository.update(client);
             if (optionalUser.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                throw new UpdateUserException();
             }
             user = optionalUser.get();
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return user;
     }
 
 
-    @PutMapping("/{id}/activate")
-    public ResponseEntity<User> activateUser(@PathVariable("id") Long id) {
+    public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
         user.setActive(true);
 
         optionalUser = userRepository.update(user);
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new UpdateUserException();
         }
         user = optionalUser.get();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return user;
     }
 
 
-    @PutMapping("/{id}/deactivate")
-    public ResponseEntity<User> deactivateUser(@PathVariable("id") Long id) {
+    public User deactivateUser(Long id) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
         user.setActive(false);
 
         optionalUser = userRepository.update(user);
         if (optionalUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new UpdateUserException();
         }
         user = optionalUser.get();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return user;
     }
 
 }

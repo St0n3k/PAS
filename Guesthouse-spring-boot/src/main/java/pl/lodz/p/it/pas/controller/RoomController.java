@@ -1,20 +1,10 @@
 package pl.lodz.p.it.pas.controller;
 
-import javax.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
 import pl.lodz.p.it.pas.dto.UpdateRoomDto;
 import pl.lodz.p.it.pas.exception.CreateRoomException;
@@ -25,10 +15,15 @@ import pl.lodz.p.it.pas.manager.RoomManager;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
 public class RoomController {
+
+    @Autowired
     private final RoomManager roomManager;
 
     @GetMapping("/{id}")

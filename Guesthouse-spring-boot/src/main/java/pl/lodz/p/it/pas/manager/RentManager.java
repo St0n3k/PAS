@@ -1,12 +1,11 @@
 package pl.lodz.p.it.pas.manager;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
+import pl.lodz.p.it.pas.exception.*;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.model.user.Client;
@@ -16,41 +15,52 @@ import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.RoomRepository;
 import pl.lodz.p.it.pas.repository.impl.UserRepository;
 
-import javax.validation.Valid;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 
-@NoArgsConstructor
-@RequestMapping("/rents")
-@RestController
+@RequiredArgsConstructor
+@Service
 public class RentManager {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
     @Autowired
-    private RentRepository rentRepository;
+    private final RentRepository rentRepository;
 
-    @PostMapping
-    public ResponseEntity<Rent> rentRoom(@Valid @RequestBody CreateRentDTO createRentDTO) {
+
+    public Rent rentRoom(CreateRentDTO createRentDTO) throws
+            UserNotFoundException,
+            RoomNotFoundException,
+            InactiveUserException,
+            CreateRentException,
+            InvalidInputException {
+
+        if (createRentDTO == null) {
+            throw new InvalidInputException();
+        }
+
         Optional<User> optionalUser = userRepository.getById(createRentDTO.getClientId());
         Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
 
-        if (optionalUser.isEmpty() || optionalRoom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        if (optionalRoom.isEmpty()) {
+            throw new RoomNotFoundException();
         }
 
         Client client = (Client) optionalUser.get();
         Room room = optionalRoom.get();
 
         if (!client.isActive()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new InactiveUserException();
         }
         double finalCost = calculateTotalCost(createRentDTO.getBeginTime(), createRentDTO.getEndTime(),
                                               room.getPrice(), createRentDTO.isBoard(), client.getClientType());
@@ -63,40 +73,40 @@ public class RentManager {
         optionalRent = Optional.ofNullable(rentRepository.add(rent));
 
         if (optionalRent.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new CreateRentException();
         }
-        return new ResponseEntity<>(optionalRent.get(), HttpStatus.CREATED);
+        return optionalRent.get();
 
     }
-//
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Rent> getRentById(@PathVariable("id") Long id) {
+
+    public Rent getRentById(Long id) throws RentNotFoundException {
         Optional<Rent> optionalRent = rentRepository.getById(id);
 
         if (optionalRent.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RentNotFoundException();
         }
 
-        return new ResponseEntity<>(optionalRent.get(), HttpStatus.OK);
+        return optionalRent.get();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Rent>> getAllRents() {
-        List<Rent> list = rentRepository.getAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+
+
+    public List<Rent> getAllRents() {
+        return rentRepository.getAll();
     }
-//
-//
-    @PatchMapping("/{id}/board")
-    public ResponseEntity<Rent> updateRentBoard(@PathVariable("id") Long id, @RequestBody UpdateRentBoardDTO dto) {
+
+
+
+    public Rent updateRentBoard(Long id, UpdateRentBoardDTO dto)
+            throws RentNotFoundException, InvalidInputException, UpdateRentException {
         if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new InvalidInputException();
         }
         Optional<Rent> optionalRent = rentRepository.getById(id);
 
         if (optionalRent.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RentNotFoundException();
         }
         Rent rentToModify = optionalRent.get();
 
@@ -110,26 +120,26 @@ public class RentManager {
 
         Optional<Rent> optionalUpdatedRent = rentRepository.update(rentToModify);
         if (optionalUpdatedRent.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new UpdateRentException();
         }
-        return new ResponseEntity<>(optionalRent.get(), HttpStatus.OK);
+        return optionalUpdatedRent.get();
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Rent> removeRent(@PathVariable("id") Long rentId) {
+
+    public void removeRent(Long rentId) throws RemoveRentException {
         Optional<Rent> optionalRent = rentRepository.getById(rentId);
         if (optionalRent.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return;
         }
         Rent rent = optionalRent.get();
         LocalDateTime now = LocalDateTime.now();
 
         if (rent.getBeginTime().isAfter(now)) {
             rentRepository.removeById(rentId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return;
         }
-       return new ResponseEntity<>(HttpStatus.CONFLICT);
+       throw new RemoveRentException();
     }
 
     private double calculateTotalCost(LocalDateTime beginTime, LocalDateTime endTime, double costPerDay, boolean board,
@@ -140,5 +150,4 @@ public class RentManager {
         }
         return clientType.applyDiscount(Math.ceil(duration.toHours() / 24.0) * costPerDay);
     }
-
 }

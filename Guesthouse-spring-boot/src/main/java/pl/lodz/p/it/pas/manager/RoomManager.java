@@ -1,8 +1,7 @@
 package pl.lodz.p.it.pas.manager;
 
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
 import pl.lodz.p.it.pas.dto.UpdateRoomDto;
@@ -15,16 +14,23 @@ import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.repository.impl.RentRepository;
 import pl.lodz.p.it.pas.repository.impl.RoomRepository;
 
-@Service
+import java.util.List;
+import java.util.Optional;
+
+
 @RequiredArgsConstructor
+@Service
 public class RoomManager {
 
+    @Autowired
     private final RoomRepository roomRepository;
+
+    @Autowired
     private final RentRepository rentRepository;
 
     public Room getRoomById(Long id) throws RoomNotFoundException {
         return roomRepository.getById(id)
-                             .orElseThrow(RoomNotFoundException::new);
+                .orElseThrow(RoomNotFoundException::new);
     }
 
     public List<Room> getAllRooms() {
@@ -33,7 +39,7 @@ public class RoomManager {
 
     public Room getByRoomNumber(Integer number) throws RoomNotFoundException {
         return roomRepository.getByRoomNumber(number)
-                             .orElseThrow(RoomNotFoundException::new);
+                .orElseThrow(RoomNotFoundException::new);
     }
 
     public Room addRoom(CreateRoomDto dto) throws CreateRoomException {
@@ -46,7 +52,7 @@ public class RoomManager {
     }
 
     public List<Rent> getAllRentsOfRoom(Long id, Boolean past)
-        throws RoomNotFoundException {
+            throws RoomNotFoundException {
 
         if (!roomRepository.existsById(id)) {
             throw new RoomNotFoundException();
@@ -60,10 +66,10 @@ public class RoomManager {
     }
 
     public Room updateRoom(Long id, UpdateRoomDto dto)
-        throws RoomNotFoundException, UpdateRoomException {
+            throws RoomNotFoundException, UpdateRoomException {
 
         Room room = roomRepository.getById(id)
-                                  .orElseThrow(RoomNotFoundException::new);
+                .orElseThrow(RoomNotFoundException::new);
 
         Double newPrice = dto.getPrice();
         Integer newNumber = dto.getRoomNumber();
@@ -95,3 +101,4 @@ public class RoomManager {
     }
 
 }
+
