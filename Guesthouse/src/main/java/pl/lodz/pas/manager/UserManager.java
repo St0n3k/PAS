@@ -13,6 +13,7 @@ import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
+import pl.lodz.pas.model.user.Admin;
 import pl.lodz.pas.model.user.Client;
 import pl.lodz.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.model.user.ClientTypes.Default;
@@ -134,23 +135,7 @@ public class UserManager {
         if (username != null && userRepository.getUserByUsername(username).isPresent()) {
             throw new UpdateUserException();
         }
-
-        if (Objects.equals(user.getRole(), "EMPLOYEE")) {
-            Employee employee = (Employee) user;
-
-            employee.setUsername(username == null ? employee.getUsername() : username);
-            employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
-            employee.setLastName(lastName == null ? employee.getLastName() : lastName);
-
-
-            optionalUser = userRepository.update(employee);
-
-            if (optionalUser.isEmpty()) {
-                throw new UpdateUserException();
-            }
-            user = optionalUser.get();
-        }
-
+        User updatedUser;
         if (Objects.equals(user.getRole(), "CLIENT")) {
             Client client = (Client) user;
 
@@ -165,12 +150,38 @@ public class UserManager {
             address.setStreet(street == null ? address.getStreet() : street);
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
 
-            optionalUser = userRepository.update(client);
-            if (optionalUser.isEmpty()) {
-                throw new UpdateUserException();
-            }
-            user = optionalUser.get();
+            updatedUser = client;
         }
+        else if (Objects.equals(user.getRole(), "EMPLOYEE")) {
+            Employee employee = (Employee) user;
+
+            employee.setUsername(username == null ? employee.getUsername() : username);
+            employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
+            employee.setLastName(lastName == null ? employee.getLastName() : lastName);
+
+            updatedUser = employee;
+
+        }
+        else if (Objects.equals(user.getRole(), "ADMIN")) {
+            Admin admin = (Admin) user;
+
+            admin.setUsername(username == null ? admin.getUsername() : username);
+
+            updatedUser = admin;
+        } else {
+            throw new UpdateUserException();
+        }
+
+        try{
+            optionalUser = userRepository.update(updatedUser);
+        } catch (Exception e){
+            throw new UpdateUserException();
+        }
+
+        if (optionalUser.isEmpty()) {
+            throw new UpdateUserException();
+        }
+        user = optionalUser.get();
         return user;
     }
 
