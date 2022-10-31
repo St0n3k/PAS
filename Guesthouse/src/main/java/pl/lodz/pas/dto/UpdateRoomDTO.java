@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRoomDTO {
+
     @Min(1)
     private Integer roomNumber;
+
     @Min(1)
     private Integer size;
+    
     @Min(1)
     private Double price;
 }

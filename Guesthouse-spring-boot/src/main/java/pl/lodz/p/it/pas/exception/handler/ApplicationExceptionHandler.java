@@ -6,6 +6,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.lodz.p.it.pas.exception.*;
+import pl.lodz.p.it.pas.exception.rent.CreateRentException;
+import pl.lodz.p.it.pas.exception.rent.RemoveRentException;
+import pl.lodz.p.it.pas.exception.rent.RentNotFoundException;
+import pl.lodz.p.it.pas.exception.rent.UpdateRentException;
+import pl.lodz.p.it.pas.exception.room.CreateRoomException;
+import pl.lodz.p.it.pas.exception.room.RoomHasActiveReservationsException;
+import pl.lodz.p.it.pas.exception.room.RoomNotFoundException;
+import pl.lodz.p.it.pas.exception.room.UpdateRoomException;
+import pl.lodz.p.it.pas.exception.user.*;
 
 @ControllerAdvice
 public class ApplicationExceptionHandler {

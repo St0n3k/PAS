@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.p.it.pas.exception.*;
+import pl.lodz.p.it.pas.exception.rent.CreateRentException;
+import pl.lodz.p.it.pas.exception.rent.RemoveRentException;
+import pl.lodz.p.it.pas.exception.rent.RentNotFoundException;
+import pl.lodz.p.it.pas.exception.rent.UpdateRentException;
+import pl.lodz.p.it.pas.exception.room.RoomNotFoundException;
+import pl.lodz.p.it.pas.exception.user.InactiveUserException;
+import pl.lodz.p.it.pas.exception.user.UserNotFoundException;
 import pl.lodz.p.it.pas.manager.RentManager;
 import pl.lodz.p.it.pas.model.Rent;
 

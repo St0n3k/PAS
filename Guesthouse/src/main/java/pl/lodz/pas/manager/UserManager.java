@@ -1,31 +1,16 @@
 package pl.lodz.pas.manager;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
-import pl.lodz.pas.exception.CreateUserException;
-import pl.lodz.pas.exception.UpdateUserException;
-import pl.lodz.pas.exception.UserNotFoundException;
+import pl.lodz.pas.exception.user.CreateUserException;
+import pl.lodz.pas.exception.user.UpdateUserException;
+import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.user.Client;
@@ -36,6 +21,10 @@ import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -60,11 +49,11 @@ public class UserManager {
         }
 
         Client client = new Client(rcDTO.getUsername(),
-                                   rcDTO.getFirstName(),
-                                   rcDTO.getLastName(),
-                                   rcDTO.getPersonalID(),
-                                   address,
-                                   defaultClientTypeOptional.get());
+                rcDTO.getFirstName(),
+                rcDTO.getLastName(),
+                rcDTO.getPersonalID(),
+                address,
+                defaultClientTypeOptional.get());
 
         try {
             client = (Client) userRepository.add(client);

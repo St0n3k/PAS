@@ -8,7 +8,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.pas.dto.CreateRentDTO;
 import pl.lodz.pas.dto.UpdateRentBoardDTO;
-import pl.lodz.pas.exception.*;
+import pl.lodz.pas.exception.InvalidInputException;
+import pl.lodz.pas.exception.rent.CreateRentException;
+import pl.lodz.pas.exception.rent.RemoveRentException;
+import pl.lodz.pas.exception.rent.RentNotFoundException;
+import pl.lodz.pas.exception.room.RoomNotFoundException;
+import pl.lodz.pas.exception.user.InactiveUserException;
+import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.RentManager;
 import pl.lodz.pas.model.Rent;
 
@@ -36,7 +42,7 @@ public class RentController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response rentRoom(@Valid CreateRentDTO createRentDTO)
-            throws UserNotFoundException, RoomNotFoundException, ConflictException, InactiveUserException {
+            throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Rent rent = rentManager.rentRoom(createRentDTO);
         return Response.status(Response.Status.CREATED).entity(rent).build();
     }
@@ -81,7 +87,7 @@ public class RentController {
      */
     @DELETE
     @Path("/{id}")
-    public Response removeRent(@PathParam("id") Long rentId) throws ConflictException {
+    public Response removeRent(@PathParam("id") Long rentId) throws RemoveRentException {
         rentManager.removeRent(rentId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }

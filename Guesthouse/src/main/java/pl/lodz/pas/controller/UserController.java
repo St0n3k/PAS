@@ -1,33 +1,24 @@
 package pl.lodz.pas.controller;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
-import pl.lodz.pas.exception.CreateUserException;
-import pl.lodz.pas.exception.UpdateUserException;
-import pl.lodz.pas.exception.UserNotFoundException;
-import pl.lodz.pas.manager.RentManager;
+import pl.lodz.pas.exception.user.CreateUserException;
+import pl.lodz.pas.exception.user.UpdateUserException;
+import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.UserManager;
-import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.user.Client;
-import pl.lodz.pas.model.user.ClientTypes.ClientType;
-import pl.lodz.pas.model.user.ClientTypes.Default;
 import pl.lodz.pas.model.user.Employee;
 import pl.lodz.pas.model.user.User;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @ApplicationScoped
 @Path("/users")
@@ -102,7 +93,7 @@ public class UserController {
      * Endpoint used for finding all rents of client
      *
      * @param clientId id of the client
-     * @param past flag indicating if the result will be list of past rents or list of future rents
+     * @param past     flag indicating if the result will be list of past rents or list of future rents
      * @return
      */
     @GET
@@ -118,7 +109,7 @@ public class UserController {
     /**
      * Endpoint used for updating given user
      *
-     * @param id id of the user
+     * @param id  id of the user
      * @param dto object containing new properties of user
      * @return status code
      * 200(OK) if update was successful

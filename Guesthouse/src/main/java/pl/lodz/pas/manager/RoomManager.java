@@ -1,34 +1,27 @@
 package pl.lodz.pas.manager;
 
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.pas.dto.CreateRoomDTO;
 import pl.lodz.pas.dto.UpdateRoomDTO;
+import pl.lodz.pas.exception.room.CreateRoomException;
+import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
+import pl.lodz.pas.exception.room.RoomNotFoundException;
+import pl.lodz.pas.exception.room.UpdateRoomException;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 
+import java.util.List;
+import java.util.Optional;
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-@Path("/rooms")
 public class RoomManager {
 
     @Inject
@@ -41,33 +34,28 @@ public class RoomManager {
     /**
      * Endpoint which is used to save room to database, room number has to be unique, otherwise method will throw exception
      *
-     * @param room room to be saved
+     * @param dto room to be saved
      * @return status code
      * 201(CREATED) if room was successfully saved,
      * 409(CONFLICT) if room was not saved due to constraints(room id / room number)
      */
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addRoom(@Valid Room room) {
+    public Room addRoom(CreateRoomDTO dto) throws CreateRoomException {
         try {
-            Room result = roomRepository.add(room);
-            return Response.status(Response.Status.CREATED).entity(result).build();
+            Room room = new Room(dto.getRoomNumber(), dto.getPrice(), dto.getSize());
+            return roomRepository.add(room);
         } catch (Exception e) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new CreateRoomException();
         }
     }
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoomById(@PathParam("id") Long id) {
+
+    public Room getRoomById(Long id) throws RoomNotFoundException {
         Optional<Room> optionalRoom = roomRepository.getById(id);
 
         if (optionalRoom.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new RoomNotFoundException();
         }
-        return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
+        return optionalRoom.get();
     }
 
 
@@ -80,22 +68,17 @@ public class RoomManager {
      * 200(OK) if number parameter was set and room was found
      * 404(NOT_FOUND) if number parameter was set, but room was not found
      */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRooms() {
-        List<Room> rooms = roomRepository.getAll();
-        return Response.status(Response.Status.OK).entity(rooms).build();
+    public List<Room> getAllRooms() {
+        return roomRepository.getAll();
     }
 
-    @GET
-    @Path("/search/{number}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoomByNumber(@PathParam("number") Integer number) {
+
+    public Room getRoomByNumber(Integer number) throws RoomNotFoundException {
         Optional<Room> optionalRoom = roomRepository.getByRoomNumber(number);
         if (optionalRoom.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new RoomNotFoundException();
         }
-        return Response.status(Response.Status.OK).entity(optionalRoom.get()).build();
+        return optionalRoom.get();
     }
 
 
@@ -103,49 +86,36 @@ public class RoomManager {
      * Endpoint which returns list of rents of given room
      *
      * @param roomId room id
-     * @param past flag which indicates if the result will be list of past rents or future rents.
-     * If this parameter is not set, the result of the method will be list of all rents of given room
+     * @param past   flag which indicates if the result will be list of past rents or future rents.
+     *               If this parameter is not set, the result of the method will be list of all rents of given room
      * @return list of rents that meet given criteria
      */
-    @GET
-    @Path("/{roomId}/rents")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfRoom(@PathParam("roomId") Long roomId,
-                                      @QueryParam("past") Boolean past) {
-        try {
-            if (!roomRepository.existsById(roomId)) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            List<Rent> rents;
-            if (past != null) { // find past or active rents
-                rents = rentRepository.findByRoomAndStatus(roomId, past);
-            } else { // find all rents
-                rents = rentRepository.getByRoomId(roomId);
-            }
-            return Response.status(Response.Status.OK).entity(rents).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+    public List<Rent> getAllRentsOfRoom(Long roomId, Boolean past) throws RoomNotFoundException {
+        if (!roomRepository.existsById(roomId)) {
+            throw new RoomNotFoundException();
         }
+
+        List<Rent> rents;
+        if (past != null) { // find past or active rents
+            rents = rentRepository.findByRoomAndStatus(roomId, past);
+        } else { // find all rents
+            rents = rentRepository.getByRoomId(roomId);
+        }
+        return rents;
     }
 
 
     /**
      * Endpoint which is used to update room properties
      *
-     * @param id id of room to be updated
+     * @param id            id of room to be updated
      * @param updateRoomDTO object containing new properties of existing room
      */
-    @PUT
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoom(@PathParam("id") Long id,
-                               @Valid UpdateRoomDTO updateRoomDTO) {
+    public Room updateRoom(Long id, UpdateRoomDTO updateRoomDTO) throws RoomNotFoundException, UpdateRoomException {
         Optional<Room> optionalRoom = roomRepository.getById(id);
 
         if (optionalRoom.isEmpty()) {
-            throw new NotFoundException();
+            throw new RoomNotFoundException();
         }
         Room existingRoom = optionalRoom.get();
         Double newPrice = updateRoomDTO.getPrice();
@@ -160,13 +130,13 @@ public class RoomManager {
         try {
             updatedRoom = roomRepository.update(existingRoom);
         } catch (Exception e) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new UpdateRoomException();
         }
 
         if (updatedRoom.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UpdateRoomException();
         }
-        return Response.status(Response.Status.OK).entity(updatedRoom.get()).build();
+        return updatedRoom.get();
     }
 
 
@@ -178,23 +148,19 @@ public class RoomManager {
      * 204(NO_CONTENT) if room was removed or was not found
      * 409(CONFLICT) if there are current or future rents for room with given id
      */
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeRoom(@PathParam("id") Long id) {
+    public void removeRoom(Long id) throws RoomHasActiveReservationsException {
         Optional<Room> roomOptional = roomRepository.getById(id);
 
         if (roomOptional.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return;
         }
         Room room = roomOptional.get();
 
         List<Rent> rentsForRoom = rentRepository.findByRoomAndStatus(room.getId(), false);
         if (rentsForRoom.isEmpty()) {
             roomRepository.remove(room);
-            return Response.status(Response.Status.NO_CONTENT).build();
         } else {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new RoomHasActiveReservationsException();
         }
     }
 }

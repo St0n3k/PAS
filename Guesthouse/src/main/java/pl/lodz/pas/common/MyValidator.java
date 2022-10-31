@@ -1,11 +1,8 @@
 package pl.lodz.pas.common;
 
+import jakarta.validation.*;
+
 import java.util.Set;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidationException;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
 public class MyValidator {
 

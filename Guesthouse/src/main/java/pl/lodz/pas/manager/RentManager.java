@@ -2,10 +2,17 @@ package pl.lodz.pas.manager;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.CreateRentDTO;
 import pl.lodz.pas.dto.UpdateRentBoardDTO;
-import pl.lodz.pas.exception.*;
+import pl.lodz.pas.exception.InvalidInputException;
+import pl.lodz.pas.exception.rent.CreateRentException;
+import pl.lodz.pas.exception.rent.RemoveRentException;
+import pl.lodz.pas.exception.rent.RentNotFoundException;
+import pl.lodz.pas.exception.room.RoomNotFoundException;
+import pl.lodz.pas.exception.user.InactiveUserException;
+import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.model.user.Client;
@@ -21,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+@AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
 public class RentManager {
@@ -42,13 +50,12 @@ public class RentManager {
      * @throws UserNotFoundException if user was not found
      * @throws RoomNotFoundException if room was not found
      * @throws InactiveUserException if user is inactive
-     * @throws ConflictException     if there was date conflict with other rents
      */
     public Rent rentRoom(CreateRentDTO createRentDTO) throws
             UserNotFoundException,
             RoomNotFoundException,
             InactiveUserException,
-            ConflictException {
+            CreateRentException {
         Optional<User> optionalUser = userRepository.getById(createRentDTO.getClientId());
         Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
 
@@ -74,7 +81,7 @@ public class RentManager {
         Rent created = rentRepository.add(rent); //synchronized method
 
         if (created == null) {
-            throw new ConflictException();
+            throw new CreateRentException();
         }
 
         return rent;
@@ -150,7 +157,7 @@ public class RentManager {
      * @param rentId id of the rent to be removed
      * @return void
      */
-    public void removeRent(Long rentId) throws ConflictException {
+    public void removeRent(Long rentId) throws RemoveRentException {
         Optional<Rent> optionalRent = rentRepository.getById(rentId);
         if (optionalRent.isEmpty()) {
             return;
@@ -162,7 +169,7 @@ public class RentManager {
             rentRepository.removeById(rentId);
             return;
         }
-        throw new ConflictException();
+        throw new RemoveRentException();
     }
 
     /**
