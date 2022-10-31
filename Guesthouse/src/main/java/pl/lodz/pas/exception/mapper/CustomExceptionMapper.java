@@ -1,8 +1,9 @@
-package pl.lodz.pas.exception;
+package pl.lodz.pas.exception.mapper;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import pl.lodz.pas.exception.*;
 
 @Provider
 public class CustomExceptionMapper implements ExceptionMapper<Exception> {
@@ -14,7 +15,14 @@ public class CustomExceptionMapper implements ExceptionMapper<Exception> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (e.getClass() == ConflictException.class) {
+        if (e.getClass() == CreateRoomException.class
+                || e.getClass() == RoomHasActiveReservationsException.class
+                || e.getClass() == UpdateRoomException.class
+                || e.getClass() == CreateRentException.class
+                || e.getClass() == UpdateRentException.class
+                || e.getClass() == RemoveRentException.class
+                || e.getClass() == CreateUserException.class
+                || e.getClass() == UpdateUserException.class) {
             return Response.status(Response.Status.CONFLICT).build();
         }
 

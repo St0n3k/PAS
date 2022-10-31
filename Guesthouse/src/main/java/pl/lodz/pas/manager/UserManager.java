@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
+import pl.lodz.pas.exception.CreateUserException;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.user.Client;
@@ -62,7 +63,7 @@ public class UserManager {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerClient(@Valid RegisterClientDTO rcDTO) {
+    public Client registerClient(@Valid RegisterClientDTO rcDTO) throws CreateUserException {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         Optional<ClientType> defaultClientTypeOptional = clientTypeRepository.getByType(Default.class);
 
@@ -80,9 +81,9 @@ public class UserManager {
         try {
             client = (Client) userRepository.add(client);
         } catch (Exception e) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new CreateUserException();
         }
-        return Response.status(Response.Status.CREATED).entity(client).build();
+        return client;
     }
 
 
