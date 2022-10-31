@@ -1,14 +1,20 @@
 package pl.lodz.pas.controller;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
 import pl.lodz.pas.exception.CreateUserException;
+import pl.lodz.pas.exception.UpdateUserException;
+import pl.lodz.pas.exception.UserNotFoundException;
 import pl.lodz.pas.manager.RentManager;
 import pl.lodz.pas.manager.UserManager;
 import pl.lodz.pas.model.Address;
@@ -23,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@ApplicationScoped
+@Path("/users")
 public class UserController {
     @Inject
     private UserManager userManager;
@@ -59,13 +67,8 @@ public class UserController {
     @Path("/employees")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) {
-        Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
-        Employee addedEmployee = (Employee) userRepository.add(employee);
-
-        if (addedEmployee == null) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
+    public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) throws CreateUserException {
+        Employee employee = userManager.registerEmployee(reDTO);
         return Response.status(Response.Status.CREATED).entity(employee).build();
     }
 
@@ -73,38 +76,25 @@ public class UserController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") Long id) {
-        Optional<User> optionalUser = userRepository.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
+    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
+        User user = userManager.getUserById(id);
+        return Response.status(Response.Status.OK).entity(user).build();
     }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllUsers(@QueryParam("username") String username) {
-        List<User> users;
-        if (username == null) {
-            users = userRepository.getAllUsers();
-        } else {
-            users = userRepository.matchUserByUsername(username);
-        }
+        List<User> users = userManager.getAllUsers(username);
         return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @GET
     @Path("/search/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserByUsername(@PathParam("username") String username) {
-        Optional<User> optionalUser = userRepository.getUserByUsername(username);
-
-        if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
+    public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {
+        User user = userManager.getUserByUsername(username);
+        return Response.status(Response.Status.OK).entity(user).build();
     }
 
 
@@ -119,16 +109,8 @@ public class UserController {
     @Path("/{id}/rents")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRentsOfClient(@PathParam("id") Long clientId,
-                                        @QueryParam("past") Boolean past) {
-        if (userRepository.getById(clientId).isEmpty()) {
-            throw new NotFoundException();
-        }
-        List<Rent> rents;
-        if (past != null) { // find past or active rents
-            rents = rentRepository.findByClientAndStatus(clientId, past);
-        } else { // find all rents
-            rents = rentRepository.getByClientId(clientId);
-        }
+                                        @QueryParam("past") Boolean past) throws UserNotFoundException {
+        List<Rent> rents = userManager.getAllRentsOfClient(clientId, past);
         return Response.status(Response.Status.OK).entity(rents).build();
     }
 
@@ -146,62 +128,8 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto) {
-        Optional<User> optionalUser = userRepository.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
-        }
-        User user = optionalUser.get();
-
-        String username = dto.getUsername();
-        String firstName = dto.getFirstName();
-        String lastName = dto.getLastName();
-        String personalId = dto.getPersonalId();
-        String city = dto.getCity();
-        String street = dto.getStreet();
-        Integer number = dto.getNumber();
-
-        if (username != null && userRepository.getUserByUsername(username).isPresent()) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
-
-        if (Objects.equals(user.getRole(), "EMPLOYEE")) {
-            Employee employee = (Employee) user;
-
-            employee.setUsername(username == null ? employee.getUsername() : username);
-            employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
-            employee.setLastName(lastName == null ? employee.getLastName() : lastName);
-
-
-            optionalUser = userRepository.update(employee);
-
-            if (optionalUser.isEmpty()) {
-                return Response.status(Response.Status.CONFLICT).build();
-            }
-            user = optionalUser.get();
-        }
-
-        if (Objects.equals(user.getRole(), "CLIENT")) {
-            Client client = (Client) user;
-
-            client.setUsername(username == null ? client.getUsername() : username);
-            client.setFirstName(firstName == null ? client.getFirstName() : firstName);
-            client.setLastName(lastName == null ? client.getLastName() : lastName);
-            client.setPersonalId(personalId == null ? client.getPersonalId() : personalId);
-
-            Address address = client.getAddress();
-
-            address.setCity(city == null ? address.getCity() : city);
-            address.setStreet(street == null ? address.getStreet() : street);
-            address.setHouseNumber(number == null ? address.getHouseNumber() : number);
-
-            optionalUser = userRepository.update(client);
-            if (optionalUser.isEmpty()) {
-                return Response.status(Response.Status.CONFLICT).build();
-            }
-            user = optionalUser.get();
-        }
+    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto) throws UserNotFoundException, UpdateUserException {
+        User user = userManager.updateUser(id, dto);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -217,20 +145,8 @@ public class UserController {
     @PUT
     @Path("/{id}/activate")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response activateUser(@PathParam("id") Long id) {
-        Optional<User> optionalUser = userRepository.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
-        }
-        User user = optionalUser.get();
-        user.setActive(true);
-
-        optionalUser = userRepository.update(user);
-        if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
-        user = optionalUser.get();
+    public Response activateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
+        User user = userManager.activateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 
@@ -246,20 +162,8 @@ public class UserController {
     @PUT
     @Path("/{id}/deactivate")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deactivateUser(@PathParam("id") Long id) {
-        Optional<User> optionalUser = userRepository.getById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
-        }
-        User user = optionalUser.get();
-        user.setActive(false);
-
-        optionalUser = userRepository.update(user);
-        if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
-        user = optionalUser.get();
+    public Response deactivateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
+        User user = userManager.deactivateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 }

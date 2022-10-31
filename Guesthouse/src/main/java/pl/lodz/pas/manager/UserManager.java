@@ -24,6 +24,8 @@ import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
 import pl.lodz.pas.exception.CreateUserException;
+import pl.lodz.pas.exception.UpdateUserException;
+import pl.lodz.pas.exception.UserNotFoundException;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.user.Client;
@@ -39,7 +41,6 @@ import pl.lodz.pas.repository.impl.UserRepository;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestScoped
-@Path("/users")
 public class UserManager {
 
     @Inject
@@ -50,20 +51,7 @@ public class UserManager {
     private ClientTypeRepository clientTypeRepository;
 
 
-    /**
-     * Endpoint which is used to register new client,
-     * username of client has to be unique, otherwise exception will be thrown
-     *
-     * @param rcDTO object containing information of client
-     * @return status code
-     * 201(CREATED) + saved client if registration was successful
-     * 409(CONFLICT) if registration attempt was unsuccessful (could be due to not unique username)
-     */
-    @POST
-    @Path("/clients")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Client registerClient(@Valid RegisterClientDTO rcDTO) throws CreateUserException {
+    public Client registerClient(RegisterClientDTO rcDTO) throws CreateUserException {
         Address address = new Address(rcDTO.getCity(), rcDTO.getStreet(), rcDTO.getNumber());
         Optional<ClientType> defaultClientTypeOptional = clientTypeRepository.getByType(Default.class);
 
@@ -87,82 +75,47 @@ public class UserManager {
     }
 
 
-    /**
-     * Endpoint which is used to register new employee,
-     * username of employee has to be unique, otherwise exception will be thrown
-     *
-     * @param reDTO object containing information of client
-     * @return status code
-     * 201(CREATED) + saved employee if registration was successful
-     * 409(CONFLICT) if registration attempt was unsuccessful (could be due to not unique username)
-     */
-    @POST
-    @Path("/employees")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) {
+    public Employee registerEmployee(RegisterEmployeeDTO reDTO) throws CreateUserException {
         Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
-        Employee addedEmployee = (Employee) userRepository.add(employee);
+        employee = (Employee) userRepository.add(employee);
 
-        if (addedEmployee == null) {
-            return Response.status(Response.Status.CONFLICT).build();
+        if (employee == null) {
+            throw new CreateUserException();
         }
-        return Response.status(Response.Status.CREATED).entity(employee).build();
+        return employee;
     }
 
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserById(@PathParam("id") Long id) {
+    public User getUserById(Long id) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UserNotFoundException();
         }
-        return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
+        return optionalUser.get();
     }
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers(@QueryParam("username") String username) {
+    public List<User> getAllUsers(String username) {
         List<User> users;
         if (username == null) {
             users = userRepository.getAllUsers();
         } else {
             users = userRepository.matchUserByUsername(username);
         }
-        return Response.status(Response.Status.OK).entity(users).build();
+        return users;
     }
 
-    @GET
-    @Path("/search/{username}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserByUsername(@PathParam("username") String username) {
+    public User getUserByUsername(String username) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.getUserByUsername(username);
 
         if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UserNotFoundException();
         }
-        return Response.status(Response.Status.OK).entity(optionalUser.get()).build();
+        return optionalUser.get();
     }
 
-
-    /**
-     * Endpoint used for finding all rents of client
-     *
-     * @param clientId id of the client
-     * @param past flag indicating if the result will be list of past rents or list of future rents
-     * @return
-     */
-    @GET
-    @Path("/{id}/rents")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllRentsOfClient(@PathParam("id") Long clientId,
-                                        @QueryParam("past") Boolean past) {
+    public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
         if (userRepository.getById(clientId).isEmpty()) {
-            throw new NotFoundException();
+            throw new UserNotFoundException();
         }
         List<Rent> rents;
         if (past != null) { // find past or active rents
@@ -170,28 +123,14 @@ public class UserManager {
         } else { // find all rents
             rents = rentRepository.getByClientId(clientId);
         }
-        return Response.status(Response.Status.OK).entity(rents).build();
+        return rents;
     }
 
-
-    /**
-     * Endpoint used for updating given user
-     *
-     * @param id id of the user
-     * @param dto object containing new properties of user
-     * @return status code
-     * 200(OK) if update was successful
-     * 409(CONFLICT) if update was unsuccessful (could be due to new username not being unique)
-     */
-    @PUT
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto) {
+    public User updateUser(Long id, UpdateUserDTO dto) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
 
@@ -204,7 +143,7 @@ public class UserManager {
         Integer number = dto.getNumber();
 
         if (username != null && userRepository.getUserByUsername(username).isPresent()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new UpdateUserException();
         }
 
         if (Objects.equals(user.getRole(), "EMPLOYEE")) {
@@ -218,7 +157,7 @@ public class UserManager {
             optionalUser = userRepository.update(employee);
 
             if (optionalUser.isEmpty()) {
-                return Response.status(Response.Status.CONFLICT).build();
+                throw new UpdateUserException();
             }
             user = optionalUser.get();
         }
@@ -239,69 +178,45 @@ public class UserManager {
 
             optionalUser = userRepository.update(client);
             if (optionalUser.isEmpty()) {
-                return Response.status(Response.Status.CONFLICT).build();
+                throw new UpdateUserException();
             }
             user = optionalUser.get();
         }
-        return Response.status(Response.Status.OK).entity(user).build();
+        return user;
     }
 
-
-    /**
-     * Endpoint used for activating given user
-     *
-     * @param id id of the user
-     * @return status code
-     * 200(OK) if activation was successful
-     * 409(CONFLICT) if activation was unsuccessful
-     */
-    @PUT
-    @Path("/{id}/activate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response activateUser(@PathParam("id") Long id) {
+    public User activateUser(Long id) throws UserNotFoundException, UpdateUserException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
         user.setActive(true);
 
         optionalUser = userRepository.update(user);
         if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new UpdateUserException();
         }
         user = optionalUser.get();
-        return Response.status(Response.Status.OK).entity(user).build();
+        return user;
     }
 
-
-    /**
-     * Endpoint used for deactivating given user
-     *
-     * @param id id of the user
-     * @return status code
-     * 200(OK) if deactivation was successful
-     * 409(CONFLICT) if deactivation was unsuccessful
-     */
-    @PUT
-    @Path("/{id}/deactivate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deactivateUser(@PathParam("id") Long id) {
+    public User deactivateUser(Long id) throws UpdateUserException, UserNotFoundException {
         Optional<User> optionalUser = userRepository.getById(id);
 
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException();
+            throw new UserNotFoundException();
         }
         User user = optionalUser.get();
         user.setActive(false);
 
         optionalUser = userRepository.update(user);
         if (optionalUser.isEmpty()) {
-            return Response.status(Response.Status.CONFLICT).build();
+            throw new UpdateUserException();
         }
         user = optionalUser.get();
-        return Response.status(Response.Status.OK).entity(user).build();
+        return user;
     }
 
 }
