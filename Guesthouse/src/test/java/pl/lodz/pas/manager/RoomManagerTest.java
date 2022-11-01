@@ -1,10 +1,5 @@
 package pl.lodz.pas.manager;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-
-import java.time.LocalDateTime;
 import io.restassured.http.ContentType;
 import io.restassured.response.ResponseBody;
 import jakarta.ws.rs.core.Response.Status;
@@ -14,26 +9,32 @@ import pl.lodz.pas.dto.CreateRentDTO;
 import pl.lodz.pas.dto.UpdateRoomDTO;
 import pl.lodz.pas.model.Room;
 
+import java.time.LocalDateTime;
+
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+
 class RoomManagerTest {
 
 
     @Test
     void shouldReturnRoomWithStatusCode200() {
         when().get("/api/rooms/search/643")
-              .then()
-              .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().contentType(ContentType.JSON)
-              .assertThat().body("roomNumber", equalTo(643))
-              .assertThat().body("price", equalTo(250.0F))
-              .assertThat().body("size", equalTo(6));
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().contentType(ContentType.JSON)
+                .assertThat().body("roomNumber", equalTo(643))
+                .assertThat().body("price", equalTo(250.0F))
+                .assertThat().body("size", equalTo(6));
     }
 
     @Test
     void shouldReturnListOfRoomsWithStatusCode200() {
         when().get("/api/rooms")
-              .then()
-              .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().contentType(ContentType.JSON);
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().contentType(ContentType.JSON);
         //TODO add some assertions
     }
 
@@ -44,20 +45,20 @@ class RoomManagerTest {
 
         JSONObject req = new JSONObject(room);
         int id = given().contentType(ContentType.JSON)
-                        .body(req.toString())
-                        .when()
-                        .post("/api/rooms")
-                        .then()
-                        .statusCode(Status.CREATED.getStatusCode())
-                        .extract().jsonPath().getInt("id");
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Status.CREATED.getStatusCode())
+                .extract().jsonPath().getInt("id");
 
         when().get("api/rooms/" + id)
-              .then()
-              .statusCode(Status.OK.getStatusCode())
-              .contentType(ContentType.JSON)
-              .body("id", equalTo(id),
-                    "price", equalTo(600.0f),
-                    "size", equalTo(1));
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(id),
+                        "price", equalTo(600.0f),
+                        "size", equalTo(1));
     }
 
     @Test
@@ -66,52 +67,52 @@ class RoomManagerTest {
 
         JSONObject req = new JSONObject(room);
         given().contentType(ContentType.JSON)
-               .body(req.toString())
-               .when()
-               .post("/api/rooms")
-               .then()
-               .statusCode(Status.CONFLICT.getStatusCode());
+                .body(req.toString())
+                .when()
+                .post("/api/rooms")
+                .then()
+                .statusCode(Status.CONFLICT.getStatusCode());
     }
 
     @Test
     void shouldGetRoomByIdWithStatusCode200() {
         given().when()
-               .get("/api/rooms/2")
-               .then()
-               .statusCode(Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("id", equalTo(2),
-                     "price", equalTo(707.19F),
-                     "roomNumber", equalTo(836),
-                     "size", equalTo(1));
+                .get("/api/rooms/2")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(2),
+                        "price", equalTo(707.19F),
+                        "roomNumber", equalTo(836),
+                        "size", equalTo(1));
     }
 
     @Test
     void shouldGetRoomByIdFailWithStatusCode404() {
         given().when()
-               .get("/api/rooms/123456")
-               .then()
-               .statusCode(Status.NOT_FOUND.getStatusCode());
+                .get("/api/rooms/123456")
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
     void shouldFindPastRentsForRoomWithStatusCode200() {
         given().param("past", true)
-               .when().get("/api/rooms/11/rents")
-               .then()
-               .statusCode(Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("size()", equalTo(1));
+                .when().get("/api/rooms/11/rents")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo(1));
     }
 
     @Test
     void shouldFindActiveRentsForRoomWithStatusCode200() {
         given().param("past", false)
-               .when().get("/api/rooms/11/rents")
-               .then()
-               .statusCode(Status.OK.getStatusCode())
-               .contentType(ContentType.JSON)
-               .body("size()", equalTo(2));
+                .when().get("/api/rooms/11/rents")
+                .then()
+                .statusCode(Status.OK.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("size()", equalTo(2));
     }
 
     @Test
@@ -120,20 +121,20 @@ class RoomManagerTest {
         JSONObject req = new JSONObject(dto);
 
         when().get("/api/rooms/9")
-              .then()
-              .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().body("price", equalTo(1396.79F))
-              .assertThat().body("size", equalTo(9))
-              .assertThat().body("roomNumber", equalTo(392));
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().body("price", equalTo(1396.79F))
+                .assertThat().body("size", equalTo(9))
+                .assertThat().body("roomNumber", equalTo(392));
 
 
         given().contentType(ContentType.JSON)
-               .body(req.toString())
-               .when().put("/api/rooms/9")
-               .then().assertThat().statusCode(Status.OK.getStatusCode())
-               .assertThat().body("price", equalTo(199.99F))
-               .assertThat().body("size", equalTo(9))
-               .assertThat().body("roomNumber", equalTo(1934));
+                .body(req.toString())
+                .when().put("/api/rooms/9")
+                .then().assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().body("price", equalTo(199.99F))
+                .assertThat().body("size", equalTo(9))
+                .assertThat().body("roomNumber", equalTo(1934));
     }
 
     @Test
@@ -142,15 +143,15 @@ class RoomManagerTest {
         JSONObject req = new JSONObject(dto);
 
         when().get("/api/rooms/10")
-              .then()
-              .assertThat().statusCode(Status.OK.getStatusCode())
-              .assertThat().body("roomNumber", equalTo(244));
+                .then()
+                .assertThat().statusCode(Status.OK.getStatusCode())
+                .assertThat().body("roomNumber", equalTo(244));
 
 
         given().contentType(ContentType.JSON)
-               .body(req.toString())
-               .when().put("/api/rooms/10")
-               .then().assertThat().statusCode(Status.CONFLICT.getStatusCode());
+                .body(req.toString())
+                .when().put("/api/rooms/10")
+                .then().assertThat().statusCode(Status.CONFLICT.getStatusCode());
     }
 
 
@@ -159,19 +160,19 @@ class RoomManagerTest {
         Room room = new Room(1234, 200.0, 4);
         JSONObject json = new JSONObject(room);
         ResponseBody responseBody = given().body(json.toString())
-                                           .contentType(ContentType.JSON)
-                                           .when().post("/api/rooms/").getBody();
+                .contentType(ContentType.JSON)
+                .when().post("/api/rooms/").getBody();
 
         Room addedRoom = responseBody.as(Room.class);
 
         given().contentType(ContentType.JSON)
-               .when().delete("/api/rooms/" + addedRoom.getId())
-               .then()
-               .statusCode(Status.NO_CONTENT.getStatusCode());
+                .when().delete("/api/rooms/" + addedRoom.getId())
+                .then()
+                .statusCode(Status.NO_CONTENT.getStatusCode());
 
         when().get("/api/rooms/" + addedRoom.getId())
-              .then()
-              .statusCode(Status.NOT_FOUND.getStatusCode());
+                .then()
+                .statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -180,10 +181,10 @@ class RoomManagerTest {
         JSONObject json = new JSONObject(room);
 
         ResponseBody responseBody = given()
-                                        .body(json.toString())
-                                        .contentType(ContentType.JSON)
-                                        .when().post("/api/rooms")
-                                        .getBody();
+                .body(json.toString())
+                .contentType(ContentType.JSON)
+                .when().post("/api/rooms")
+                .getBody();
 
         Room addedRoom = responseBody.as(Room.class);
 
@@ -194,17 +195,17 @@ class RoomManagerTest {
         JSONObject body = new JSONObject(dto);
 
         given().contentType(ContentType.JSON)
-               .body(body.toString())
-               .when()
-               .post("/api/rents")
-               .then()
-               .statusCode(Status.CREATED.getStatusCode());
+                .body(body.toString())
+                .when()
+                .post("/api/rents")
+                .then()
+                .statusCode(Status.CREATED.getStatusCode());
 
 
         given().contentType(ContentType.JSON)
-               .when().delete("/api/rooms/" + addedRoom.getId())
-               .then()
-               .statusCode(Status.CONFLICT.getStatusCode());
+                .when().delete("/api/rooms/" + addedRoom.getId())
+                .then()
+                .statusCode(Status.CONFLICT.getStatusCode());
     }
 
     @Test
@@ -212,10 +213,10 @@ class RoomManagerTest {
         UpdateRoomDTO roomDTO = new UpdateRoomDTO(75, 0, -1.);
         JSONObject json = new JSONObject(roomDTO);
         given().body(json.toString())
-               .contentType(ContentType.JSON)
-               .when()
-               .put("/api/rooms/5")
-               .then()
-               .assertThat().statusCode(Status.BAD_REQUEST.getStatusCode());
+                .contentType(ContentType.JSON)
+                .when()
+                .put("/api/rooms/5")
+                .then()
+                .assertThat().statusCode(Status.BAD_REQUEST.getStatusCode());
     }
 }

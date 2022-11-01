@@ -3,9 +3,10 @@ package pl.lodz.p.it.pas.manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
-import pl.lodz.p.it.pas.exception.*;
+import pl.lodz.p.it.pas.exception.InvalidInputException;
 import pl.lodz.p.it.pas.exception.rent.CreateRentException;
 import pl.lodz.p.it.pas.exception.rent.RemoveRentException;
 import pl.lodz.p.it.pas.exception.rent.RentNotFoundException;
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
+@RequestScope
 @Service
 public class RentManager {
 

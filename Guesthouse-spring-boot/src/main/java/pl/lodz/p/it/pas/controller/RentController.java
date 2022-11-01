@@ -5,9 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
-import pl.lodz.p.it.pas.exception.*;
+import pl.lodz.p.it.pas.exception.InvalidInputException;
 import pl.lodz.p.it.pas.exception.rent.CreateRentException;
 import pl.lodz.p.it.pas.exception.rent.RemoveRentException;
 import pl.lodz.p.it.pas.exception.rent.RentNotFoundException;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestScope
 @RequestMapping("/rents")
 @RequiredArgsConstructor
 public class RentController {

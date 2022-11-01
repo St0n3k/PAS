@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestScope
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {

@@ -1,6 +1,6 @@
 package pl.lodz.pas.controller;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -20,7 +20,7 @@ import pl.lodz.pas.model.Rent;
 
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 @Path("/rents")
 public class RentController {
 

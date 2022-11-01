@@ -3,6 +3,7 @@ package pl.lodz.p.it.pas.manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
 import pl.lodz.p.it.pas.dto.UpdateRoomDto;
 import pl.lodz.p.it.pas.exception.room.CreateRoomException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
+@RequestScope
 @Service
 public class RoomManager {
 

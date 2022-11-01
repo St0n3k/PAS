@@ -3,6 +3,7 @@ package pl.lodz.p.it.pas.manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 
 @RequiredArgsConstructor
+@RequestScope
 @Service
 public class UserManager {
 

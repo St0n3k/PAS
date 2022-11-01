@@ -1,14 +1,15 @@
 package pl.lodz.pas;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.time.LocalDateTime;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import pl.lodz.pas.model.Address;
 import pl.lodz.pas.model.Rent;
 import pl.lodz.pas.model.Room;
 import pl.lodz.pas.model.user.Client;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidatorTest {
     @Test
@@ -24,7 +25,7 @@ public class ValidatorTest {
 
         //Null client and room
         assertThrows(ValidationException.class,
-                     () -> new Rent(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(5), true, 1000.0,
-                                    null, null));
+                () -> new Rent(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(5), true, 1000.0,
+                        null, null));
     }
 }

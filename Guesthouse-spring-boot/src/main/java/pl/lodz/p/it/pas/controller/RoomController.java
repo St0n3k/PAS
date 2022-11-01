@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 import pl.lodz.p.it.pas.dto.CreateRoomDto;
 import pl.lodz.p.it.pas.dto.UpdateRoomDto;
 import pl.lodz.p.it.pas.exception.room.CreateRoomException;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestScope
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
 public class RoomController {
