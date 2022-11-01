@@ -53,15 +53,9 @@ public class RoomController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Room> createRoom(@Valid @RequestBody CreateRoomDto dto) throws CreateRoomException {
-        var created = roomManager.addRoom(dto);
-
-        if (created != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        Room created = roomManager.addRoom(dto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/rents")
@@ -76,7 +70,7 @@ public class RoomController {
     public ResponseEntity<Room> update(@PathVariable("id") Long id,
                                        @Valid @RequestBody UpdateRoomDto dto)
         throws RoomNotFoundException, UpdateRoomException {
-        var updatedRoom = roomManager.updateRoom(id, dto);
+        Room updatedRoom = roomManager.updateRoom(id, dto);
 
         return ResponseEntity.ok(updatedRoom);
     }
