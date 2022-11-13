@@ -6,6 +6,7 @@
     <persistence-unit name="guesthouse" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:global/jdbc/guesthouse</jta-data-source>
+        <jar-file>lib/Guesthouse-Model-1.0.jar</jar-file>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>

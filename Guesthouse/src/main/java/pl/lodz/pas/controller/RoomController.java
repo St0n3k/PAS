@@ -1,11 +1,22 @@
 package pl.lodz.pas.controller;
 
+import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.pas.dto.CreateRoomDTO;
 import pl.lodz.pas.dto.UpdateRoomDTO;
 import pl.lodz.pas.exception.room.CreateRoomException;
@@ -13,10 +24,6 @@ import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.room.UpdateRoomException;
 import pl.lodz.pas.manager.RoomManager;
-import pl.lodz.pas.model.Rent;
-import pl.lodz.pas.model.Room;
-
-import java.util.List;
 
 @RequestScoped
 @Path("/rooms")
@@ -71,8 +78,8 @@ public class RoomController {
      * Endpoint which returns list of rents of given room
      *
      * @param roomId room id
-     * @param past   flag which indicates if the result will be list of past rents or future rents.
-     *               If this parameter is not set, the result of the method will be list of all rents of given room
+     * @param past flag which indicates if the result will be list of past rents or future rents.
+     * If this parameter is not set, the result of the method will be list of all rents of given room
      * @return list of rents that meet given criteria
      */
     @GET
@@ -88,7 +95,7 @@ public class RoomController {
     /**
      * Endpoint which is used to update room properties
      *
-     * @param id            id of room to be updated
+     * @param id id of room to be updated
      * @param updateRoomDTO object containing new properties of existing room
      */
     @PUT

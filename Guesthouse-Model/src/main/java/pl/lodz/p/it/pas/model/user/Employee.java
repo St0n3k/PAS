@@ -1,4 +1,4 @@
-package pl.lodz.pas.model.user;
+package pl.lodz.p.it.pas.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

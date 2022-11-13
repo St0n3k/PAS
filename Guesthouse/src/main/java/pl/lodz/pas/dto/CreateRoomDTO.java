@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRoomDTO {
-    
+
     @NotNull
     @Min(value = 1)
     private int roomNumber;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateRentBoardDTO {
-    
+
     @NotNull
     Boolean board;
 }

@@ -1,11 +1,23 @@
 package pl.lodz.pas.controller;
 
+import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.user.Client;
+import pl.lodz.p.it.pas.model.user.Employee;
+import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
@@ -13,12 +25,6 @@ import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.UserManager;
-import pl.lodz.pas.model.Rent;
-import pl.lodz.pas.model.user.Client;
-import pl.lodz.pas.model.user.Employee;
-import pl.lodz.pas.model.user.User;
-
-import java.util.List;
 
 @RequestScoped
 @Path("/users")
@@ -93,7 +99,7 @@ public class UserController {
      * Endpoint used for finding all rents of client
      *
      * @param clientId id of the client
-     * @param past     flag indicating if the result will be list of past rents or list of future rents
+     * @param past flag indicating if the result will be list of past rents or list of future rents
      * @return
      */
     @GET
@@ -109,7 +115,7 @@ public class UserController {
     /**
      * Endpoint used for updating given user
      *
-     * @param id  id of the user
+     * @param id id of the user
      * @param dto object containing new properties of user
      * @return status code
      * 200(OK) if update was successful
@@ -119,7 +125,8 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto) throws UserNotFoundException, UpdateUserException {
+    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto)
+        throws UserNotFoundException, UpdateUserException {
         User user = userManager.updateUser(id, dto);
         return Response.status(Response.Status.OK).entity(user).build();
     }

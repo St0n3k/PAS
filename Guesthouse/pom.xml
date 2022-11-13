@@ -105,7 +105,11 @@
             <scope>provided</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>pl.lodz.p.it.pas</groupId>
+            <artifactId>Guesthouse-Model</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <properties>

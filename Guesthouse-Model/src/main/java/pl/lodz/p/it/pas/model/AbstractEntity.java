@@ -1,10 +1,9 @@
-package pl.lodz.pas.model;
+package pl.lodz.p.it.pas.model;
 
+import java.io.Serializable;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
 import lombok.Data;
-
-import java.io.Serializable;
 
 @MappedSuperclass
 @Data

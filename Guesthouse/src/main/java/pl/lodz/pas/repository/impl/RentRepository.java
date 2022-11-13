@@ -1,18 +1,17 @@
 package pl.lodz.pas.repository.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.Rent;
-import pl.lodz.pas.model.Room;
+import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -39,8 +38,8 @@ public class RentRepository implements Repository<Rent> {
 
         em.lock(room.get(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
         boolean isColliding = isColliding(rent.getBeginTime(),
-                rent.getEndTime(),
-                rent.getRoom().getRoomNumber());
+                                          rent.getEndTime(),
+                                          rent.getRoom().getRoomNumber());
 
         if (isColliding) {
             return null;
@@ -68,20 +67,20 @@ public class RentRepository implements Repository<Rent> {
 
     public List<Rent> getByRoomId(Long roomId) {
         return em.createNamedQuery("Rent.getByRoomId", Rent.class)
-                .setParameter("roomId", roomId)
-                .getResultList();
+                 .setParameter("roomId", roomId)
+                 .getResultList();
     }
 
     public List<Rent> getByClientUsername(String username) {
         return em.createNamedQuery("Rent.getByClientUsername", Rent.class)
-                .setParameter("username", username)
-                .getResultList();
+                 .setParameter("username", username)
+                 .getResultList();
     }
 
     public List<Rent> getByClientId(Long clientId) {
         return em.createNamedQuery("Rent.getByClientId", Rent.class)
-                .setParameter("id", clientId)
-                .getResultList();
+                 .setParameter("id", clientId)
+                 .getResultList();
     }
 
     public Optional<Rent> update(Rent rent) {
@@ -91,17 +90,17 @@ public class RentRepository implements Repository<Rent> {
     /**
      * Method to check if given period of time is colliding with periods of existing rents for given room
      *
-     * @param beginDate  begin date of currently created rent
-     * @param endDate    end date of currently created rent
+     * @param beginDate begin date of currently created rent
+     * @param endDate end date of currently created rent
      * @param roomNumber number of the room
      * @return false if new rent can be created for given period of time
      */
     private boolean isColliding(LocalDateTime beginDate, LocalDateTime endDate, int roomNumber) {
         List<Rent> rentsColliding = em.createNamedQuery("Rent.getRentsColliding", Rent.class)
-                .setParameter("beginDate", beginDate)
-                .setParameter("endDate", endDate)
-                .setParameter("roomNumber", roomNumber)
-                .getResultList();
+                                      .setParameter("beginDate", beginDate)
+                                      .setParameter("endDate", endDate)
+                                      .setParameter("roomNumber", roomNumber)
+                                      .getResultList();
 
         return !rentsColliding.isEmpty();
     }
@@ -125,7 +124,7 @@ public class RentRepository implements Repository<Rent> {
 
     /**
      * @param roomId ID of the room.
-     * @param past   Flag indicating, whether past or active rents are returned.
+     * @param past Flag indicating, whether past or active rents are returned.
      * @return Past rents if past is false, active (future) rents otherwise.
      */
     public List<Rent> findByRoomAndStatus(Long roomId, boolean past) {
@@ -137,12 +136,12 @@ public class RentRepository implements Repository<Rent> {
         }
 
         return query.setParameter("id", roomId)
-                .getResultList();
+                    .getResultList();
     }
 
     /**
      * @param clientId ID of the client.
-     * @param past     Flag indicating, whether past or active rents are returned.
+     * @param past Flag indicating, whether past or active rents are returned.
      * @return Past rents if past is false, active (future) rents otherwise.
      */
     public List<Rent> findByClientAndStatus(Long clientId, boolean past) {
@@ -154,6 +153,6 @@ public class RentRepository implements Repository<Rent> {
         }
 
         return query.setParameter("id", clientId)
-                .getResultList();
+                    .getResultList();
     }
 }

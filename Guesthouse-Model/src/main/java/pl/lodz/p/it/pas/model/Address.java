@@ -1,4 +1,4 @@
-package pl.lodz.pas.model;
+package pl.lodz.p.it.pas.model;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -7,7 +7,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.pas.common.MyValidator;
+import pl.lodz.p.it.pas.common.MyValidator;
 
 @Embeddable
 @Access(AccessType.FIELD)
