@@ -1,9 +1,9 @@
-package pl.lodz.pas.model.user.ClientTypes;
+package pl.lodz.p.it.pas.model.user.ClientTypes;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Entity;
-import pl.lodz.pas.common.MyValidator;
+import pl.lodz.p.it.pas.common.MyValidator;
 
 @Entity
 @Access(AccessType.FIELD)

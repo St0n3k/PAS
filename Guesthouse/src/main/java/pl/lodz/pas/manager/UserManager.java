@@ -1,31 +1,30 @@
 package pl.lodz.pas.manager;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.pas.model.Address;
+import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.user.Admin;
+import pl.lodz.p.it.pas.model.user.Client;
+import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
+import pl.lodz.p.it.pas.model.user.ClientTypes.Default;
+import pl.lodz.p.it.pas.model.user.Employee;
+import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.pas.dto.RegisterClientDTO;
 import pl.lodz.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.pas.dto.UpdateUserDTO;
 import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
-import pl.lodz.pas.model.Address;
-import pl.lodz.pas.model.Rent;
-import pl.lodz.pas.model.user.Admin;
-import pl.lodz.pas.model.user.Client;
-import pl.lodz.pas.model.user.ClientTypes.ClientType;
-import pl.lodz.pas.model.user.ClientTypes.Default;
-import pl.lodz.pas.model.user.Employee;
-import pl.lodz.pas.model.user.User;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -50,11 +49,11 @@ public class UserManager {
         }
 
         Client client = new Client(rcDTO.getUsername(),
-                rcDTO.getFirstName(),
-                rcDTO.getLastName(),
-                rcDTO.getPersonalID(),
-                address,
-                defaultClientTypeOptional.get());
+                                   rcDTO.getFirstName(),
+                                   rcDTO.getLastName(),
+                                   rcDTO.getPersonalID(),
+                                   address,
+                                   defaultClientTypeOptional.get());
 
         try {
             client = (Client) userRepository.add(client);
@@ -151,8 +150,7 @@ public class UserManager {
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
 
             updatedUser = client;
-        }
-        else if (Objects.equals(user.getRole(), "EMPLOYEE")) {
+        } else if (Objects.equals(user.getRole(), "EMPLOYEE")) {
             Employee employee = (Employee) user;
 
             employee.setUsername(username == null ? employee.getUsername() : username);
@@ -161,8 +159,7 @@ public class UserManager {
 
             updatedUser = employee;
 
-        }
-        else if (Objects.equals(user.getRole(), "ADMIN")) {
+        } else if (Objects.equals(user.getRole(), "ADMIN")) {
             Admin admin = (Admin) user;
 
             admin.setUsername(username == null ? admin.getUsername() : username);
@@ -172,9 +169,9 @@ public class UserManager {
             throw new UpdateUserException();
         }
 
-        try{
+        try {
             optionalUser = userRepository.update(updatedUser);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new UpdateUserException();
         }
 

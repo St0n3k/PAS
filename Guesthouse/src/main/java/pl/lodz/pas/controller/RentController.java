@@ -1,11 +1,20 @@
 package pl.lodz.pas.controller;
 
+import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.pas.dto.CreateRentDTO;
 import pl.lodz.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.pas.exception.InvalidInputException;
@@ -16,9 +25,6 @@ import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.user.InactiveUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.RentManager;
-import pl.lodz.pas.model.Rent;
-
-import java.util.List;
 
 @RequestScoped
 @Path("/rents")
@@ -42,7 +48,7 @@ public class RentController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response rentRoom(@Valid CreateRentDTO createRentDTO)
-            throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
+        throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Rent rent = rentManager.rentRoom(createRentDTO);
         return Response.status(Response.Status.CREATED).entity(rent).build();
     }
@@ -66,7 +72,7 @@ public class RentController {
     /**
      * Endpoint used to change board option for given rent, cost is recalculated before saving to database
      *
-     * @param id  id of the rent to be updated
+     * @param id id of the rent to be updated
      * @param dto object containing the choice of board option (true/false)
      * @return status 200 (OK) if rent was updated, 409 (CONFLICT) otherwise
      */
@@ -74,7 +80,7 @@ public class RentController {
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateRentBoard(@PathParam("id") Long id, @Valid UpdateRentBoardDTO dto)
-            throws InvalidInputException, RentNotFoundException {
+        throws InvalidInputException, RentNotFoundException {
         Rent rent = rentManager.updateRentBoard(id, dto);
         return Response.status(Response.Status.OK).entity(rent).build();
     }

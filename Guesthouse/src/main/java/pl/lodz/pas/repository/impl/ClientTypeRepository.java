@@ -1,14 +1,13 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.List;
+import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.user.ClientTypes.ClientType;
+import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -52,8 +51,8 @@ public class ClientTypeRepository implements Repository<ClientType> {
 
     public Optional<ClientType> getByType(Class type) {
         List<ClientType> result = em.createNamedQuery("ClientType.getByType", ClientType.class)
-                .setParameter("type", type.getSimpleName())
-                .getResultList();
+                                    .setParameter("type", type.getSimpleName())
+                                    .getResultList();
         if (result.isEmpty()) {
             return Optional.empty();
         }

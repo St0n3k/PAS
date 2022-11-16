@@ -1,14 +1,13 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.List;
+import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.Room;
+import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -52,8 +51,8 @@ public class RoomRepository implements Repository<Room> {
 
     public Optional<Room> getByRoomNumber(int roomNumber) {
         List<Room> result = em.createNamedQuery("Room.getByRoomNumber", Room.class)
-                .setParameter("roomNumber", roomNumber)
-                .getResultList();
+                              .setParameter("roomNumber", roomNumber)
+                              .getResultList();
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -66,7 +65,7 @@ public class RoomRepository implements Repository<Room> {
      */
     public boolean existsById(Long id) {
         return em.createNamedQuery("Room.existsById", Boolean.class)
-                .setParameter("id", id)
-                .getSingleResult();
+                 .setParameter("id", id)
+                 .getSingleResult();
     }
 }

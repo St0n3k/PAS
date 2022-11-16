@@ -1,12 +1,16 @@
-package pl.lodz.pas.model.user;
+package pl.lodz.p.it.pas.model.user;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.pas.common.MyValidator;
-import pl.lodz.pas.model.Address;
-import pl.lodz.pas.model.user.ClientTypes.ClientType;
+import pl.lodz.p.it.pas.common.MyValidator;
+import pl.lodz.p.it.pas.model.Address;
+import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 
 @Entity
 @Data

@@ -1,14 +1,13 @@
 package pl.lodz.pas.repository.impl;
 
+import java.util.List;
+import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import pl.lodz.pas.model.user.User;
+import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.pas.repository.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -46,9 +45,9 @@ public class UserRepository implements Repository<User> {
 
     public Optional<User> getUserByUsername(String username) {
         List<User> result = em
-                .createNamedQuery("User.getByUsername", User.class)
-                .setParameter("username", username)
-                .getResultList();
+                                .createNamedQuery("User.getByUsername", User.class)
+                                .setParameter("username", username)
+                                .getResultList();
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -61,8 +60,8 @@ public class UserRepository implements Repository<User> {
      */
     public List<User> matchUserByUsername(String phrase) {
         return em.createNamedQuery("User.matchByUsername", User.class)
-                .setParameter("username", '%' + phrase + '%')
-                .getResultList();
+                 .setParameter("username", '%' + phrase + '%')
+                 .getResultList();
 
     }
 
