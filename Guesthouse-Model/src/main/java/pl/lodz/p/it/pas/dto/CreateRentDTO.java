@@ -1,4 +1,4 @@
-package pl.lodz.pas.dto;
+package pl.lodz.p.it.pas.dto;
 
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.AssertTrue;

@@ -17,7 +17,7 @@ import io.restassured.response.Response;
 import jakarta.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import pl.lodz.pas.dto.CreateRentDTO;
+import pl.lodz.p.it.pas.dto.CreateRentDTO;
 
 class RentManagerTest {
 

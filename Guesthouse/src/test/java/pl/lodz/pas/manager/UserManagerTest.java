@@ -9,9 +9,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import pl.lodz.pas.dto.RegisterClientDTO;
-import pl.lodz.pas.dto.RegisterEmployeeDTO;
-import pl.lodz.pas.dto.UpdateUserDTO;
+import pl.lodz.p.it.pas.dto.RegisterClientDTO;
+import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
+import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 
 class UserManagerTest {
 

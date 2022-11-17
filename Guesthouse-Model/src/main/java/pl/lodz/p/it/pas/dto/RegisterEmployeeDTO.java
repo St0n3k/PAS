@@ -1,4 +1,4 @@
-package pl.lodz.pas.dto;
+package pl.lodz.p.it.pas.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
