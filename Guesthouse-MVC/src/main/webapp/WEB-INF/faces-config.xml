@@ -13,16 +13,10 @@
             <supported-locale>pl</supported-locale>
             <supported-locale>en</supported-locale>
         </locale-config>
-        <resource-bundle>
-            <base-name>i18n.messages</base-name>
-            <var>msg</var>
-        </resource-bundle>
-        <message-bundle>
-            i18n.jsf_messages
-        </message-bundle>
+
     </application>
     <navigation-rule>
-        <from-view-id>/navigation.xhtml</from-view-id>
+        <from-view-id>/rooms.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>forwardToNavigationTarget</from-outcome>
             <to-view-id>/navigationTarget.xhtml</to-view-id>
