@@ -1,4 +1,4 @@
-package pl.lodz.pas.manager;
+package pl.lodz.p.it.pas.manager;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;

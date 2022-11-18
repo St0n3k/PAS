@@ -13,6 +13,7 @@
     <modules>
         <module>Guesthouse-Model</module>
         <module>Guesthouse</module>
+        <module>Guesthouse-API-Tests</module>
         <module>Guesthouse-MVC</module>
     </modules>
 

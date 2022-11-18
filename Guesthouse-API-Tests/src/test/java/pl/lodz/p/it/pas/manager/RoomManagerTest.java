@@ -1,4 +1,4 @@
-package pl.lodz.pas.manager;
+package pl.lodz.p.it.pas.manager;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -6,13 +6,12 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.time.LocalDateTime;
 import io.restassured.http.ContentType;
-import io.restassured.response.ResponseBody;
 import jakarta.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRoomDTO;
+import pl.lodz.p.it.pas.model.Room;
 
 class RoomManagerTest {
 
@@ -34,7 +33,6 @@ class RoomManagerTest {
               .then()
               .assertThat().statusCode(Status.OK.getStatusCode())
               .assertThat().contentType(ContentType.JSON);
-        //TODO add some assertions
     }
 
     @Test
@@ -158,11 +156,10 @@ class RoomManagerTest {
     void shouldRemoveRoomWithStatusCode204() {
         Room room = new Room(1234, 200.0, 4);
         JSONObject json = new JSONObject(room);
-        ResponseBody responseBody = given().body(json.toString())
-                                           .contentType(ContentType.JSON)
-                                           .when().post("/api/rooms/").getBody();
-
-        Room addedRoom = responseBody.as(Room.class);
+        Room addedRoom = given().body(json.toString())
+                                .contentType(ContentType.JSON)
+                                .when().post("/api/rooms/")
+                                .getBody().as(Room.class);
 
         given().contentType(ContentType.JSON)
                .when().delete("/api/rooms/" + addedRoom.getId())
@@ -179,13 +176,10 @@ class RoomManagerTest {
         Room room = new Room(4321, 200.0, 4);
         JSONObject json = new JSONObject(room);
 
-        ResponseBody responseBody = given()
-                                        .body(json.toString())
-                                        .contentType(ContentType.JSON)
-                                        .when().post("/api/rooms")
-                                        .getBody();
-
-        Room addedRoom = responseBody.as(Room.class);
+        Room addedRoom = given().body(json.toString())
+                                .contentType(ContentType.JSON)
+                                .when().post("/api/rooms")
+                                .getBody().as(Room.class);
 
         LocalDateTime beginDate = LocalDateTime.of(2025, 11, 22, 11, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2025, 11, 25, 10, 0, 0);
