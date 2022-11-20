@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>Guesthouse</title>
+</head>
+<body>
+<h1>Hello in our guesthouse!</h1>
+
+<h:form>
+    <h:commandButton value="Add room" action="showAddRoomForm"/>
+</h:form>
+
+<h:form>
+    <h:commandButton value="Back to room list" action="showRoomList"/>
+</h:form>
+
+<h:form>
+    <label>
+        Room number
+        <h:inputText id="room_number" value="#{addRoomBean.room.roomNumber}"/>
+    </label>
+    <br/>
+
+    <label>
+        Size
+        <h:inputText id="size" value="#{addRoomBean.room.size}"/>
+    </label>
+    <br/>
+
+    <label>
+        Price
+        <h:inputText id="price" value="#{addRoomBean.room.price}"/>
+    </label>
+    <br/>
+
+    <h:commandButton value="Add" action="#{addRoomBean.addRoom()}"/>
+</h:form>
+</body>
+</html>

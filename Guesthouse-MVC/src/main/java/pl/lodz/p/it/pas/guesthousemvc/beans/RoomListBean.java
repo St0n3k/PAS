@@ -6,6 +6,7 @@ import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Room;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class RoomListBean implements Serializable {
 
     private List<Room> roomList = new ArrayList<>();
@@ -39,18 +40,23 @@ public class RoomListBean implements Serializable {
     }
 
     public void refreshRoomList() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/rooms")).GET().build();
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(Utils.API_URL + "/rooms"))
+                .GET()
+                .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         roomList = mapper.readValue(response.body(), List.class);
     }
 
 
-    //Somehow this method is called on room row creation
-//    public void removeRoom(int id) throws IOException, InterruptedException {
-//        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/rooms/" + id)).DELETE().build();
-//
-//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-//        refreshRoomList();
-//    }
+    public void removeRoom(int id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.
+                newBuilder(URI.create(Utils.API_URL + "/rooms/" + id))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        refreshRoomList();
+    }
 }

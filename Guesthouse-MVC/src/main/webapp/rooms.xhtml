@@ -11,7 +11,13 @@
 </head>
 <body>
 <h1>Hello in our guesthouse!</h1>
-<h:button value="Refresh rooms" onclick="#{roomListBean.refreshRoomList()}"/>
+<h:form>
+    <h:commandButton value="Refresh rooms" action="#{roomListBean.refreshRoomList()}"/>
+</h:form>
+
+<h:form>
+    <h:commandButton value="Add room" action="showAddRoomForm"/>
+</h:form>
 <h:dataTable class="table" value="#{roomListBean.roomList}" var="room">
     <h:column>
         <f:facet name="header">Price</f:facet>
@@ -28,10 +34,12 @@
         #{room.roomNumber}
     </h:column>
 
-<!--    <h:column>-->
-<!--        <f:facet name="header">Delete</f:facet>-->
-<!--        <h:button value="Remove" onclick="#{roomListBean.refreshRoomList()}"/>-->
-<!--    </h:column>-->
+    <h:column>
+        <f:facet name="header">Delete</f:facet>
+        <h:form>
+            <h:commandButton value="Remove" action="#{roomListBean.removeRoom(room.id)}"/>
+        </h:form>
+    </h:column>
 
 </h:dataTable>
 

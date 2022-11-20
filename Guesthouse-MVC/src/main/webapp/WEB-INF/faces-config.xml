@@ -18,13 +18,20 @@
     <navigation-rule>
         <from-view-id>/rooms.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>forwardToNavigationTarget</from-outcome>
-            <to-view-id>/navigationTarget.xhtml</to-view-id>
+            <from-outcome>showAddRoomForm</from-outcome>
+            <to-view-id>/addRoom.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>redirectToNavigationTarget</from-outcome>
             <to-view-id>/navigationTarget.xhtml</to-view-id>
             <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/addRoom.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showRoomList</from-outcome>
+            <to-view-id>/rooms.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
