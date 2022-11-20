@@ -87,6 +87,14 @@ public class UserController {
     }
 
     @GET
+    @Path("/clients")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllClients() {
+        List<Client> clients = userManager.getClients();
+        return Response.status(Response.Status.OK).entity(clients).build();
+    }
+
+    @GET
     @Path("/search/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {

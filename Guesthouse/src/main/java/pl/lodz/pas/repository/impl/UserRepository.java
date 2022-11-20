@@ -65,6 +65,13 @@ public class UserRepository implements Repository<User> {
 
     }
 
+    public List<User> getUsersByRole(String role) {
+        return em.createNamedQuery("User.getByRole", User.class)
+                .setParameter("role", '%' + role + '%')
+                .getResultList();
+
+    }
+
     public List<User> getAllUsers() {
         return em.createNamedQuery("User.getAll", User.class).getResultList();
     }

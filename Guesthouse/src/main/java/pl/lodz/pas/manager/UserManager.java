@@ -3,6 +3,8 @@ package pl.lodz.pas.manager;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -102,6 +104,14 @@ public class UserManager {
         return optionalUser.get();
     }
 
+    public List<Client> getClients(){
+        List<Client> clients = userRepository.getUsersByRole("CLIENT")
+                .stream()
+                .map(user -> (Client) user)
+                .collect(Collectors.toList());
+        return clients;
+    }
+
     public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
         if (userRepository.getById(clientId).isEmpty()) {
             throw new UserNotFoundException();
@@ -135,9 +145,8 @@ public class UserManager {
             throw new UpdateUserException();
         }
         User updatedUser;
-        if (Objects.equals(user.getRole(), "CLIENT")) {
-            Client client = (Client) user;
 
+        if (user instanceof Client client){
             client.setUsername(username == null ? client.getUsername() : username);
             client.setFirstName(firstName == null ? client.getFirstName() : firstName);
             client.setLastName(lastName == null ? client.getLastName() : lastName);
@@ -150,18 +159,13 @@ public class UserManager {
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
 
             updatedUser = client;
-        } else if (Objects.equals(user.getRole(), "EMPLOYEE")) {
-            Employee employee = (Employee) user;
-
+        } else if (user instanceof Employee employee){
             employee.setUsername(username == null ? employee.getUsername() : username);
             employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
             employee.setLastName(lastName == null ? employee.getLastName() : lastName);
 
             updatedUser = employee;
-
-        } else if (Objects.equals(user.getRole(), "ADMIN")) {
-            Admin admin = (Admin) user;
-
+        } else if (user instanceof Admin admin){
             admin.setUsername(username == null ? admin.getUsername() : username);
 
             updatedUser = admin;

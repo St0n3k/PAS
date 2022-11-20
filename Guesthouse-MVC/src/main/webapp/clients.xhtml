@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>Guesthouse</title>
+</head>
+<body>
+<h1>Hello in our guesthouse!</h1>
+<h:button value="Refresh clients" onclick="#{clientListBean.refreshClientList()}"/>
+<h:dataTable class="table" value="#{clientListBean.clientList}" var="client">
+    <h:column>
+        <f:facet name="header">Username</f:facet>
+        #{client.username}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Active</f:facet>
+        <h:form>
+            <h:selectBooleanCheckbox value="#{client.active}"/>
+        </h:form>
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">First name</f:facet>
+        #{client.firstName}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Last name</f:facet>
+        #{client.lastName}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Personal ID</f:facet>
+        #{client.personalId}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Client type</f:facet>
+        #{client.clientType.name}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">City</f:facet>
+        #{client.address.city}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Street</f:facet>
+        #{client.address.street}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">House number</f:facet>
+        #{client.address.houseNumber}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Deactivate/Activate</f:facet>
+        <h:form>
+            <h:commandButton rendered="#{client.active}" value="Deactivate" action="#{clientListBean.deactivateClient(client.id)}"/>
+            <h:commandButton rendered="#{!client.active}" value="Activate" action="#{clientListBean.activateClient(client.id)}"/>
+        </h:form>
+    </h:column>
+</h:dataTable>
+
+</body>
+</html>
