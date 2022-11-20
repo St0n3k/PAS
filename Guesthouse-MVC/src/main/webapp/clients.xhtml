@@ -12,6 +12,9 @@
 <body>
 <h1>Hello in our guesthouse!</h1>
 <h:button value="Refresh clients" onclick="#{clientListBean.refreshClientList()}"/>
+<h:form>
+    <h:commandButton action="addClient" value="Add new client"/>
+</h:form>
 <h:dataTable class="table" value="#{clientListBean.clientList}" var="client">
     <h:column>
         <f:facet name="header">Username</f:facet>

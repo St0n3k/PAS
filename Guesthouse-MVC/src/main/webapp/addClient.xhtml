@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+  <title>Guesthouse</title>
+</head>
+<body>
+<h1>Register new client</h1>
+<h:form>
+  <label>
+    Username
+    <h:inputText id="username" value="#{addClientBean.registerClientDTO.username}"/>
+  </label>
+  <br/>
+
+  <label>
+    First name
+    <h:inputText id="firstName" value="#{addClientBean.registerClientDTO.firstName}"/>
+  </label>
+  <br/>
+
+  <label>
+    Last name
+    <h:inputText id="lastName" value="#{addClientBean.registerClientDTO.lastName}"/>
+  </label>
+  <br/>
+
+  <label>
+    Personal ID
+    <h:inputText id="personalID" value="#{addClientBean.registerClientDTO.personalID}"/>
+  </label>
+  <br/>
+
+  <label>
+    City
+    <h:inputText id="city" value="#{addClientBean.registerClientDTO.city}"/>
+  </label>
+  <br/>
+
+  <label>
+    Street
+    <h:inputText id="street" value="#{addClientBean.registerClientDTO.street}"/>
+  </label>
+  <br/>
+
+  <label>
+    House number
+    <h:inputText id="number" value="#{addClientBean.registerClientDTO.number}"/>
+  </label>
+  <br/>
+  <h:commandButton action="#{addClientBean.registerClient()}" value="Register client"/>
+</h:form>
+
+</body>
+</html>
