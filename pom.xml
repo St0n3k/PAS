@@ -13,16 +13,12 @@
     <modules>
         <module>Guesthouse-Model</module>
         <module>Guesthouse</module>
+        <module>Guesthouse-API-Tests</module>
         <module>Guesthouse-MVC</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.github.javafaker</groupId>
-                <artifactId>javafaker</artifactId>
-                <version>0.15</version>
-            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>

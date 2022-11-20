@@ -28,11 +28,18 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <from-view-id>/clients.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>addClient</from-outcome>
+            <to-view-id>/addClient.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <from-view-id>/addRoom.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>showRoomList</from-outcome>
             <to-view-id>/rooms.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-    
+
 </faces-config>
