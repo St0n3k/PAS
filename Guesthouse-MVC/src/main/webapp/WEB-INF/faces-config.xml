@@ -46,6 +46,10 @@
             <to-view-id>/index.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>showClientDetails</from-outcome>
+            <to-view-id>/clientDetails.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
@@ -57,6 +61,15 @@
         <navigation-case>
             <from-outcome>showMainMenu</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/clientDetails.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showClientList</from-outcome>
+            <to-view-id>/clients.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

@@ -89,6 +89,14 @@
             </h:commandButton>
         </h:form>
     </h:column>
+    <h:column>
+        <f:facet name="header">Edit</f:facet>
+        <h:form class="text-center">
+            <h:commandButton class="btn btn-warning" value="Show rents" action="showClientDetails">
+                <f:param name="client_id" value="#{client.id}"/>
+            </h:commandButton>
+        </h:form>
+    </h:column>
 </h:dataTable>
 
 </body>
