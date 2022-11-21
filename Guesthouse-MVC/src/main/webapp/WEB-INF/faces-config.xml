@@ -22,6 +22,10 @@
             <to-view-id>/addRoom.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
+            <from-outcome>showEditRoomForm</from-outcome>
+            <to-view-id>/editRoom.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>showMainMenu</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
             <redirect/>
@@ -107,6 +111,15 @@
         <navigation-case>
             <from-outcome>showRentList</from-outcome>
             <to-view-id>/rents.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/editRoom.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showRoomList</from-outcome>
+            <to-view-id>/rooms.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

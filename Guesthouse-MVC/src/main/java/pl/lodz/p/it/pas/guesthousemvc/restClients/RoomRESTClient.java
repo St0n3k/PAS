@@ -3,6 +3,7 @@ package pl.lodz.p.it.pas.guesthousemvc.restClients;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
+import pl.lodz.p.it.pas.dto.UpdateRoomDTO;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Room;
 
@@ -49,6 +50,24 @@ public class RoomRESTClient {
                 .build();
 
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
+    }
+
+    public Room getRoomById(Long id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/rooms/" + id)).GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(response.body(), Room.class);
+    }
+
+    public int updateRoom(Long id, UpdateRoomDTO dto) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(Utils.API_URL + "/rooms/" + id))
+                .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
+                .header("Content-type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
     }
 }
