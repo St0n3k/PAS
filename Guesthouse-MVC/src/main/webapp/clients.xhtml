@@ -30,7 +30,7 @@
     <h:column>
         <f:facet name="header">Active</f:facet>
         <h:form>
-            <h:selectBooleanCheckbox value="#{client.active}"/>
+            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{client.active}"/>
         </h:form>
     </h:column>
 
@@ -74,6 +74,12 @@
         <h:form class="text-center">
             <h:commandButton class="btn btn-danger w-75" rendered="#{client.active}" value="Deactivate" action="#{clientListBean.deactivateClient(client.id)}"/>
             <h:commandButton class="btn btn-success w-75" rendered="#{!client.active}" value="Activate" action="#{clientListBean.activateClient(client.id)}"/>
+        </h:form>
+    </h:column>
+    <h:column>
+        <f:facet name="header">Edit</f:facet>
+        <h:form class="text-center">
+            <h:commandButton value="Edit" action="editClient"/>
         </h:form>
     </h:column>
 </h:dataTable>
