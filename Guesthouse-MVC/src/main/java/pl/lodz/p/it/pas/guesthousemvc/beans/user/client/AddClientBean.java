@@ -3,14 +3,14 @@ package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class AddClientBean implements Serializable {
 
     @Inject

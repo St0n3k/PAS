@@ -1,4 +1,4 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans;
+package pl.lodz.p.it.pas.guesthousemvc.beans.rent;
 
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RentRESTClient;

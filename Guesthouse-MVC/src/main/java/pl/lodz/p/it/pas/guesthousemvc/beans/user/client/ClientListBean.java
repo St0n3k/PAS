@@ -4,7 +4,7 @@ import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Client;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class ClientListBean implements Serializable {
 
     private List<Client> clientList = new ArrayList<>();

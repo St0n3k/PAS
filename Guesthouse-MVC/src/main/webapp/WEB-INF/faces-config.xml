@@ -3,8 +3,8 @@
 <!-- =========== FULL CONFIGURATION FILE ================================== -->
 
 <faces-config version="2.0"
-              xmlns="http://java.sun.com/xml/ns/javaee" 
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
 
     <application>
@@ -24,6 +24,7 @@
         <navigation-case>
             <from-outcome>showMainMenu</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
@@ -33,8 +34,13 @@
             <to-view-id>/addClient.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
+            <from-outcome>showEditClientForm</from-outcome>
+            <to-view-id>/editClient.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>showMainMenu</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 
@@ -47,10 +53,7 @@
         <navigation-case>
             <from-outcome>showMainMenu</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>editClient</from-outcome>
-            <to-view-id>/editClient.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 
@@ -65,7 +68,7 @@
     <navigation-rule>
         <from-view-id>/editClient.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>clientList</from-outcome>
+            <from-outcome>showClientList</from-outcome>
             <to-view-id>/clients.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
@@ -76,6 +79,7 @@
         <navigation-case>
             <from-outcome>showRoomList</from-outcome>
             <to-view-id>/rooms.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 
@@ -84,6 +88,7 @@
         <navigation-case>
             <from-outcome>showRentList</from-outcome>
             <to-view-id>/rents.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 
@@ -92,14 +97,17 @@
         <navigation-case>
             <from-outcome>showRoomList</from-outcome>
             <to-view-id>/rooms.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>showClientList</from-outcome>
             <to-view-id>/clients.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>showRentList</from-outcome>
             <to-view-id>/rents.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 
