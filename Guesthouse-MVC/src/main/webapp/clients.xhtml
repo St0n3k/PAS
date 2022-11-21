@@ -7,16 +7,21 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 <head>
-    <title>Guesthouse</title>
+    <title>Clients</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
 </head>
 <body>
-<h1 class="text-center">Hello in our guesthouse!</h1>
 <h:form class="text-center">
-    <h:button class="col-2 me-5" value="Refresh clients" onclick="#{clientListBean.refreshClientList()}"/>
-    <h:commandButton class="col-2 ms-5" action="addClient" value="Add new client"/>
+    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu"/>
+    <h:commandButton class="col-2 m-3 btn btn-primary" value="Refresh clients" action="#{clientListBean.refreshClientList()}"/>
+    <h:commandButton class="col-2 m-3 btn btn-primary" action="showAddClientForm" value="Add new client"/>
 </h:form>
-<h:dataTable class="table container align-items-center" value="#{clientListBean.clientList}" var="client">
+<h:dataTable class="table container align-items-center table-striped table-bordered" value="#{clientListBean.clientList}" var="client">
+    <h:column>
+        <f:facet name="header">Client id</f:facet>
+        #{client.id}
+    </h:column>
+
     <h:column>
         <f:facet name="header">Username</f:facet>
         #{client.username}
@@ -67,8 +72,8 @@
     <h:column>
         <f:facet name="header">Deactivate/Activate</f:facet>
         <h:form class="text-center">
-            <h:commandButton rendered="#{client.active}" value="Deactivate" action="#{clientListBean.deactivateClient(client.id)}"/>
-            <h:commandButton rendered="#{!client.active}" value="Activate" action="#{clientListBean.activateClient(client.id)}"/>
+            <h:commandButton class="btn btn-danger w-75" rendered="#{client.active}" value="Deactivate" action="#{clientListBean.deactivateClient(client.id)}"/>
+            <h:commandButton class="btn btn-success w-75" rendered="#{!client.active}" value="Activate" action="#{clientListBean.activateClient(client.id)}"/>
         </h:form>
     </h:column>
 </h:dataTable>

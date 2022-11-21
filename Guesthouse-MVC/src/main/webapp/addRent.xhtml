@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>Add rent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
+</head>
+<body>
+<h1 class="text-center">Create new rent</h1>
+
+<h:form class="text-center mb-2">
+    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showRentList"/>
+</h:form>
+
+<h:form class="container align-items-center text-center mb-2">
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Begin time</span>
+        <h:inputText type="date" class="col-2" value="#{addRentBean.rent.beginTime}"/>
+    </label>
+    <br/>
+
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">End time</span>
+        <h:inputText type="date" class="col-2" value="#{addRentBean.rent.endTime}"/>
+    </label>
+    <br/>
+
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Board</span>
+        <h:selectBooleanCheckbox class="col-2" value="#{addRentBean.rent.board}"/>
+    </label>
+    <br/>
+
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Room id</span>
+        <h:inputText class="col-2" value="#{addRentBean.rent.roomId}"/>
+    </label>
+    <br/>
+
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Client id</span>
+        <h:inputText class="col-2" value="#{addRentBean.rent.clientId}"/>
+    </label>
+    <br/>
+    <h:commandButton class="row mx-auto text-center btn btn-warning w-25" value="Create rent" action="#{addRentBean.addRent()}"/>
+</h:form>
+</body>
+</html>
