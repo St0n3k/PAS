@@ -6,6 +6,7 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:f="http://java.sun.com/jsf/core"
 >
 <head>
     <title>Add rent</title>
@@ -22,13 +23,13 @@
 <h:form class="container align-items-center text-center mb-2">
     <label class="row container mx-auto justify-content-center">
         <span class="col-2">Begin time</span>
-        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.beginTime}"/>
+        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.beginTime}" required="true"/>
     </label>
     <br/>
 
     <label class="row container mx-auto justify-content-center">
         <span class="col-2">End time</span>
-        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.endTime}"/>
+        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.endTime}" required="true"/>
     </label>
     <br/>
 
@@ -39,14 +40,18 @@
     <br/>
 
     <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Room id</span>
-        <h:inputText class="col-2" value="#{addRentBean.rent.roomId}"/>
+        <span class="col-2">Room</span>
+        <h:selectOneMenu class="col-2" value="#{addRentBean.chosenRoom}" required="true">
+            <f:selectItems value="#{addRentBean.roomList}"/>
+        </h:selectOneMenu>
     </label>
     <br/>
 
     <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Client id</span>
-        <h:inputText class="col-2" value="#{addRentBean.rent.clientId}"/>
+        <span class="col-2">Client</span>
+        <h:selectOneMenu class="col-2" value="#{addRentBean.chosenClient}" required="true">
+            <f:selectItems value="#{addRentBean.clientList}"/>
+        </h:selectOneMenu>
     </label>
     <br/>
     <h:commandButton class="row mx-auto text-center btn btn-warning w-25" value="Create rent"

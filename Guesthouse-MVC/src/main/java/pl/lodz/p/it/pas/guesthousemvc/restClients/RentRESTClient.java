@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.restClients;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,7 +34,8 @@ public class RentRESTClient {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), List.class);
+        return mapper.readValue(response.body(), new TypeReference<List<Rent>>() {
+        });
     }
 
     public int removeRent(int id) throws IOException, InterruptedException {

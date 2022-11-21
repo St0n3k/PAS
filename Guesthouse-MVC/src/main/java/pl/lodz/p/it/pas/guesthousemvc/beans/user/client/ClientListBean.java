@@ -34,7 +34,7 @@ public class ClientListBean implements Serializable {
     }
 
     public void refreshClientList() throws IOException, InterruptedException {
-        this.clientList = userRESTClient.refreshClientList();
+        this.clientList = userRESTClient.getClientList();
     }
 
     public void deactivateClient(Long id) throws IOException, InterruptedException {

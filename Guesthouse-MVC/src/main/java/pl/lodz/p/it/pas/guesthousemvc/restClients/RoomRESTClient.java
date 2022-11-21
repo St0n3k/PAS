@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.restClients;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
@@ -25,7 +26,8 @@ public class RoomRESTClient {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), List.class);
+        return mapper.readValue(response.body(), new TypeReference<List<Room>>() {
+        });
     }
 
     public int removeRoom(int id) throws IOException, InterruptedException {
