@@ -1,12 +1,14 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.model.user.Client;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
@@ -22,9 +24,9 @@ import java.util.List;
 public class ClientListBean implements Serializable {
 
     private List<Client> clientList = new ArrayList<Client>();
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final HttpClient httpClient = HttpClient.newHttpClient();
 
+    @Inject
+    private UserRESTClient userRESTClient;
 
     @PostConstruct
     private void init() {
@@ -39,27 +41,16 @@ public class ClientListBean implements Serializable {
     }
 
     public void refreshClientList() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/clients")).GET().build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        clientList = mapper.readValue(response.body(), List.class);
+        this.clientList = userRESTClient.refreshClientList();
     }
 
     public void deactivateClient(Long id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/deactivate"))
-                .PUT(HttpRequest.BodyPublishers.noBody()).build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        userRESTClient.deactivateClient(id);
         refreshClientList();
     }
 
     public void activateClient(Long id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/activate"))
-                .PUT(HttpRequest.BodyPublishers.noBody()).build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        userRESTClient.activateClient(id);
         refreshClientList();
     }
 }
