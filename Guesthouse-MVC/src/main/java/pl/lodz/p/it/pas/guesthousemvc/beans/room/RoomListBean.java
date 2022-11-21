@@ -35,7 +35,7 @@ public class RoomListBean implements Serializable {
     }
 
     public void refreshRoomList() throws IOException, InterruptedException {
-        roomList = roomRESTClient.refreshRoomList();
+        roomList = roomRESTClient.getRoomList();
     }
 
 
