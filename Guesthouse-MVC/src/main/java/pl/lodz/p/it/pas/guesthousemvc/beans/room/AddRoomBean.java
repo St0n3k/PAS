@@ -1,4 +1,4 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans;
+package pl.lodz.p.it.pas.guesthousemvc.beans.room;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

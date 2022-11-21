@@ -26,7 +26,7 @@ import pl.lodz.p.it.pas.model.AbstractEntity;
                 query = "SELECT ct FROM ClientType ct WHERE ct.name LIKE :type")
 })
 @Data
-public abstract class ClientType extends AbstractEntity {
+public class ClientType extends AbstractEntity {
 
     @Column
     @Id

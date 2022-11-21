@@ -74,7 +74,9 @@
     <h:column>
         <f:facet name="header">Edit</f:facet>
         <h:form class="text-center">
-            <h:commandButton value="Edit" action="editClient"/>
+            <h:commandButton value="Edit" action="editClient">
+                <f:param name="client_id" value="#{client.id}" />
+            </h:commandButton>
         </h:form>
     </h:column>
 </h:dataTable>
