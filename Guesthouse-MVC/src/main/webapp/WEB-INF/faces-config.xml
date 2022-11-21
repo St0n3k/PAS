@@ -33,6 +33,10 @@
             <from-outcome>addClient</from-outcome>
             <to-view-id>/addClient.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>editClient</from-outcome>
+            <to-view-id>/editClient.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/addClient.xhtml</from-view-id>
