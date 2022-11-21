@@ -8,17 +8,15 @@
       xmlns:f="http://java.sun.com/jsf/core">
 <head>
     <title>Guesthouse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
 </head>
 <body>
-<h1>Hello in our guesthouse!</h1>
-<h:form>
-    <h:commandButton value="Refresh rooms" action="#{roomListBean.refreshRoomList()}"/>
+<h1 class="text-center">Hello in our guesthouse!</h1>
+<h:form class="text-center">
+    <h:commandButton class="col-2 me-5" value="Refresh rooms" action="#{roomListBean.refreshRoomList()}"/>
+    <h:commandButton class="col-2 ms-5" value="Add room" action="showAddRoomForm"/>
 </h:form>
-
-<h:form>
-    <h:commandButton value="Add room" action="showAddRoomForm"/>
-</h:form>
-<h:dataTable class="table" value="#{roomListBean.roomList}" var="room">
+<h:dataTable class="table container align-items-center" value="#{roomListBean.roomList}" var="room">
     <h:column>
         <f:facet name="header">Price</f:facet>
         #{room.price}
@@ -37,7 +35,7 @@
     <h:column>
         <f:facet name="header">Delete</f:facet>
         <h:form>
-            <h:commandButton value="Remove" action="#{roomListBean.removeRoom(room.id)}"/>
+            <h:commandButton class="text-center" value="Remove" action="#{roomListBean.removeRoom(room.id)}"/>
         </h:form>
     </h:column>
 
