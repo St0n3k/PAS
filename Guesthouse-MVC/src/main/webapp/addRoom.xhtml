@@ -8,38 +8,35 @@
       xmlns:f="http://java.sun.com/jsf/core">
 <head>
     <title>Guesthouse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
 </head>
 <body>
-<h1>Hello in our guesthouse!</h1>
+<h1 class="text-center">Hello in our guesthouse!</h1>
 
-<h:form>
-    <h:commandButton value="Add room" action="showAddRoomForm"/>
+<h:form class="text-center mb-2">
+    <h:commandButton class="col-2 me-5" value="Add room" action="showAddRoomForm"/>
+    <h:commandButton class="col-2 ms-5" value="Back to room list" action="showRoomList"/>
 </h:form>
 
-<h:form>
-    <h:commandButton value="Back to room list" action="showRoomList"/>
-</h:form>
-
-<h:form>
-    <label>
-        Room number
-        <h:inputText id="room_number" value="#{addRoomBean.room.roomNumber}"/>
+<h:form class="container align-items-center">
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Room number</span>
+        <h:inputText class="col-2" id="room_number" value="#{addRoomBean.room.roomNumber}"/>
     </label>
     <br/>
 
-    <label>
-        Size
-        <h:inputText id="size" value="#{addRoomBean.room.size}"/>
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Size</span>
+        <h:inputText class="col-2" id="size" value="#{addRoomBean.room.size}"/>
     </label>
     <br/>
 
-    <label>
-        Price
-        <h:inputText id="price" value="#{addRoomBean.room.price}"/>
+    <label class="row container mx-auto justify-content-center">
+        <span class="col-2">Price</span>
+        <h:inputText class="col-2" id="price" value="#{addRoomBean.room.price}"/>
     </label>
     <br/>
-
-    <h:commandButton value="Add" action="#{addRoomBean.addRoom()}"/>
+    <h:commandButton class="row mx-auto text-center" value="Add" action="#{addRoomBean.addRoom()}"/>
 </h:form>
 </body>
 </html>
