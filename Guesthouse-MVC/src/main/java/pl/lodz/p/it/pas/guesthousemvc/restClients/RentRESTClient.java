@@ -26,7 +26,7 @@ public class RentRESTClient {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    public List<Rent> refreshRentList() throws IOException, InterruptedException {
+    public List<Rent> getRentList() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .GET()
@@ -36,24 +36,25 @@ public class RentRESTClient {
         return mapper.readValue(response.body(), List.class);
     }
 
-    public void removeRent(int id) throws IOException, InterruptedException {
+    public int removeRent(int id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.
                 newBuilder(URI.create(Utils.API_URL + "/rents/" + id))
                 .DELETE()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 
-    public void addRent(CreateRentDTO createRentDTO) throws IOException, InterruptedException {
+    public int addRent(CreateRentDTO createRentDTO) throws IOException, InterruptedException {
         String requestBody = this.mapper.writeValueAsString(createRentDTO);
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .header("Content-Type", "application/json")
                 .build();
-        System.out.println(requestBody);
+
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response);
+        return response.statusCode();
     }
 }

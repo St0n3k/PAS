@@ -19,7 +19,7 @@ public class EditClientBean implements Serializable {
     @Inject
     private UserRESTClient userRESTClient;
 
-    private Long client_id;
+    private Long clientId;
 
     private UpdateUserDTO updateUserDTO;
     private UpdateUserDTO oldUserDTO;
@@ -29,9 +29,9 @@ public class EditClientBean implements Serializable {
         Map<String, String> params =
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String id = params.get("client_id");
-        this.client_id = Long.valueOf(id);
+        this.clientId = Long.valueOf(id);
         try {
-            Client client = userRESTClient.getClientById(this.client_id);
+            Client client = userRESTClient.getClientById(this.clientId);
             this.updateUserDTO = new UpdateUserDTO(
                     client.getUsername(),
                     client.getFirstName(),
@@ -81,8 +81,13 @@ public class EditClientBean implements Serializable {
             updateUserDTO.setNumber(null);
         }
 
-        userRESTClient.updateClient(this.client_id, this.updateUserDTO);
-        return "showClientList";
+        int statusCode = userRESTClient.updateClient(this.clientId, this.updateUserDTO);
+        if (statusCode == 200) {
+            return "showClientList";
+        } else {
+            //TODO Display error message
+        }
+        return "";
     }
 
 }

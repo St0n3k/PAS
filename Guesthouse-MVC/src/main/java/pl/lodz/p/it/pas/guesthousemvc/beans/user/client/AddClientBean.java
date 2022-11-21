@@ -23,7 +23,12 @@ public class AddClientBean implements Serializable {
     }
 
     public String registerClient() throws IOException, InterruptedException {
-        userRESTClient.registerClient(this.registerClientDTO);
-        return "showClientList";
+        int statusCode = userRESTClient.registerClient(this.registerClientDTO);
+        if (statusCode == 201) {
+            return "showClientList";
+        } else {
+            //TODO Display error message
+        }
+        return "";
     }
 }

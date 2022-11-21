@@ -1,6 +1,7 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.room;
 
 
+import lombok.Getter;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
 import pl.lodz.p.it.pas.model.Room;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @ViewScoped
 public class RoomListBean implements Serializable {
 
+    @Getter
     private List<Room> roomList = new ArrayList<>();
 
     @Inject
@@ -30,17 +32,17 @@ public class RoomListBean implements Serializable {
         }
     }
 
-    public List<Room> getRoomList() {
-        return roomList;
-    }
 
     public void refreshRoomList() throws IOException, InterruptedException {
-        roomList = roomRESTClient.refreshRoomList();
+        roomList = roomRESTClient.getRoomList();
     }
 
 
     public void removeRoom(int id) throws IOException, InterruptedException {
-        roomRESTClient.removeRoom(id);
+        int statusCode = roomRESTClient.removeRoom(id);
+        if (statusCode != 204) {
+            //TODO display error message
+        }
         refreshRoomList();
     }
 }

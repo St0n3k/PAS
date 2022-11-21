@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.room;
 
+import lombok.Getter;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
 
@@ -11,16 +12,21 @@ import java.io.IOException;
 @Named
 @RequestScoped
 public class AddRoomBean {
+
+    @Getter
     private final CreateRoomDTO room = new CreateRoomDTO();
 
     @Inject
     private RoomRESTClient roomRESTClient;
 
-    public CreateRoomDTO getRoom() {
-        return room;
-    }
 
-    public void addRoom() throws IOException, InterruptedException {
-        roomRESTClient.addRoom(room);
+    public String addRoom() throws IOException, InterruptedException {
+        int statusCode = roomRESTClient.addRoom(room);
+        if (statusCode == 201) {
+            return "showRoomList"; // redirects to room list
+        } else {
+            //TODO Display error message
+        }
+        return ""; // stays at current page
     }
 }

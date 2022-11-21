@@ -33,23 +33,25 @@ public class UserRESTClient {
         return mapper.readValue(response.body(), Client.class);
     }
 
-    public void activateClient(Long id) throws IOException, InterruptedException {
+    public int activateClient(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/activate"))
                 .PUT(HttpRequest.BodyPublishers.noBody()).build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 
-    public void deactivateClient(Long id) throws IOException, InterruptedException {
+    public int deactivateClient(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/deactivate"))
                 .PUT(HttpRequest.BodyPublishers.noBody()).build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 
-    public void registerClient(RegisterClientDTO registerClientDTO) throws IOException, InterruptedException {
+    public int registerClient(RegisterClientDTO registerClientDTO) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/clients"))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerClientDTO)))
@@ -57,16 +59,17 @@ public class UserRESTClient {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 
-    public void updateClient(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
+    public int updateClient(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id))
                 .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
                 .header("Content-type", "application/json")
                 .build();
-        System.out.println(mapper.writeValueAsString(dto));
+
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response);
+        return response.statusCode();
     }
 }

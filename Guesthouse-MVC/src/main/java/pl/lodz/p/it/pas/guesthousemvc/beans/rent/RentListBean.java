@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.rent;
 
+import lombok.Getter;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RentRESTClient;
 import pl.lodz.p.it.pas.model.Rent;
 
@@ -12,6 +13,8 @@ import java.util.List;
 
 @Named
 public class RentListBean {
+
+    @Getter
     private List<Rent> rentList = new ArrayList<>();
 
     @Inject
@@ -25,17 +28,17 @@ public class RentListBean {
         }
     }
 
-    public List<Rent> getRentList() {
-        return rentList;
-    }
 
     public void refreshRentList() throws IOException, InterruptedException {
-        rentList = rentRESTClient.refreshRentList();
+        rentList = rentRESTClient.getRentList();
     }
 
 
     public void removeRent(int id) throws IOException, InterruptedException {
-        rentRESTClient.removeRent(id);
+        int statusCode = rentRESTClient.removeRent(id);
+        if (statusCode == 409) {
+            //TODO display error message if rent can't be deleted
+        }
         refreshRentList();
     }
 }

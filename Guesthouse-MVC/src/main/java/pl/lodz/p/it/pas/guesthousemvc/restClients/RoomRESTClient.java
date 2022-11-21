@@ -18,7 +18,7 @@ public class RoomRESTClient {
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    public List<Room> refreshRoomList() throws IOException, InterruptedException {
+    public List<Room> getRoomList() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/rooms"))
                 .GET()
@@ -28,16 +28,17 @@ public class RoomRESTClient {
         return mapper.readValue(response.body(), List.class);
     }
 
-    public void removeRoom(int id) throws IOException, InterruptedException {
+    public int removeRoom(int id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.
                 newBuilder(URI.create(Utils.API_URL + "/rooms/" + id))
                 .DELETE()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 
-    public void addRoom(CreateRoomDTO createRoomDTO) throws IOException, InterruptedException {
+    public int addRoom(CreateRoomDTO createRoomDTO) throws IOException, InterruptedException {
         String requestBody = this.mapper.writeValueAsString(createRoomDTO);
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create("http://localhost:8080/api/rooms"))
@@ -46,5 +47,6 @@ public class RoomRESTClient {
                 .build();
 
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
     }
 }

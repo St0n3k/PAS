@@ -1,5 +1,7 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.rent;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RentRESTClient;
 
@@ -12,39 +14,32 @@ import java.time.LocalDateTime;
 @Named
 @RequestScoped
 public class AddRentBean {
+
+    @Getter
     private final CreateRentDTO rent = new CreateRentDTO();
+
+    @Getter
+    @Setter
     private String beginTime;
+
+    @Getter
+    @Setter
     private String endTime;
-
-
-    public String getBeginTime() {
-        return beginTime;
-    }
-
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
 
     @Inject
     private RentRESTClient rentRESTClient;
 
-    public CreateRentDTO getRent() {
-        return rent;
-    }
 
-    public void addRent() throws IOException, InterruptedException {
-        System.out.println(beginTime);
+    public String addRent() throws IOException, InterruptedException {
         this.rent.setBeginTime(LocalDateTime.parse(beginTime));
         this.rent.setEndTime(LocalDateTime.parse(endTime));
-        rentRESTClient.addRent(rent);
+        int statusCode = rentRESTClient.addRent(rent);
+        if (statusCode == 201) {
+            return "showRentList";
+        } else {
+            //TODO Display error message
+        }
+        return "";
     }
 }
 
