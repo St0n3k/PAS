@@ -38,7 +38,7 @@ public class RoomListBean implements Serializable {
     }
 
 
-    public void removeRoom(int id) throws IOException, InterruptedException {
+    public void removeRoom(Long id) throws IOException, InterruptedException {
         int statusCode = roomRESTClient.removeRoom(id);
         if (statusCode != 204) {
             //TODO display error message

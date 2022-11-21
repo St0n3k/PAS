@@ -43,6 +43,15 @@
             <h:commandButton class="text-center btn btn-danger w-75" value="Remove" action="#{roomListBean.removeRoom(room.id)}"/>
         </h:form>
     </h:column>
+
+    <h:column>
+        <f:facet name="header">Rents</f:facet>
+        <h:form class="text-center">
+            <h:commandButton class="text-center btn btn-warning w-75" value="Show rents" action="showRoomDetails">
+                <f:param name="room_id" value="#{room.id}"/>
+            </h:commandButton>
+        </h:form>
+    </h:column>
 </h:dataTable>
 
 </body>
