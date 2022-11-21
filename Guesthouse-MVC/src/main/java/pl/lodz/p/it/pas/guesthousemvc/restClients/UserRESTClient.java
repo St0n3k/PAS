@@ -2,9 +2,12 @@ package pl.lodz.p.it.pas.guesthousemvc.restClients;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
+import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Client;
 
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +22,11 @@ import java.util.List;
 public class UserRESTClient {
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    public UserRESTClient() {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
 
     public List<Client> getClientList() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/clients")).GET().build();
@@ -73,5 +81,14 @@ public class UserRESTClient {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
+    }
+
+    public List<Rent> getRentsByClientId(Long id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/rents"))
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(response.body(), new TypeReference<List<Rent>>() {
+        });
     }
 }
