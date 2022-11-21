@@ -7,15 +7,15 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 <head>
-  <title>Guesthouse</title>
+  <title>Add client</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
 </head>
 <body>
 <h1 class="text-center">Register new client</h1>
 <h:form class="text-center mb-2">
-  <h:commandButton action="clientList" value="Client list"/>
+  <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showClientList"/>
 </h:form>
-<h:form class="container align-items-center">
+<h:form class="container align-items-center text-center w-50">
   <label class="row container mx-auto justify-content-center">
     <span class="col-2">Username</span>
     <h:inputText class="col-2" id="username" value="#{addClientBean.registerClientDTO.username}"/>
@@ -57,7 +57,7 @@
     <h:inputText class="col-2" id="number" value="#{addClientBean.registerClientDTO.number}"/>
   </label>
   <br/>
-  <h:commandButton class="row mx-auto text-center" action="#{addClientBean.registerClient()}" value="Register client"/>
+  <h:commandButton class="row mx-auto text-center btn btn-primary w-25" action="#{addClientBean.registerClient()}" value="Register client"/>
 </h:form>
 
 </body>
