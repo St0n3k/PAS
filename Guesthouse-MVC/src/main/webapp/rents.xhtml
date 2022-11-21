@@ -64,6 +64,16 @@
                              action="#{rentListBean.removeRent(rent.id)}"/>
         </h:form>
     </h:column>
+
+    <h:column>
+        <f:facet name="header">Remove/Add Board</f:facet>
+        <h:form class="text-center">
+            <h:commandButton class="btn btn-danger w-75" rendered="#{rent.board}" value="Remove board"
+                             action="#{rentListBean.removeBoard(rent.id)}"/>
+            <h:commandButton class="btn btn-success w-75" rendered="#{!rent.board}" value="Add board"
+                             action="#{rentListBean.addBoard(rent.id)}"/>
+        </h:form>
+    </h:column>
 </h:dataTable>
 </body>
 </html>

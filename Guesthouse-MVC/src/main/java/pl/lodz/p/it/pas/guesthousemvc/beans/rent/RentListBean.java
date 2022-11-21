@@ -1,6 +1,7 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.rent;
 
 import lombok.Getter;
+import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RentRESTClient;
 import pl.lodz.p.it.pas.model.Rent;
 
@@ -40,5 +41,15 @@ public class RentListBean {
             //TODO display error message if rent can't be deleted
         }
         refreshRentList();
+    }
+
+    public void addBoard(Long id) throws IOException, InterruptedException {
+        UpdateRentBoardDTO dto = new UpdateRentBoardDTO(true);
+        rentRESTClient.updateRoom(id, dto);
+    }
+
+    public void removeBoard(Long id) throws IOException, InterruptedException {
+        UpdateRentBoardDTO dto = new UpdateRentBoardDTO(false);
+        rentRESTClient.updateRoom(id, dto);
     }
 }

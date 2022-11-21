@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
+import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Rent;
 
@@ -57,6 +58,17 @@ public class RentRESTClient {
                 .build();
 
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
+    }
+
+    public int updateRoom(Long id, UpdateRentBoardDTO dto) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(Utils.API_URL + "/rents/" + id + "/board"))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
+                .header("Content-type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
     }
 }
