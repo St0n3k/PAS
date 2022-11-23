@@ -14,43 +14,53 @@
 <body>
 <h:form class="text-center">
     <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu"/>
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Refresh admins"
-                     action="#{adminListBean.refreshAdminList()}"/>
-    <h:commandButton class="col-2 m-3 btn btn-secondary" action="showAddAdminForm" value="Add new admin"/>
+    <h:commandButton class="col-2 m-3 btn btn-info" value="Refresh employees"
+                     action="#{employeeListBean.refreshEmployeeList()}"/>
+    <h:commandButton class="col-2 m-3 btn btn-info" action="showAddEmployeeForm" value="Add new employee"/>
 </h:form>
 <h:dataTable class="table container align-items-center table-striped table-bordered"
-             value="#{adminListBean.adminList}" var="admin">
+             value="#{employeeListBean.employeeList}" var="employee">
     <h:column>
-        <f:facet name="header">Admin id</f:facet>
-        #{admin.id}
+        <f:facet name="header">Employee id</f:facet>
+        #{employee.id}
     </h:column>
 
     <h:column>
         <f:facet name="header">Username</f:facet>
-        #{admin.username}
+        #{employee.username}
     </h:column>
 
     <h:column>
         <f:facet name="header">Active</f:facet>
         <h:form>
-            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{admin.active}"/>
+            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{employee.active}"/>
         </h:form>
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">First name</f:facet>
+        #{employee.firstName}
+    </h:column>
+
+    <h:column>
+        <f:facet name="header">Last name</f:facet>
+        #{employee.lastName}
     </h:column>
 
     <h:column>
         <f:facet name="header">Deactivate/Activate</f:facet>
         <h:form class="text-center">
-            <h:commandButton class="btn btn-danger w-75" rendered="#{admin.active}" value="Deactivate"
-                             action="#{adminListBean.deactivateAdmin(admin.id)}"/>
-            <h:commandButton class="btn btn-success w-75" rendered="#{!admin.active}" value="Activate"
-                             action="#{adminListBean.activateAdmin(admin.id)}"/>
+            <h:commandButton class="btn btn-danger w-75" rendered="#{employee.active}" value="Deactivate"
+                             action="#{employeeListBean.deactivateEmployee(employee.id)}"/>
+            <h:commandButton class="btn btn-success w-75" rendered="#{!employee.active}" value="Activate"
+                             action="#{employeeListBean.activateEmployee(employee.id)}"/>
         </h:form>
     </h:column>
     <h:column>
         <f:facet name="header">Edit</f:facet>
         <h:form class="text-center">
-            <h:commandButton class="btn btn-info" value="Edit" action="showEditAdminForm">
-                <f:param name="admin_id" value="#{admin.id}"/>
+            <h:commandButton class="btn btn-info" value="Edit" action="showEditEmployeeForm">
+                <f:param name="employee_id" value="#{employee.id}"/>
             </h:commandButton>
         </h:form>
     </h:column>

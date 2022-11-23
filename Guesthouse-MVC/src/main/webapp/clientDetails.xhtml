@@ -19,7 +19,7 @@
         <h1 class="text-center">${msg["client.rent"]} #{clientDetailsBean.clientId}</h1>
         <h:form class="text-center">
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showClientList"/>
-            <h:commandButton class="col-2 m-3 btn btn-warning" value="${msg['button.refreshRents']}"
+            <h:commandButton class="col-2 m-3 btn btn-warning" value="${msg['rents.refreshRents']}"
                              action="#{clientDetailsBean.refreshRentList()}"/>
         </h:form>
         <h:dataTable class="table table-striped table-bordered container align-items-center border-dark"

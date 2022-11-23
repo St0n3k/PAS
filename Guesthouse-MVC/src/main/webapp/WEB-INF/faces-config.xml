@@ -269,5 +269,10 @@
             <to-view-id>/rents.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>showAdminList</from-outcome>
+            <to-view-id>/admins.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 </faces-config>
