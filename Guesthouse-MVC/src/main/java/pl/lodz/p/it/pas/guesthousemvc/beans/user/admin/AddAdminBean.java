@@ -1,17 +1,13 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
-import lombok.Getter;
-import lombok.Setter;
-import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
-import pl.lodz.p.it.pas.dto.RegisterClientDTO;
-import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
-
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import lombok.Getter;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 
 @Named
 @ViewScoped

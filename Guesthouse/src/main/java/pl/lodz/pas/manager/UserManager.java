@@ -1,15 +1,16 @@
 package pl.lodz.pas.manager;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.pas.dto.RegisterClientDTO;
+import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
+import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.model.Address;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Admin;
@@ -18,9 +19,6 @@ import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.p.it.pas.model.user.ClientTypes.Default;
 import pl.lodz.p.it.pas.model.user.Employee;
 import pl.lodz.p.it.pas.model.user.User;
-import pl.lodz.p.it.pas.dto.RegisterClientDTO;
-import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
-import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
@@ -114,25 +112,30 @@ public class UserManager {
         return optionalUser.get();
     }
 
-    public List<Client> getClients(){
+    public List<Client> getClients(String username) {
+        if (username != null) {
+            return userRepository.getUsersByRoleAndMatchingUsername("CLIENT", username)
+                                 .stream().map(u -> (Client) u)
+                                 .toList();
+        }
         return userRepository.getUsersByRole("CLIENT")
-                .stream()
-                .map(user -> (Client) user)
-                .collect(Collectors.toList());
+                             .stream()
+                             .map(user -> (Client) user)
+                             .collect(Collectors.toList());
     }
 
-    public List<Employee> getEmployees(){
+    public List<Employee> getEmployees() {
         return userRepository.getUsersByRole("EMPLOYEE")
-                .stream()
-                .map(user -> (Employee) user)
-                .collect(Collectors.toList());
+                             .stream()
+                             .map(user -> (Employee) user)
+                             .collect(Collectors.toList());
     }
 
-    public List<Admin> getAdmins(){
+    public List<Admin> getAdmins() {
         return userRepository.getUsersByRole("ADMIN")
-                .stream()
-                .map(user -> (Admin) user)
-                .collect(Collectors.toList());
+                             .stream()
+                             .map(user -> (Admin) user)
+                             .collect(Collectors.toList());
     }
 
     public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
@@ -169,7 +172,7 @@ public class UserManager {
         }
         User updatedUser;
 
-        if (user instanceof Client client){
+        if (user instanceof Client client) {
             client.setUsername(username == null ? client.getUsername() : username);
             client.setFirstName(firstName == null ? client.getFirstName() : firstName);
             client.setLastName(lastName == null ? client.getLastName() : lastName);
@@ -182,13 +185,13 @@ public class UserManager {
             address.setHouseNumber(number == null ? address.getHouseNumber() : number);
 
             updatedUser = client;
-        } else if (user instanceof Employee employee){
+        } else if (user instanceof Employee employee) {
             employee.setUsername(username == null ? employee.getUsername() : username);
             employee.setFirstName(firstName == null ? employee.getFirstName() : firstName);
             employee.setLastName(lastName == null ? employee.getLastName() : lastName);
 
             updatedUser = employee;
-        } else if (user instanceof Admin admin){
+        } else if (user instanceof Admin admin) {
             admin.setUsername(username == null ? admin.getUsername() : username);
 
             updatedUser = admin;

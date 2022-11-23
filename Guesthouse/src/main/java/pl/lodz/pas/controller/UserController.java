@@ -15,15 +15,14 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
-import pl.lodz.p.it.pas.model.Address;
+import pl.lodz.p.it.pas.dto.RegisterClientDTO;
+import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
+import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
 import pl.lodz.p.it.pas.model.user.Employee;
 import pl.lodz.p.it.pas.model.user.User;
-import pl.lodz.p.it.pas.dto.RegisterClientDTO;
-import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
-import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
@@ -101,8 +100,8 @@ public class UserController {
     @GET
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllClients() {
-        List<Client> clients = userManager.getClients();
+    public Response getAllClients(@QueryParam("username") String username) {
+        List<Client> clients = userManager.getClients(username);
         return Response.status(Response.Status.OK).entity(clients).build();
     }
 
