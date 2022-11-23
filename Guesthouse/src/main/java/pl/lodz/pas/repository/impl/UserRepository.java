@@ -67,8 +67,8 @@ public class UserRepository implements Repository<User> {
 
     public List<User> getUsersByRole(String role) {
         return em.createNamedQuery("User.getByRole", User.class)
-                .setParameter("role", '%' + role + '%')
-                .getResultList();
+                 .setParameter("role", '%' + role + '%')
+                 .getResultList();
 
     }
 
@@ -79,5 +79,12 @@ public class UserRepository implements Repository<User> {
     @Override
     public Optional<User> update(User user) {
         return Optional.ofNullable(em.merge(user));
+    }
+
+    public List<User> getUsersByRoleAndMatchingUsername(String role, String username) {
+        return em.createNamedQuery("User.getByRoleMatchingName", User.class)
+                 .setParameter("role", "%" + role + "%")
+                 .setParameter("username", "%" + username + "%")
+                 .getResultList();
     }
 }
