@@ -1,6 +1,7 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
+package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
 
 import javax.annotation.PostConstruct;
@@ -14,9 +15,9 @@ import java.util.List;
 
 @Named
 @ViewScoped
-public class ClientListBean implements Serializable {
+public class AdminListBean implements Serializable {
 
-    private List<Client> clientList = new ArrayList<>();
+    private List<Admin> adminList = new ArrayList<>();
 
     @Inject
     private UserRESTClient userRESTClient;
@@ -24,26 +25,26 @@ public class ClientListBean implements Serializable {
     @PostConstruct
     private void init() {
         try {
-            refreshClientList();
+            refreshAdminList();
         } catch (IOException | InterruptedException ignored) {
         }
     }
 
-    public List<Client> getClientList() {
-        return clientList;
+    public List<Admin> getAdminList() {
+        return adminList;
     }
 
-    public void refreshClientList() throws IOException, InterruptedException {
-        this.clientList = userRESTClient.getClientList();
+    public void refreshAdminList() throws IOException, InterruptedException {
+        this.adminList = userRESTClient.getAdminList();
     }
 
-    public void deactivateClient(Long id) throws IOException, InterruptedException {
+    public void deactivateAdmin(Long id) throws IOException, InterruptedException {
         userRESTClient.deactivateUser(id);
-        refreshClientList();
+        refreshAdminList();
     }
 
-    public void activateClient(Long id) throws IOException, InterruptedException {
+    public void activateAdmin(Long id) throws IOException, InterruptedException {
         userRESTClient.activateClient(id);
-        refreshClientList();
+        refreshAdminList();
     }
 }

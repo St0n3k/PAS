@@ -38,7 +38,7 @@ public class EmployeeListBean implements Serializable {
     }
 
     public void deactivateEmployee(Long id) throws IOException, InterruptedException {
-        userRESTClient.deactivateClient(id);
+        userRESTClient.deactivateUser(id);
         refreshEmployeeList();
     }
 

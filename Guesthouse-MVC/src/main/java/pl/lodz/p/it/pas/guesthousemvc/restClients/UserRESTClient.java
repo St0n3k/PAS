@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
@@ -48,7 +49,7 @@ public class UserRESTClient {
     }
 
     public List<Admin> getAdminList() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/clients")).GET().build();
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/admins")).GET().build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(response.body(), new TypeReference<List<Admin>>() {
@@ -70,6 +71,14 @@ public class UserRESTClient {
         return mapper.readValue(response.body(), Employee.class);
     }
 
+    public Admin getAdminById(Long id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id)).GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response);
+        return mapper.readValue(response.body(), Admin.class);
+    }
+
     public int activateClient(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/activate"))
@@ -79,7 +88,7 @@ public class UserRESTClient {
         return response.statusCode();
     }
 
-    public int deactivateClient(Long id) throws IOException, InterruptedException {
+    public int deactivateUser(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/deactivate"))
                 .PUT(HttpRequest.BodyPublishers.noBody()).build();
@@ -103,6 +112,17 @@ public class UserRESTClient {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/employees"))
                 .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerEmployeeDTO)))
+                .header("Content-type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
+    }
+
+    public int registerAdmin(RegisterAdminDTO dto) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(Utils.API_URL + "/users/admins"))
+                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
                 .header("Content-type", "application/json")
                 .build();
 

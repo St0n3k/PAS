@@ -9,6 +9,6 @@ public class Admin extends User {
 
     public Admin(String username) {
         super(username);
-        this.setRole("CLIENT");
+        this.setRole("ADMIN");
     }
 }

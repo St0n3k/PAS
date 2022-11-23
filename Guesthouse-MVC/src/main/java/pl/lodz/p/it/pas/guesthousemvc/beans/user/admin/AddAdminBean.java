@@ -1,6 +1,8 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
+package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
 import lombok.Getter;
+import lombok.Setter;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
@@ -13,19 +15,19 @@ import java.io.Serializable;
 
 @Named
 @ViewScoped
-public class AddEmployeeBean implements Serializable {
+public class AddAdminBean implements Serializable {
 
     @Inject
     private UserRESTClient userRESTClient;
 
     @Getter
-    private final RegisterEmployeeDTO registerEmployeeDTO = new RegisterEmployeeDTO();
+    private final RegisterAdminDTO registerAdminDTO = new RegisterAdminDTO();
 
 
-    public String registerEmployee() throws IOException, InterruptedException {
-        int statusCode = userRESTClient.registerEmployee(this.registerEmployeeDTO);
+    public String registerAdmin() throws IOException, InterruptedException {
+        int statusCode = userRESTClient.registerAdmin(registerAdminDTO);
         if (statusCode == 201) {
-            return "showEmployeeList";
+            return "showAdminList";
         } else {
             //TODO Display error message
         }
