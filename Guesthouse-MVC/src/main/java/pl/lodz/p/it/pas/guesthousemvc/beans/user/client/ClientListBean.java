@@ -48,6 +48,10 @@ public class ClientListBean implements Serializable {
 
     public void searchByUsername(String username) throws IOException, InterruptedException {
         System.out.println(username);
-        this.clientList = userRESTClient.getClientsWithMatchingUsername(username);
+        if (!username.isBlank()) {
+            this.clientList = userRESTClient.getClientsWithMatchingUsername(username);
+        } else {
+            refreshClientList();
+        }
     }
 }
