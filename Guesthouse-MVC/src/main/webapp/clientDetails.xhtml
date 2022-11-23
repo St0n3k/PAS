@@ -1,57 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core">
-<head>
-    <title>Rents</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h1 class="text-center">Rents for client with id #{clientDetailsBean.clientId}</h1>
-<h:form class="text-center">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showClientList"/>
-    <h:commandButton class="col-2 m-3 btn btn-warning" value="Refresh rents"
-                     action="#{clientDetailsBean.refreshRentList()}"/>
-</h:form>
-<h:dataTable class="table table-striped table-bordered container align-items-center"
-             value="#{clientDetailsBean.rentList}"
-             var="rent">
-    <h:column>
-        <f:facet name="header">Rent id</f:facet>
-        #{rent.id}
-    </h:column>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./templates/mainTemplate.xhtml">
 
-    <h:column>
-        <f:facet name="header">Begin time</f:facet>
-        #{rent.beginTime}
-    </h:column>
+    <ui:define name="top">
+        <h1>${msg["main.page"]} > ${msg["nav.clients"]} > ${msg["nav.addRent"]}</h1>
+    </ui:define>
 
-    <h:column>
-        <f:facet name="header">End time</f:facet>
-        #{rent.endTime}
-    </h:column>
+    <ui:define name="left">
+        <ui:include src="./templates/menu.xhtml"/>
+    </ui:define>
 
-    <h:column>
-        <f:facet name="header">Board</f:facet>
-        <h:form>
-            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{rent.board}"/>
+    <ui:define name="content">
+        <h1 class="text-center">${msg["client.rent"]} #{clientDetailsBean.clientId}</h1>
+        <h:form class="text-center">
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showClientList"/>
+            <h:commandButton class="col-2 m-3 btn btn-warning" value="${msg['rents.refreshRents']}"
+                             action="#{clientDetailsBean.refreshRentList()}"/>
         </h:form>
-    </h:column>
+        <h:dataTable class="table table-striped table-bordered container align-items-center border-dark"
+                     value="#{clientDetailsBean.rentList}"
+                     var="rent">
+            <h:column>
+                <f:facet name="header">${msg["rent.id"]}</f:facet>
+                #{rent.id}
+            </h:column>
 
-    <h:column>
-        <f:facet name="header">Final cost</f:facet>
-        #{rent.finalCost}
-    </h:column>
+            <h:column>
+                <f:facet name="header">${msg["rent.beginTime"]}</f:facet>
+                #{rent.beginTime}
+            </h:column>
 
-    <h:column>
-        <f:facet name="header">Room number</f:facet>
-        #{rent.room.roomNumber}
-    </h:column>
-</h:dataTable>
-</body>
-</html>
+            <h:column>
+                <f:facet name="header">${msg["rent.endTime"]}</f:facet>
+                #{rent.endTime}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">${msg["rent.board"]}</f:facet>
+                <h:form>
+                    <h:selectBooleanCheckbox style="pointer-events: none;" value="#{rent.board}"/>
+                </h:form>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">${msg["rent.finalCost"]}</f:facet>
+                #{rent.finalCost}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">${msg["room.roomNumber"]}</f:facet>
+                #{rent.room.roomNumber}
+            </h:column>
+        </h:dataTable>
+    </ui:define>
+
+</ui:composition>
