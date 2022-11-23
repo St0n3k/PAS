@@ -1,66 +1,69 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
->
-<head>
-    <title>Guesthouse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h1 class="text-center">Edit client</h1>
-<h:form class="text-center mb-2">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" action="showClientList" value="Go back"/>
-</h:form>
-<h:form action="clientList" class="container align-items-center text-center">
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Username</span>
-        <h:inputText class="col-2" id="username" value="#{editClientBean.updateUserDTO.username}"/>
-    </label>
-    <br/>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./templates/mainTemplate.xhtml">
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">First name</span>
-        <h:inputText class="col-2" id="firstName" value="#{editClientBean.updateUserDTO.firstName}"/>
-    </label>
-    <br/>
+    <ui:define name="top">
+        <h1>${msg["main.page"]} > ${msg["nav.clients"]} > ${msg["nav.editClient"]}</h1>
+    </ui:define>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Last name</span>
-        <h:inputText class="col-2" id="lastName" value="#{editClientBean.updateUserDTO.lastName}"/>
-    </label>
-    <br/>
+    <ui:define name="left">
+        <ui:include src="./templates/menu.xhtml"/>
+    </ui:define>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Personal ID</span>
-        <h:inputText class="col-2" id="personalID" value="#{editClientBean.updateUserDTO.personalId}"/>
-    </label>
-    <br/>
+    <ui:define name="content">
+        <h:form class="text-center mb-2">
+            <h:commandButton class="col-2 m-3 btn btn-secondary" action="showClientList" value="${msg['nav.return']}"/>
+        </h:form>
+        <h:form action="clientList" class="container align-items-center text-center">
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['client.username']}</span>
+                <h:inputText class="col-2" id="username" value="#{editClientBean.updateUserDTO.username}"/>
+            </label>
+            <br/>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">City</span>
-        <h:inputText class="col-2" id="city" value="#{editClientBean.updateUserDTO.city}"/>
-    </label>
-    <br/>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['client.firstName']}</span>
+                <h:inputText class="col-2" id="firstName" value="#{editClientBean.updateUserDTO.firstName}"/>
+            </label>
+            <br/>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Street</span>
-        <h:inputText class="col-2" id="street" value="#{editClientBean.updateUserDTO.street}"/>
-    </label>
-    <br/>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['client.lastName']}</span>
+                <h:inputText class="col-2" id="lastName" value="#{editClientBean.updateUserDTO.lastName}"/>
+            </label>
+            <br/>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">House number</span>
-        <h:inputText class="col-2" id="number" value="#{editClientBean.updateUserDTO.number}"/>
-    </label>
-    <br/>
-    <h:commandButton class="row mx-auto text-center btn btn-primary w-25" action="#{editClientBean.updateClient()}"
-                     value="Save changes"/>
-</h:form>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['client.personalId']}</span>
+                <h:inputText class="col-2" id="personalID" value="#{editClientBean.updateUserDTO.personalId}"/>
+            </label>
+            <br/>
 
-</body>
-</html>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['address.city']}</span>
+                <h:inputText class="col-2" id="city" value="#{editClientBean.updateUserDTO.city}"/>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['address.street']}</span>
+                <h:inputText class="col-2" id="street" value="#{editClientBean.updateUserDTO.street}"/>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg['address.houseNumber']}</span>
+                <h:inputText class="col-2" id="number" value="#{editClientBean.updateUserDTO.number}"/>
+            </label>
+            <br/>
+            <h:commandButton class="row mx-auto text-center btn btn-primary w-25"
+                             action="#{editClientBean.updateClient()}"
+                             value="${msg['button.saveChanges']}"/>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

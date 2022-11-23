@@ -1,61 +1,63 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-        xmlns:f="http://java.sun.com/jsf/core"
->
-<head>
-    <title>Add rent</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h1 class="text-center">Create new rent</h1>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./templates/mainTemplate.xhtml">
 
-<h:form class="text-center mb-2">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showRentList"/>
-</h:form>
+    <ui:define name="top">
+        <h1>${msg["main.page"]} > ${msg["nav.rents"]} > ${msg["nav.addRent"]}</h1>
+    </ui:define>
 
-<h:form class="container align-items-center text-center mb-2">
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Begin time</span>
-        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.beginTime}" required="true"/>
-    </label>
-    <br/>
+    <ui:define name="left">
+        <ui:include src="./templates/menu.xhtml"/>
+    </ui:define>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">End time</span>
-        <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.endTime}" required="true"/>
-    </label>
-    <br/>
+    <ui:define name="content">
+        <h:form class="text-center mb-2">
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showRentList"/>
+        </h:form>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Board</span>
-        <h:selectBooleanCheckbox class="col-2" value="#{addRentBean.rent.board}"/>
-    </label>
-    <br/>
+        <h:form class="container align-items-center text-center mb-2">
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.beginTime"]}</span>
+                <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.beginTime}" required="true"/>
+            </label>
+            <br/>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Room</span>
-        <h:selectOneMenu class="col-2" value="#{addRentBean.chosenRoom}" required="true">
-            <f:selectItems value="#{addRentBean.roomList}"/>
-        </h:selectOneMenu>
-    </label>
-    <br/>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.endTime"]}</span>
+                <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.endTime}" required="true"/>
+            </label>
+            <br/>
 
-    <label class="row container mx-auto justify-content-center">
-        <span class="col-2">Client</span>
-        <h:selectOneMenu class="col-2" value="#{addRentBean.chosenClient}" required="true">
-            <f:selectItems value="#{addRentBean.clientList}"/>
-        </h:selectOneMenu>
-    </label>
-    <br/>
-    <h:commandButton class="row mx-auto text-center btn btn-warning w-25" value="Create rent"
-                     action="#{addRentBean.addRent()}"/>
-</h:form>
-</body>
-</html>
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.board"]}</span>
+                <h:selectBooleanCheckbox class="col-2" value="#{addRentBean.rent.board}"/>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.room"]}</span>
+                <h:selectOneMenu class="col-2" value="#{addRentBean.chosenRoom}" required="true">
+                    <f:selectItems value="#{addRentBean.roomList}"/>
+                </h:selectOneMenu>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.client"]}</span>
+                <h:selectOneMenu class="col-2" value="#{addRentBean.chosenClient}" required="true">
+                    <f:selectItems value="#{addRentBean.clientList}"/>
+                </h:selectOneMenu>
+            </label>
+            <br/>
+            <h:commandButton class="row mx-auto text-center btn btn-warning w-25" value="${msg['nav.addRent']}"
+                             action="#{addRentBean.addRent()}"/>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
