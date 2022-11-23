@@ -13,6 +13,13 @@
             <supported-locale>pl</supported-locale>
             <supported-locale>en</supported-locale>
         </locale-config>
+        <resource-bundle>
+            <base-name>i18n.messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+        <message-bundle>
+            i18n.jsf_messages
+        </message-bundle>
 
     </application>
     <navigation-rule>
@@ -162,6 +169,11 @@
     <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
+            <from-outcome>showMainMenu</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>showRoomList</from-outcome>
             <to-view-id>/rooms.xhtml</to-view-id>
             <redirect/>
@@ -192,4 +204,32 @@
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>showMainMenu</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showRoomList</from-outcome>
+            <to-view-id>/rooms.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showClientList</from-outcome>
+            <to-view-id>/clients.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showEmployeeList</from-outcome>
+            <to-view-id>/employees.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showRentList</from-outcome>
+            <to-view-id>/rents.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <h:form class="text-center">
+        <h:commandButton class="col-2 m-3 mt-5 btn btn-danger w-50" value="${msg['nav.main']}" action="showMainMenu"/>
+        <h:commandButton class="col-2 m-3 btn btn-success w-50" value="${msg['nav.rooms']}" action="showRoomList"/>
+        <h:commandButton class="col-2 m-3 btn btn-warning w-50" value="${msg['nav.rents']}" action="showRentList"/>
+        <h:commandButton class="col-2 m-3 btn btn-primary w-50" value="${msg['nav.clients']}" action="showClientList"/>
+        <h:commandButton class="col-2 m-3 btn btn-info w-50" value="${msg['nav.employees']}" action="showEmployeeList"/>
+        <h:commandButton class="col-2 m-3 btn btn-secondary w-50" value="${msg['nav.admins']}" action="showAdminList"/>
+    </h:form>
+</ui:composition>

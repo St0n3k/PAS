@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <h:outputStylesheet library="stylesheets" name="bootstrap.css"/>
+    <h:outputStylesheet library="stylesheets" name="style.css"/>
+    <title>#{msg["app.name"]}</title>
+</h:head>
+
+<h:body class="container-fluid">
+
+    <div class="row" id="top" style="background-color: rgb(139, 126, 116)">
+        <div class="col text-center">
+            <ui:insert name="top">Top</ui:insert>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2" style="background-color: rgb(199, 188, 161)" id="left">
+            <ui:insert name="left">Left</ui:insert>
+        </div>
+        <div class="col-10" style="background-color: rgb(241, 211, 179)" id="content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+    </div>
+    <div class="row" style="background-color: rgb(101, 100, 124); color: white;" id="bottom">
+        <div class="text-center">#{msg["app.name"]}</div>
+    </div>
+
+</h:body>
+
+</html>
