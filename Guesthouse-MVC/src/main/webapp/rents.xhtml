@@ -1,79 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core">
-<head>
-    <title>Rents</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h:form class="text-center">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu"/>
-    <h:commandButton class="col-2 m-3 btn btn-warning" value="Refresh rents"
-                     action="#{rentListBean.refreshRentList()}"/>
-    <h:commandButton class="col-2 m-3 btn btn-warning" value="Add rent" action="showAddRentForm"/>
-</h:form>
-<h:dataTable class="table table-striped table-bordered container align-items-center" value="#{rentListBean.rentList}"
-             var="rent">
-    <h:column>
-        <f:facet name="header">Rent id</f:facet>
-        #{rent.id}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Begin time</f:facet>
-        #{rent.beginTime}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">End time</f:facet>
-        #{rent.endTime}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Board</f:facet>
-        <h:form>
-            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{rent.board}"/>
-        </h:form>
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Final cost</f:facet>
-        #{rent.finalCost}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Room number</f:facet>
-        #{rent.room.roomNumber}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Client personal id</f:facet>
-        #{rent.client.personalId}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Delete</f:facet>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <title>Rents</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+              crossorigin="anonymous" />
+    </head>
+    <body>
         <h:form class="text-center">
-            <h:commandButton class="text-center btn btn-danger w-75" value="Remove"
-                             action="#{rentListBean.removeRent(rent.id)}"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu" />
+            <h:commandButton class="col-2 m-3 btn btn-warning" value="Refresh rents"
+                             action="#{rentListBean.refreshRentList()}" />
+            <h:commandButton class="col-2 m-3 btn btn-warning" value="Add rent" action="showAddRentForm" />
         </h:form>
-    </h:column>
+        <h:dataTable class="table table-striped table-bordered container align-items-center"
+                     value="#{rentListBean.rentList}"
+                     var="rent">
+            <h:column>
+                <f:facet name="header">Rent id</f:facet>
+                #{rent.id}
+            </h:column>
 
-    <h:column>
-        <f:facet name="header">Remove/Add Board</f:facet>
-        <h:form class="text-center">
-            <h:commandButton class="btn btn-danger w-75" rendered="#{rent.board}" value="Remove board"
-                             action="#{rentListBean.removeBoard(rent.id)}"/>
-            <h:commandButton class="btn btn-success w-75" rendered="#{!rent.board}" value="Add board"
-                             action="#{rentListBean.addBoard(rent.id)}"/>
-        </h:form>
-    </h:column>
-</h:dataTable>
-</body>
+            <h:column>
+                <f:facet name="header">Begin time</f:facet>
+                #{rent.beginTime}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">End time</f:facet>
+                #{rent.endTime}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Board</f:facet>
+                <h:form>
+                    <h:selectBooleanCheckbox style="pointer-events: none;" value="#{rent.board}" />
+                </h:form>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Final cost</f:facet>
+                #{rent.finalCost}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Room number</f:facet>
+                #{rent.room.roomNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Client personal id</f:facet>
+                #{rent.client.personalId}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Delete</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="text-center btn btn-danger w-75" value="Remove"
+                                     action="#{rentListBean.removeRent(rent.id)}" />
+                </h:form>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Remove/Add Board</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-danger w-75" rendered="#{rent.board}" value="Remove board"
+                                     disabled="#{roomListBean.getPast(rent.beginTime)}"
+                                     action="#{rentListBean.removeBoard(rent.id)}" />
+                    <h:commandButton class="btn btn-success w-75" rendered="#{!rent.board}" value="Add board"
+                                     action="#{rentListBean.addBoard(rent.id)}"
+                                     disabled="#{roomListBean.getPast(rent.beginTime)}" />
+                </h:form>
+            </h:column>
+        </h:dataTable>
+    </body>
 </html>
