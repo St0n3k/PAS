@@ -15,6 +15,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
 import pl.lodz.p.it.pas.model.user.Employee;
 import pl.lodz.p.it.pas.model.user.User;
@@ -92,6 +93,22 @@ public class UserController {
     public Response getAllClients() {
         List<Client> clients = userManager.getClients();
         return Response.status(Response.Status.OK).entity(clients).build();
+    }
+
+    @GET
+    @Path("/employees")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllEmployees() {
+        List<Employee> employee = userManager.getEmployees();
+        return Response.status(Response.Status.OK).entity(employee).build();
+    }
+
+    @GET
+    @Path("/admins")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllAdmin() {
+        List<Admin> admins = userManager.getAdmins();
+        return Response.status(Response.Status.OK).entity(admins).build();
     }
 
     @GET

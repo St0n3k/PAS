@@ -105,11 +105,24 @@ public class UserManager {
     }
 
     public List<Client> getClients(){
-        List<Client> clients = userRepository.getUsersByRole("CLIENT")
+        return userRepository.getUsersByRole("CLIENT")
                 .stream()
                 .map(user -> (Client) user)
                 .collect(Collectors.toList());
-        return clients;
+    }
+
+    public List<Employee> getEmployees(){
+        return userRepository.getUsersByRole("EMPLOYEE")
+                .stream()
+                .map(user -> (Employee) user)
+                .collect(Collectors.toList());
+    }
+
+    public List<Admin> getAdmins(){
+        return userRepository.getUsersByRole("ADMIN")
+                .stream()
+                .map(user -> (Admin) user)
+                .collect(Collectors.toList());
     }
 
     public List<Rent> getAllRentsOfClient(Long clientId, Boolean past) throws UserNotFoundException {
