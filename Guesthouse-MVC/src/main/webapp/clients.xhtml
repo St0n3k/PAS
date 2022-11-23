@@ -1,103 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core">
-<head>
-    <title>Clients</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h:form class="text-center">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu"/>
-    <h:commandButton class="col-2 m-3 btn btn-primary" value="Refresh clients"
-                     action="#{clientListBean.refreshClientList()}"/>
-    <h:commandButton class="col-2 m-3 btn btn-primary" action="showAddClientForm" value="Add new client"/>
-</h:form>
-<h:dataTable class="table container align-items-center table-striped table-bordered"
-             value="#{clientListBean.clientList}" var="client">
-    <h:column>
-        <f:facet name="header">Client id</f:facet>
-        #{client.id}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Username</f:facet>
-        #{client.username}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Active</f:facet>
-        <h:form>
-            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{client.active}"/>
-        </h:form>
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">First name</f:facet>
-        #{client.firstName}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Last name</f:facet>
-        #{client.lastName}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Personal ID</f:facet>
-        #{client.personalId}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Client type</f:facet>
-        #{client.clientType.name}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">City</f:facet>
-        #{client.address.city}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Street</f:facet>
-        #{client.address.street}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">House number</f:facet>
-        #{client.address.houseNumber}
-    </h:column>
-
-    <h:column>
-        <f:facet name="header">Deactivate/Activate</f:facet>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <title>Clients</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+              crossorigin="anonymous" />
+    </head>
+    <body>
         <h:form class="text-center">
-            <h:commandButton class="btn btn-danger w-75" rendered="#{client.active}" value="Deactivate"
-                             action="#{clientListBean.deactivateClient(client.id)}"/>
-            <h:commandButton class="btn btn-success w-75" rendered="#{!client.active}" value="Activate"
-                             action="#{clientListBean.activateClient(client.id)}"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu" />
+            <h:commandButton class="col-2 m-3 btn btn-primary" value="Refresh clients"
+                             action="#{clientListBean.refreshClientList()}" />
+            <h:commandButton class="col-2 m-3 btn btn-primary" action="showAddClientForm" value="Add new client" />
         </h:form>
-    </h:column>
-    <h:column>
-        <f:facet name="header">Edit</f:facet>
+
         <h:form class="text-center">
-            <h:commandButton class="btn btn-primary" value="Edit" action="showEditClientForm">
-                <f:param name="client_id" value="#{client.id}"/>
+            Username containing:
+            <h:inputText binding="#{usernameInput}" />
+            <h:commandButton value="Filter clients"
+                             class="btn btn-secondary"
+                             action="#{clientListBean.searchByUsername(usernameInput.value)}">
+
             </h:commandButton>
         </h:form>
-    </h:column>
-    <h:column>
-        <f:facet name="header">Edit</f:facet>
-        <h:form class="text-center">
-            <h:commandButton class="btn btn-warning" value="Show rents" action="showClientDetails">
-                <f:param name="client_id" value="#{client.id}"/>
-            </h:commandButton>
-        </h:form>
-    </h:column>
-</h:dataTable>
 
-</body>
+        <h:dataTable class="table container align-items-center table-striped table-bordered"
+                     value="#{clientListBean.clientList}" var="client">
+            <h:column>
+                <f:facet name="header">Client id</f:facet>
+                #{client.id}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Username</f:facet>
+                #{client.username}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Active</f:facet>
+                <h:form>
+                    <h:selectBooleanCheckbox style="pointer-events: none;" value="#{client.active}" />
+                </h:form>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">First name</f:facet>
+                #{client.firstName}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Last name</f:facet>
+                #{client.lastName}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Personal ID</f:facet>
+                #{client.personalId}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Client type</f:facet>
+                #{client.clientType.name}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">City</f:facet>
+                #{client.address.city}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Street</f:facet>
+                #{client.address.street}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">House number</f:facet>
+                #{client.address.houseNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Deactivate/Activate</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-danger w-75" rendered="#{client.active}" value="Deactivate"
+                                     action="#{clientListBean.deactivateClient(client.id)}" />
+                    <h:commandButton class="btn btn-success w-75" rendered="#{!client.active}" value="Activate"
+                                     action="#{clientListBean.activateClient(client.id)}" />
+                </h:form>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Edit</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-primary" value="Edit" action="showEditClientForm">
+                        <f:param name="client_id" value="#{client.id}" />
+                    </h:commandButton>
+                </h:form>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Rents</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-warning"
+                                     value="Show rents"
+                                     action="showClientDetails">
+                        <f:param name="client_id" value="#{client.id}" />
+                    </h:commandButton>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+
+    </body>
 </html>

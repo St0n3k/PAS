@@ -1,5 +1,13 @@
 package pl.lodz.p.it.pas.guesthousemvc.restClients;
 
+import javax.enterprise.context.RequestScoped;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.Objects;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -13,14 +21,6 @@ import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
 import pl.lodz.p.it.pas.model.user.Employee;
-
-import javax.enterprise.context.RequestScoped;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.List;
 
 @RequestScoped
 public class UserRESTClient {
@@ -81,8 +81,8 @@ public class UserRESTClient {
 
     public int activateClient(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/activate"))
-                .PUT(HttpRequest.BodyPublishers.noBody()).build();
+                                  .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/activate"))
+                                  .PUT(HttpRequest.BodyPublishers.noBody()).build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
@@ -90,8 +90,8 @@ public class UserRESTClient {
 
     public int deactivateUser(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/deactivate"))
-                .PUT(HttpRequest.BodyPublishers.noBody()).build();
+                                  .newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/deactivate"))
+                                  .PUT(HttpRequest.BodyPublishers.noBody()).build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
@@ -99,10 +99,11 @@ public class UserRESTClient {
 
     public int registerClient(RegisterClientDTO registerClientDTO) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/clients"))
-                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerClientDTO)))
-                .header("Content-type", "application/json")
-                .build();
+                                  .newBuilder(URI.create(Utils.API_URL + "/users/clients"))
+                                  .POST(
+                                      HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerClientDTO)))
+                                  .header("Content-type", "application/json")
+                                  .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
@@ -110,10 +111,11 @@ public class UserRESTClient {
 
     public int registerEmployee(RegisterEmployeeDTO registerEmployeeDTO) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/employees"))
-                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerEmployeeDTO)))
-                .header("Content-type", "application/json")
-                .build();
+                                  .newBuilder(URI.create(Utils.API_URL + "/users/employees"))
+                                  .POST(HttpRequest.BodyPublishers.ofString(
+                                      mapper.writeValueAsString(registerEmployeeDTO)))
+                                  .header("Content-type", "application/json")
+                                  .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
@@ -132,10 +134,10 @@ public class UserRESTClient {
 
     public int updateUser(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/users/" + id))
-                .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
-                .header("Content-type", "application/json")
-                .build();
+                                  .newBuilder(URI.create(Utils.API_URL + "/users/" + id))
+                                  .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
+                                  .header("Content-type", "application/json")
+                                  .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return response.statusCode();
@@ -143,10 +145,23 @@ public class UserRESTClient {
 
     public List<Rent> getRentsByClientId(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id + "/rents"))
-                .GET()
-                .build();
+                                         .GET()
+                                         .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(response.body(), new TypeReference<List<Rent>>() {
         });
+    }
+
+    public List<Client> getClientsWithMatchingUsername(String username) throws IOException, InterruptedException {
+        // TODO create REST endpoint for retrieving only clients
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users?username=" + username))
+                                         .GET()
+                                         .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return mapper.readValue(response.body(), new TypeReference<List<Client>>() { })
+                     .stream()
+                     .filter(u -> Objects.equals(u.getRole(), "CLIENT"))
+                     .toList();
     }
 }
