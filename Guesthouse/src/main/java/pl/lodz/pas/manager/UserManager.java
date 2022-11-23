@@ -76,6 +76,16 @@ public class UserManager {
         return employee;
     }
 
+    public Admin registerAdmin(String username) throws CreateUserException {
+        Admin admin = new Admin(username);
+        admin = (Admin) userRepository.add(admin);
+
+        if (admin == null) {
+            throw new CreateUserException();
+        }
+        return admin;
+    }
+
     public User getUserById(Long id) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.getById(id);
 

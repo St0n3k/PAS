@@ -23,6 +23,15 @@
             <h:commandButton class="col-2 m-3 btn btn-primary" action="showAddClientForm"
                              value="${msg['nav.addClient']}"/>
         </h:form>
+        <h:form class="text-center">
+            Username containing:
+            <h:inputText binding="#{usernameInput}" />
+            <h:commandButton value="Filter clients"
+                             class="btn btn-secondary"
+                             action="#{clientListBean.searchByUsername(usernameInput.value)}">
+
+            </h:commandButton>
+        </h:form>
         <h:dataTable class="table container align-items-center table-striped table-bordered border-dark"
                      value="#{clientListBean.clientList}" var="client">
             <h:column>

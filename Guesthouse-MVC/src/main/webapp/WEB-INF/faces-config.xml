@@ -86,12 +86,27 @@
         <navigation-case>
             <from-outcome>showAddEmployeeForm</from-outcome>
             <to-view-id>/addEmployee.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>showEditEmployeeForm</from-outcome>
             <to-view-id>/editEmployee.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/admins.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showMainMenu</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
             <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showAddAdminForm</from-outcome>
+            <to-view-id>/addAdmin.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showEditAdminForm</from-outcome>
+            <to-view-id>/editAdmin.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
@@ -122,10 +137,28 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>/addAdmin.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showAdminList</from-outcome>
+            <to-view-id>/admins.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <from-view-id>/editEmployee.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>showEmployeeList</from-outcome>
             <to-view-id>/employees.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/editAdmin.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showAdminList</from-outcome>
+            <to-view-id>/admins.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -191,6 +224,11 @@
         <navigation-case>
             <from-outcome>showRentList</from-outcome>
             <to-view-id>/rents.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showAdminList</from-outcome>
+            <to-view-id>/admins.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

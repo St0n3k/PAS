@@ -14,6 +14,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
+import pl.lodz.p.it.pas.model.Address;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
@@ -70,6 +72,15 @@ public class UserController {
         return Response.status(Response.Status.CREATED).entity(employee).build();
     }
 
+    @POST
+    @Path("/admins")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
+        Admin admin = userManager.registerAdmin(raDto.getUsername());
+        return Response.status(Response.Status.CREATED).entity(admin).build();
+    }
+
 
     @GET
     @Path("/{id}")
@@ -106,7 +117,7 @@ public class UserController {
     @GET
     @Path("/admins")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllAdmin() {
+    public Response getAllAdmins() {
         List<Admin> admins = userManager.getAdmins();
         return Response.status(Response.Status.OK).entity(admins).build();
     }

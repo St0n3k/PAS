@@ -1,7 +1,8 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans.user.employee;
+package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Employee;
 
 import javax.annotation.PostConstruct;
@@ -15,12 +16,12 @@ import java.util.Map;
 
 @Named
 @ViewScoped
-public class EditEmployeeBean implements Serializable {
+public class EditAdminBean implements Serializable {
 
     @Inject
     private UserRESTClient userRESTClient;
 
-    private Long employeeId;
+    private Long adminId;
 
     private UpdateUserDTO updateUserDTO;
     private UpdateUserDTO oldUserDTO;
@@ -29,24 +30,24 @@ public class EditEmployeeBean implements Serializable {
     private void init() {
         Map<String, String> params =
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String id = params.get("employee_id");
+        String id = params.get("admin_id");
         //String id = "3";
-        this.employeeId = Long.valueOf(id);
+        this.adminId = Long.valueOf(id);
         try {
-            Employee employee = userRESTClient.getEmployeeById(this.employeeId);
+            Admin admin = userRESTClient.getAdminById(this.adminId);
             this.updateUserDTO = new UpdateUserDTO(
-                    employee.getUsername(),
-                    employee.getFirstName(),
-                    employee.getLastName(),
+                    admin.getUsername(),
+                    null,
+                    null,
                     null,
                     null,
                     null,
                     null
             );
             this.oldUserDTO = new UpdateUserDTO(
-                    employee.getUsername(),
-                    employee.getFirstName(),
-                    employee.getLastName(),
+                    admin.getUsername(),
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -60,20 +61,14 @@ public class EditEmployeeBean implements Serializable {
         return updateUserDTO;
     }
 
-    public String updateEmployee() throws IOException, InterruptedException {
+    public String updateAdmin() throws IOException, InterruptedException {
         if (updateUserDTO.getUsername().equals(oldUserDTO.getUsername())) {
             updateUserDTO.setUsername(null);
         }
-        if (updateUserDTO.getFirstName().equals(oldUserDTO.getFirstName())) {
-            updateUserDTO.setFirstName(null);
-        }
-        if (updateUserDTO.getLastName().equals(oldUserDTO.getLastName())) {
-            updateUserDTO.setLastName(null);
-        }
 
-        int statusCode = userRESTClient.updateUser(this.employeeId, this.updateUserDTO);
+        int statusCode = userRESTClient.updateUser(this.adminId, this.updateUserDTO);
         if (statusCode == 200) {
-            return "showEmployeeList";
+            return "showAdminList";
         } else {
             //TODO Display error message
         }
