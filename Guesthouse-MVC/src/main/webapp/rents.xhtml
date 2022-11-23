@@ -63,15 +63,15 @@
             </h:column>
 
             <h:column>
-                <f:facet name="header">${msg['rent.cancelRent']}</f:facet>
+                <f:facet name="header">${msg['rents.cancelRent']}</f:facet>
                 <h:form class="text-center">
-                    <h:commandButton class="text-center btn btn-danger" value="${msg['rent.cancelRent']}"
+                    <h:commandButton class="text-center btn btn-danger" value="${msg['rents.cancelRent']}"
                                      action="#{rentListBean.removeRent(rent.id)}"/>
                 </h:form>
             </h:column>
 
             <h:column>
-                <f:facet name="header">${msg['rent.label.addRemoveBoard']}</f:facet>
+                <f:facet name="header">${msg['rents.label.addRemoveBoard']}</f:facet>
                 <h:form class="text-center">
                     <h:commandButton class="btn btn-danger" rendered="#{rent.board}"
                                      value="${msg['button.removeBoard']}"

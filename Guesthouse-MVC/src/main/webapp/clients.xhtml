@@ -40,12 +40,12 @@
             </h:column>
 
             <h:column>
-                <f:facet name="header">${msg['client.username']}</f:facet>
+                <f:facet name="header">${msg['user.username']}</f:facet>
                 #{client.username}
             </h:column>
 
             <h:column>
-                <f:facet name="header">${msg['client.active']}</f:facet>
+                <f:facet name="header">${msg['user.active']}</f:facet>
                 <h:form>
                     <h:selectBooleanCheckbox style="pointer-events: none;" value="#{client.active}"/>
                 </h:form>

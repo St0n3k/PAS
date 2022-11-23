@@ -1,60 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core">
-<head>
-    <title>Clients</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
-</head>
-<body>
-<h:form class="text-center">
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Go back" action="showMainMenu"/>
-    <h:commandButton class="col-2 m-3 btn btn-secondary" value="Refresh admins"
-                     action="#{adminListBean.refreshAdminList()}"/>
-    <h:commandButton class="col-2 m-3 btn btn-secondary" action="showAddAdminForm" value="Add new admin"/>
-</h:form>
-<h:dataTable class="table container align-items-center table-striped table-bordered"
-             value="#{adminListBean.adminList}" var="admin">
-    <h:column>
-        <f:facet name="header">Admin id</f:facet>
-        #{admin.id}
-    </h:column>
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./templates/mainTemplate.xhtml">
 
-    <h:column>
-        <f:facet name="header">Username</f:facet>
-        #{admin.username}
-    </h:column>
+    <ui:define name="top">
+        <h1>${msg["main.page"]} > ${msg["nav.admins"]}</h1>
+    </ui:define>
 
-    <h:column>
-        <f:facet name="header">Active</f:facet>
-        <h:form>
-            <h:selectBooleanCheckbox style="pointer-events: none;" value="#{admin.active}"/>
-        </h:form>
-    </h:column>
+    <ui:define name="left">
+        <ui:include src="./templates/menu.xhtml"/>
+    </ui:define>
 
-    <h:column>
-        <f:facet name="header">Deactivate/Activate</f:facet>
+    <ui:define name="content">
         <h:form class="text-center">
-            <h:commandButton class="btn btn-danger w-75" rendered="#{admin.active}" value="Deactivate"
-                             action="#{adminListBean.deactivateAdmin(admin.id)}"/>
-            <h:commandButton class="btn btn-success w-75" rendered="#{!admin.active}" value="Activate"
-                             action="#{adminListBean.activateAdmin(admin.id)}"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showMainMenu"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['admins.refreshAdmins']}"
+                             action="#{adminListBean.refreshAdminList()}"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" action="showAddAdminForm"
+                             value="${msg['nav.addAdmin']}"/>
         </h:form>
-    </h:column>
-    <h:column>
-        <f:facet name="header">Edit</f:facet>
-        <h:form class="text-center">
-            <h:commandButton class="btn btn-info" value="Edit" action="showEditAdminForm">
-                <f:param name="admin_id" value="#{admin.id}"/>
-            </h:commandButton>
-        </h:form>
-    </h:column>
-</h:dataTable>
+        <h:dataTable class="table container align-items-center table-striped table-bordered"
+                     value="#{adminListBean.adminList}" var="admin">
+            <h:column>
+                <f:facet name="header">${msg['user.id']}</f:facet>
+                #{admin.id}
+            </h:column>
 
-</body>
-</html>
+            <h:column>
+                <f:facet name="header">${msg['user.username']}</f:facet>
+                #{admin.username}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">${msg['user.active']}</f:facet>
+                <h:form>
+                    <h:selectBooleanCheckbox style="pointer-events: none;" value="#{admin.active}"/>
+                </h:form>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">${msg['button.activate']}/${msg['button.deactivate']}</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-danger w-75" rendered="#{admin.active}"
+                                     value="${msg['button.deactivate']}"
+                                     action="#{adminListBean.deactivateAdmin(admin.id)}"/>
+                    <h:commandButton class="btn btn-success w-75" rendered="#{!admin.active}"
+                                     value="${msg['button.activate']}"
+                                     action="#{adminListBean.activateAdmin(admin.id)}"/>
+                </h:form>
+            </h:column>
+            <h:column>
+                <f:facet name="header">${msg['button.edit']}</f:facet>
+                <h:form class="text-center">
+                    <h:commandButton class="btn btn-info" value="${msg['button.edit']}" action="showEditAdminForm">
+                        <f:param name="admin_id" value="#{admin.id}"/>
+                    </h:commandButton>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+    </ui:define>
+
+</ui:composition>
