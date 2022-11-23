@@ -70,6 +70,25 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>/employees.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showMainMenu</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showAddEmployeeForm</from-outcome>
+            <to-view-id>/addEmployee.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showEditEmployeeForm</from-outcome>
+            <to-view-id>/editEmployee.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <from-view-id>/clientDetails.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>showClientList</from-outcome>
@@ -91,6 +110,15 @@
         <navigation-case>
             <from-outcome>showClientList</from-outcome>
             <to-view-id>/clients.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/editEmployee.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showEmployeeList</from-outcome>
+            <to-view-id>/employees.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -123,6 +151,15 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>/addEmployee.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showEmployeeList</from-outcome>
+            <to-view-id>/employees.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>showRoomList</from-outcome>
@@ -132,6 +169,11 @@
         <navigation-case>
             <from-outcome>showClientList</from-outcome>
             <to-view-id>/clients.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showEmployeeList</from-outcome>
+            <to-view-id>/employees.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>

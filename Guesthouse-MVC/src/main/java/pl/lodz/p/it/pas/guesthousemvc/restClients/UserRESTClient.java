@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
+import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.user.Admin;
 import pl.lodz.p.it.pas.model.user.Client;
+import pl.lodz.p.it.pas.model.user.Employee;
 
 import javax.enterprise.context.RequestScoped;
 import java.io.IOException;
@@ -36,11 +39,35 @@ public class UserRESTClient {
         });
     }
 
+    public List<Employee> getEmployeeList() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/employees")).GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(response.body(), new TypeReference<List<Employee>>() {
+        });
+    }
+
+    public List<Admin> getAdminList() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/clients")).GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(response.body(), new TypeReference<List<Admin>>() {
+        });
+    }
+
     public Client getClientById(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id)).GET().build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(response.body(), Client.class);
+    }
+
+    public Employee getEmployeeById(Long id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id)).GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response);
+        return mapper.readValue(response.body(), Employee.class);
     }
 
     public int activateClient(Long id) throws IOException, InterruptedException {
@@ -72,7 +99,18 @@ public class UserRESTClient {
         return response.statusCode();
     }
 
-    public int updateClient(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
+    public int registerEmployee(RegisterEmployeeDTO registerEmployeeDTO) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(Utils.API_URL + "/users/employees"))
+                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(registerEmployeeDTO)))
+                .header("Content-type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode();
+    }
+
+    public int updateUser(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/users/" + id))
                 .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))

@@ -81,7 +81,7 @@ public class EditClientBean implements Serializable {
             updateUserDTO.setNumber(null);
         }
 
-        int statusCode = userRESTClient.updateClient(this.clientId, this.updateUserDTO);
+        int statusCode = userRESTClient.updateUser(this.clientId, this.updateUserDTO);
         if (statusCode == 200) {
             return "showClientList";
         } else {
