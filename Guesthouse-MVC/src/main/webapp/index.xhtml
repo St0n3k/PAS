@@ -2,6 +2,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
@@ -15,6 +16,9 @@
 
     <ui:define name="content">
         <h1 class="text-center">${msg["main.welcome"]}</h1>
+        <span class="text center">${msg["index.desc"]}</span>
+        <br/>
+        <h:graphicImage class="text center" value="resources/images/room.PNG"/>
     </ui:define>
 
 </ui:composition>
