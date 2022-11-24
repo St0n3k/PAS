@@ -8,7 +8,7 @@
                 template="./templates/mainTemplate.xhtml">
 
     <ui:define name="top">
-        <h1>${msg["main.page"]} > ${msg["nav.clients"]} > ${msg["nav.addRent"]}</h1>
+        <h1>${msg["main.page"]} > ${msg["nav.clients"]} > ${msg["client.rent"]}</h1>
     </ui:define>
 
     <ui:define name="left">
@@ -16,7 +16,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <h1 class="text-center">${msg["client.rent"]} #{clientDetailsBean.clientId}</h1>
+        <h1 class="text-center">${msg["client.rent"]}: #{clientDetailsBean.clientId}</h1>
         <h:form class="text-center">
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showClientList"/>
             <h:commandButton class="col-2 m-3 btn btn-warning" value="${msg['rents.refreshRents']}"
