@@ -48,7 +48,7 @@
             <h:column>
                 <f:facet name="header">${msg['button.delete']}</f:facet>
                 <h:form class="text-center">
-                    <h:commandButton class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
+                    <h:commandButton onclick="return confirm('${msg['room.remove']}')" class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
                                      action="#{roomListBean.removeRoom(room.id)}"/>
                 </h:form>
             </h:column>
