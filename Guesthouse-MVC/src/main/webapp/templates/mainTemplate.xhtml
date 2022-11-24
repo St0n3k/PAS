@@ -14,20 +14,23 @@
 
 <h:body class="container-fluid">
 
-    <div class="row position-fixed w-100 top-0" id="top" style="background-color: rgb(124 122 129); height: 6vh; box-shadow: 1px 1px 8px 4px; z-index: 1">
+    <div class="row" id="top"
+         style="background-color: rgb(124 122 129);height: 6vh;box-shadow: 1px 1px 5px 1px;z-index: 2;position: relative;">
         <div class="col text-center">
             <ui:insert name="top">Top</ui:insert>
         </div>
     </div>
-    <div class="row" style="height: 91vh; margin-top: 6vh">
-        <div class="col-2 h-100 position-fixed" style="background-color: rgb(223 222 237); box-shadow: 1px 0 10px 1px; width: 33vh;" id="left">
+    <div class="row" style="height: 91vh;">
+        <div class="col-2" style="background-color: rgb(223 222 237); box-shadow: 0 0 10px 1px; z-index: 1" id="left">
             <ui:insert name="left">Left</ui:insert>
         </div>
-        <div class="col-10" style="background-color: rgb(252,253,255) ;margin-left: 33vh;" id="content">
+        <div class="col-10" style="height: 91vh; background-color: rgb(252,253,255); overflow-y:scroll;" id="content">
             <ui:insert name="content">Content</ui:insert>
         </div>
     </div>
-    <div class="row position-fixed w-100 shadow" style="background-color: rgb(101, 100, 124); color: white; bottom: 0; height: 3vh;" id="bottom">
+    <div class="row"
+         style="background-color: rgb(101, 100, 124); color: white; bottom: 0; height: 3vh;box-shadow: 1px -1px 5px 1px black;z-index: 3;position: relative;"
+         id="bottom">
         <div class="text-center">#{msg["app.name"]}</div>
     </div>
 
