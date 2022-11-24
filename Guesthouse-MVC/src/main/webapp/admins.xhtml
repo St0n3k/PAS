@@ -23,7 +23,7 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" action="showAddAdminForm"
                              value="${msg['nav.addAdmin']}"/>
         </h:form>
-        <h:dataTable class="table container align-items-center table-striped table-bordered"
+        <h:dataTable class="table container align-items-center table-striped table-bordered border-dark"
                      value="#{adminListBean.adminList}" var="admin">
             <h:column>
                 <f:facet name="header">${msg['user.id']}</f:facet>
