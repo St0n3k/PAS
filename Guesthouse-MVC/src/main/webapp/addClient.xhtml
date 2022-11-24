@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
@@ -15,52 +16,88 @@
     </ui:define>
 
     <ui:define name="content">
+        <h:outputScript target="body">
+            function required() {
+                for (let x of document.forms.addClientForm) {
+                    x.required = true;
+                }
+            }
+
+            required();
+        </h:outputScript>
+        <h:outputScript library="js" name="validate.js" target="body"/>
+
         <h:form class="text-center mb-2">
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showClientList"/>
         </h:form>
-        <h:form class="container align-items-center text-center">
+        <h:form onload="required()" id="addClientForm" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
-                <h:inputText class="col-2" id="username" value="#{addClientBean.registerClientDTO.username}"/>
+                <h:inputText class="col-2" required="true" id="username"
+                             value="#{addClientBean.registerClientDTO.username}"/>
+                <h:message for="username" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.firstName']}</span>
-                <h:inputText class="col-2" id="firstName" value="#{addClientBean.registerClientDTO.firstName}"/>
+                <h:inputText class="col-2" required="true" id="firstName"
+                             value="#{addClientBean.registerClientDTO.firstName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
+                </h:inputText>
+                <h:message for="firstName" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.lastName']}</span>
-                <h:inputText class="col-2" id="lastName" value="#{addClientBean.registerClientDTO.lastName}"/>
+                <h:inputText class="col-2" required="true" id="lastName"
+                             value="#{addClientBean.registerClientDTO.lastName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
+                </h:inputText>
+                <h:message for="lastName" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['client.personalId']}</span>
-                <h:inputText class="col-2" id="personalID" value="#{addClientBean.registerClientDTO.personalID}"/>
+                <h:inputText class="col-2" required="true" id="personalID"
+                             value="#{addClientBean.registerClientDTO.personalID}">
+                    <f:validateRegex pattern="[0-9]+"/>
+                </h:inputText>
+                <h:message for="personalID" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.city']}</span>
-                <h:inputText class="col-2" id="city" value="#{addClientBean.registerClientDTO.city}"/>
+                <h:inputText class="col-2" required="true" id="city" value="#{addClientBean.registerClientDTO.city}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
+                </h:inputText>
+                <h:message for="city" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.street']}</span>
-                <h:inputText class="col-2" id="street" value="#{addClientBean.registerClientDTO.street}"/>
+                <h:inputText class="col-2" required="true" id="street"
+                             value="#{addClientBean.registerClientDTO.street}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
+                </h:inputText>
+                <h:message for="street" errorClass="text-danger"/>
             </label>
             <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.houseNumber']}</span>
-                <h:inputText class="col-2" id="number" value="#{addClientBean.registerClientDTO.number}"/>
+                <h:inputText class="col-2" required="true" id="number"
+                             value="#{addClientBean.registerClientDTO.number}">
+                    <f:validateLongRange minimum="0"/>
+                </h:inputText>
+                <h:message for="number" errorClass="text-danger"/>
             </label>
             <br/>
-            <h:commandButton class="row mx-auto text-center btn btn-primary w-25"
+            <h:commandButton onclick="return validate()" class="row mx-auto text-center btn btn-primary w-25"
                              action="#{addClientBean.registerClient()}"
                              value="${msg['button.register']}"/>
         </h:form>
