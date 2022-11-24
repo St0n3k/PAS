@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
@@ -11,58 +12,81 @@
     </ui:define>
 
     <ui:define name="left">
-        <ui:include src="./templates/menu.xhtml"/>
+        <ui:include src="./templates/menu.xhtml" />
     </ui:define>
 
     <ui:define name="content">
         <h:form class="text-center mb-2">
-            <h:commandButton class="col-2 m-3 btn btn-secondary" action="showClientList" value="${msg['nav.return']}"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" action="showClientList" value="${msg['nav.return']}" />
         </h:form>
         <h:form action="clientList" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
-                <h:inputText class="col-2" id="username" value="#{editClientBean.updateUserDTO.username}"/>
+                <h:inputText class="col-2" id="username"
+                             value="#{editClientBean.updateUserDTO.username}" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.firstName']}</span>
-                <h:inputText class="col-2" id="firstName" value="#{editClientBean.updateUserDTO.firstName}"/>
+                <h:inputText class="col-2" id="firstName" value="#{editClientBean.updateUserDTO.firstName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="firstName" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.lastName']}</span>
-                <h:inputText class="col-2" id="lastName" value="#{editClientBean.updateUserDTO.lastName}"/>
+                <h:inputText class="col-2" id="lastName"
+                             value="#{editClientBean.updateUserDTO.lastName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="lastName" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['client.personalId']}</span>
-                <h:inputText class="col-2" id="personalID" value="#{editClientBean.updateUserDTO.personalId}"/>
+                <h:inputText class="col-2" id="personalID" value="#{editClientBean.updateUserDTO.personalId}">
+                    <f:validateRegex pattern="[0-9]+" />
+                </h:inputText>
+                <h:message for="personalID" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.city']}</span>
-                <h:inputText class="col-2" id="city" value="#{editClientBean.updateUserDTO.city}"/>
+                <h:inputText class="col-2" id="city"
+                             value="#{editClientBean.updateUserDTO.city}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="city" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.street']}</span>
-                <h:inputText class="col-2" id="street" value="#{editClientBean.updateUserDTO.street}"/>
+                <h:inputText class="col-2" id="street"
+                             value="#{editClientBean.updateUserDTO.street}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="street" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['address.houseNumber']}</span>
-                <h:inputText class="col-2" id="number" value="#{editClientBean.updateUserDTO.number}"/>
+                <h:inputText class="col-2" id="number"
+                             value="#{editClientBean.updateUserDTO.number}">
+                    <f:validateLongRange minimum="0" />
+                </h:inputText>
+                <h:message for="number" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
             <h:commandButton class="row mx-auto text-center btn btn-primary w-25"
                              action="#{editClientBean.updateClient()}"
-                             value="${msg['button.saveChanges']}"/>
+                             value="${msg['button.saveChanges']}" />
         </h:form>
     </ui:define>
 

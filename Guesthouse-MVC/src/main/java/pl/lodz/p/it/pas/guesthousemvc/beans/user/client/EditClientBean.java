@@ -1,9 +1,5 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 
-import pl.lodz.p.it.pas.dto.UpdateUserDTO;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
-import pl.lodz.p.it.pas.model.user.Client;
-
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -12,6 +8,9 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
+import pl.lodz.p.it.pas.dto.UpdateUserDTO;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+import pl.lodz.p.it.pas.model.user.Client;
 
 @Named
 @ViewScoped
@@ -26,29 +25,28 @@ public class EditClientBean implements Serializable {
 
     @PostConstruct
     private void init() {
-        Map<String, String> params =
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Map<String, String> params = FacesContext.getCurrentInstance()
+                                                 .getExternalContext()
+                                                 .getRequestParameterMap();
         String id = params.get("client_id");
         this.clientId = Long.valueOf(id);
         try {
             Client client = userRESTClient.getClientById(this.clientId);
-            this.updateUserDTO = new UpdateUserDTO(
-                    client.getUsername(),
-                    client.getFirstName(),
-                    client.getLastName(),
-                    client.getPersonalId(),
-                    client.getAddress().getCity(),
-                    client.getAddress().getStreet(),
-                    client.getAddress().getHouseNumber()
+            this.updateUserDTO = new UpdateUserDTO(client.getUsername(),
+                                                   client.getFirstName(),
+                                                   client.getLastName(),
+                                                   client.getPersonalId(),
+                                                   client.getAddress().getCity(),
+                                                   client.getAddress().getStreet(),
+                                                   client.getAddress().getHouseNumber()
             );
-            this.oldUserDTO = new UpdateUserDTO(
-                    client.getUsername(),
-                    client.getFirstName(),
-                    client.getLastName(),
-                    client.getPersonalId(),
-                    client.getAddress().getCity(),
-                    client.getAddress().getStreet(),
-                    client.getAddress().getHouseNumber()
+            this.oldUserDTO = new UpdateUserDTO(client.getUsername(),
+                                                client.getFirstName(),
+                                                client.getLastName(),
+                                                client.getPersonalId(),
+                                                client.getAddress().getCity(),
+                                                client.getAddress().getStreet(),
+                                                client.getAddress().getHouseNumber()
             );
         } catch (InterruptedException | IOException ignored) {
         }
