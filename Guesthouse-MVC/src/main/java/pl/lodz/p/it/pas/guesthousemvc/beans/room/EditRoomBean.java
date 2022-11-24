@@ -49,17 +49,22 @@ public class EditRoomBean implements Serializable {
     }
 
     public String updateRoom() throws IOException, InterruptedException {
+        UpdateRoomDTO dto = new UpdateRoomDTO(
+                updateRoomDTO.getRoomNumber(),
+                updateRoomDTO.getSize(),
+                updateRoomDTO.getPrice()
+        );
         if (updateRoomDTO.getRoomNumber().equals(oldRoomDTO.getRoomNumber())) {
-            updateRoomDTO.setRoomNumber(null);
+            dto.setRoomNumber(null);
         }
         if (updateRoomDTO.getSize().equals(oldRoomDTO.getSize())) {
-            updateRoomDTO.setSize(null);
+            dto.setSize(null);
         }
         if (updateRoomDTO.getPrice().equals(oldRoomDTO.getPrice())) {
-            updateRoomDTO.setPrice(null);
+            dto.setPrice(null);
         }
 
-        int statusCode = roomRESTClient.updateRoom(this.roomId, this.updateRoomDTO);
+        int statusCode = roomRESTClient.updateRoom(this.roomId, dto);
         if (statusCode == 200) {
             return "showRoomList";
         } else {

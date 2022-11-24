@@ -61,17 +61,26 @@ public class EditEmployeeBean implements Serializable {
     }
 
     public String updateEmployee() throws IOException, InterruptedException {
+        UpdateUserDTO dto = new UpdateUserDTO(
+                updateUserDTO.getUsername(),
+                updateUserDTO.getFirstName(),
+                updateUserDTO.getLastName(),
+                null,
+                null,
+                null,
+                null
+        );
         if (updateUserDTO.getUsername().equals(oldUserDTO.getUsername())) {
-            updateUserDTO.setUsername(null);
+            dto.setUsername(null);
         }
         if (updateUserDTO.getFirstName().equals(oldUserDTO.getFirstName())) {
-            updateUserDTO.setFirstName(null);
+            dto.setFirstName(null);
         }
         if (updateUserDTO.getLastName().equals(oldUserDTO.getLastName())) {
-            updateUserDTO.setLastName(null);
+            dto.setLastName(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.employeeId, this.updateUserDTO);
+        int statusCode = userRESTClient.updateUser(this.employeeId, dto);
         if (statusCode == 200) {
             return "showEmployeeList";
         } else {

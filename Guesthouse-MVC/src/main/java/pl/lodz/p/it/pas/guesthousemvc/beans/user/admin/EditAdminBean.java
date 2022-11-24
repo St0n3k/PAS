@@ -3,7 +3,6 @@ package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Admin;
-import pl.lodz.p.it.pas.model.user.Employee;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -62,11 +61,20 @@ public class EditAdminBean implements Serializable {
     }
 
     public String updateAdmin() throws IOException, InterruptedException {
+        UpdateUserDTO dto = new UpdateUserDTO(
+                this.updateUserDTO.getUsername(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
         if (updateUserDTO.getUsername().equals(oldUserDTO.getUsername())) {
-            updateUserDTO.setUsername(null);
+            dto.setUsername(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.adminId, this.updateUserDTO);
+        int statusCode = userRESTClient.updateUser(this.adminId, dto);
         if (statusCode == 200) {
             return "showAdminList";
         } else {

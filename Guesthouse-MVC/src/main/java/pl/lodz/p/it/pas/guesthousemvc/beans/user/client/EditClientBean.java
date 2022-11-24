@@ -1,5 +1,9 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 
+import pl.lodz.p.it.pas.dto.UpdateUserDTO;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+import pl.lodz.p.it.pas.model.user.Client;
+
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -8,9 +12,6 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
-import pl.lodz.p.it.pas.dto.UpdateUserDTO;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
-import pl.lodz.p.it.pas.model.user.Client;
 
 @Named
 @ViewScoped
@@ -26,27 +27,27 @@ public class EditClientBean implements Serializable {
     @PostConstruct
     private void init() {
         Map<String, String> params = FacesContext.getCurrentInstance()
-                                                 .getExternalContext()
-                                                 .getRequestParameterMap();
+                .getExternalContext()
+                .getRequestParameterMap();
         String id = params.get("client_id");
         this.clientId = Long.valueOf(id);
         try {
             Client client = userRESTClient.getClientById(this.clientId);
             this.updateUserDTO = new UpdateUserDTO(client.getUsername(),
-                                                   client.getFirstName(),
-                                                   client.getLastName(),
-                                                   client.getPersonalId(),
-                                                   client.getAddress().getCity(),
-                                                   client.getAddress().getStreet(),
-                                                   client.getAddress().getHouseNumber()
+                    client.getFirstName(),
+                    client.getLastName(),
+                    client.getPersonalId(),
+                    client.getAddress().getCity(),
+                    client.getAddress().getStreet(),
+                    client.getAddress().getHouseNumber()
             );
             this.oldUserDTO = new UpdateUserDTO(client.getUsername(),
-                                                client.getFirstName(),
-                                                client.getLastName(),
-                                                client.getPersonalId(),
-                                                client.getAddress().getCity(),
-                                                client.getAddress().getStreet(),
-                                                client.getAddress().getHouseNumber()
+                    client.getFirstName(),
+                    client.getLastName(),
+                    client.getPersonalId(),
+                    client.getAddress().getCity(),
+                    client.getAddress().getStreet(),
+                    client.getAddress().getHouseNumber()
             );
         } catch (InterruptedException | IOException ignored) {
         }
@@ -57,29 +58,39 @@ public class EditClientBean implements Serializable {
     }
 
     public String updateClient() throws IOException, InterruptedException {
+        UpdateUserDTO dto = new UpdateUserDTO(
+                updateUserDTO.getUsername(),
+                updateUserDTO.getFirstName(),
+                updateUserDTO.getLastName(),
+                updateUserDTO.getPersonalId(),
+                updateUserDTO.getCity(),
+                updateUserDTO.getStreet(),
+                updateUserDTO.getNumber()
+        );
+
         if (updateUserDTO.getUsername().equals(oldUserDTO.getUsername())) {
-            updateUserDTO.setUsername(null);
+            dto.setUsername(null);
         }
         if (updateUserDTO.getFirstName().equals(oldUserDTO.getFirstName())) {
-            updateUserDTO.setFirstName(null);
+            dto.setFirstName(null);
         }
         if (updateUserDTO.getLastName().equals(oldUserDTO.getLastName())) {
-            updateUserDTO.setLastName(null);
+            dto.setLastName(null);
         }
         if (updateUserDTO.getPersonalId().equals(oldUserDTO.getPersonalId())) {
-            updateUserDTO.setPersonalId(null);
+            dto.setPersonalId(null);
         }
         if (updateUserDTO.getCity().equals(oldUserDTO.getCity())) {
-            updateUserDTO.setCity(null);
+            dto.setCity(null);
         }
         if (updateUserDTO.getStreet().equals(oldUserDTO.getStreet())) {
-            updateUserDTO.setStreet(null);
+            dto.setStreet(null);
         }
         if (updateUserDTO.getNumber().equals(oldUserDTO.getNumber())) {
-            updateUserDTO.setNumber(null);
+            dto.setNumber(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.clientId, this.updateUserDTO);
+        int statusCode = userRESTClient.updateUser(this.clientId, dto);
         if (statusCode == 200) {
             return "showClientList";
         } else {
