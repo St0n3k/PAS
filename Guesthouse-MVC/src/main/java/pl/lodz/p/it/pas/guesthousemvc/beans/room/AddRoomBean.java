@@ -19,9 +19,12 @@ public class AddRoomBean {
     @Inject
     private RoomRESTClient roomRESTClient;
 
+    @Getter
+    private int statusCode;
+
 
     public String addRoom() throws IOException, InterruptedException {
-        int statusCode = roomRESTClient.addRoom(room);
+        statusCode = roomRESTClient.addRoom(room);
         if (statusCode == 201) {
             return "showRoomList"; // redirects to room list
         } else {

@@ -6,6 +6,8 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
+
+
     <ui:define name="top">
         <h1 style="font-size: 4vh">${msg["main.page"]} > ${msg["nav.rooms"]} > ${msg["nav.addRoom"]}</h1>
     </ui:define>
@@ -39,6 +41,7 @@
             <br/>
             <h:commandButton class="row mx-auto text-center btn btn-success w-25" value="${msg['nav.addRoom']}"
                              action="#{addRoomBean.addRoom()}"/>
+
         </h:form>
     </ui:define>
 
