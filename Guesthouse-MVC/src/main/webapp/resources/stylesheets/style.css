@@ -6,3 +6,15 @@ thead {
     background-color: gray;
     border: none;
 }
+
+input{
+    border-radius: 10px;
+    border: solid 1px gray;
+    padding: 3px;
+}
+
+#top h1 {
+    color: white;
+    -webkit-text-stroke: black 1px;
+    font-size: 4vh;
+}
