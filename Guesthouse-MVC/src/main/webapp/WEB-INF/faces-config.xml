@@ -64,6 +64,15 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>/clientsFilter.xhtml.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>showMainMenu</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <from-view-id>/rents.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>showAddRentForm</from-outcome>
@@ -272,6 +281,11 @@
         <navigation-case>
             <from-outcome>showAdminList</from-outcome>
             <to-view-id>/admins.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>showClientsFilter</from-outcome>
+            <to-view-id>/clientsFilter.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

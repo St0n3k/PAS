@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./templates/mainTemplate.xhtml">
+
+  <ui:define name="top">
+    <h1 style="font-size: 4vh">${msg["main.page"]} > ${msg["nav.clientsFilter"]}</h1>
+  </ui:define>
+
+  <ui:define name="left">
+    <ui:include src="./templates/menu.xhtml"/>
+  </ui:define>
+
+  <ui:define name="content">
+    <h:outputScript library="js" name="filter.js" target="body"/>
+    <h:form class="text-center">
+      <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showMainMenu"/>
+    </h:form>
+    <h:form class="text-center">
+      ${msg['client.containing']}
+      <input type="text" id="filterInput" oninput="//filterClients()"/>
+      <input type="button" value="${msg['button.filter']}" onclick="filterClients()"/>
+    </h:form>
+    <h:dataTable id="filterTable" class="table container align-items-center table-striped table-bordered border-dark">
+      <h:column>
+        <f:facet name="header">${msg['user.id']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['user.username']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['user.active']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['user.firstName']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['user.lastName']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['client.personalId']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['client.clientType']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['address.city']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['address.street']}</f:facet>
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">${msg['address.houseNumber']}</f:facet>
+      </h:column>
+    </h:dataTable>
+  </ui:define>
+
+</ui:composition>
