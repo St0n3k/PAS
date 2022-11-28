@@ -19,7 +19,7 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}"
                              action="showEmployeeList"/>
         </h:form>
-        <h:form class="container align-items-center text-center">
+        <h:form id="addEmployeeForm" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
                 <h:inputText class="col-2" id="username" value="#{addEmployeeBean.registerEmployeeDTO.username}"/>
@@ -38,9 +38,12 @@
             </label>
             <br/>
 
-            <h:commandButton class="row mx-auto text-center btn btn-info w-25"
+            <h:commandButton id="submit"
+                             class="row mx-auto text-center btn btn-info w-25"
                              action="#{addEmployeeBean.registerEmployee()}"
                              value="${msg['nav.addEmployee']}"/>
+            <br/>
+            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
         </h:form>
     </ui:define>
 

@@ -21,7 +21,8 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showRentList"/>
         </h:form>
 
-        <h:form class="container align-items-center text-center mb-2">
+        <h:form id="addRentForm"
+                class="container align-items-center text-center mb-2">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg["rent.beginTime"]}</span>
                 <h:inputText a:type="datetime-local" class="col-2" value="#{addRentBean.beginTime}" required="true"/>
@@ -55,8 +56,10 @@
                 </h:selectOneMenu>
             </label>
             <br/>
-            <h:commandButton class="row mx-auto text-center btn btn-warning w-25" value="${msg['nav.addRent']}"
+            <h:commandButton id="submit" class="row mx-auto text-center btn btn-warning w-25" value="${msg['nav.addRent']}"
                              action="#{addRentBean.addRent()}"/>
+            <br/>
+            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
         </h:form>
     </ui:define>
 

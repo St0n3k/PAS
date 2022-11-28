@@ -19,7 +19,7 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showRoomList"/>
         </h:form>
 
-        <h:form class="container align-items-center text-center mb-2">
+        <h:form id="editRoomForm" class="container align-items-center text-center mb-2">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['room.roomNumber']}</span>
                 <h:inputText class="col-2" id="room_number" value="#{editRoomBean.updateRoomDTO.roomNumber}"/>
@@ -37,8 +37,12 @@
                 <h:inputText class="col-2" id="price" value="#{editRoomBean.updateRoomDTO.price}"/>
             </label>
             <br/>
-            <h:commandButton class="row mx-auto text-center btn btn-success w-25" value="${msg['button.saveChanges']}"
+            <h:commandButton id="submit"
+                             class="row mx-auto text-center btn btn-success w-25"
+                             value="${msg['button.saveChanges']}"
                              action="#{editRoomBean.updateRoom()}"/>
+            <br/>
+            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
         </h:form>
     </ui:define>
 

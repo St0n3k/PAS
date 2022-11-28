@@ -97,7 +97,8 @@
                 <h:message for="number" errorClass="text-danger"/>
             </label>
             <br/>
-            <h:commandButton id="submit" onclick="return validate()" class="row mx-auto text-center btn btn-primary w-25"
+            <h:commandButton id="submit"
+                             onclick="return validate()" class="row mx-auto text-center btn btn-primary w-25"
                              action="#{addClientBean.registerClient()}"
                              value="${msg['button.register']}"/>
             <br/>

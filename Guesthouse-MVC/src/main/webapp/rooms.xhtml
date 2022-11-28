@@ -22,9 +22,15 @@
                              action="#{roomListBean.refreshRoomList()}"/>
             <h:commandButton class="col-2 m-3 btn btn-success" value="${msg['nav.addRoom']}" action="showAddRoomForm"/>
         </h:form>
-        <h:dataTable class="table table-striped table-bordered container align-items-center border-dark"
+
+        <div class="text-center w-100">
+            <h:message for="table" class="text-danger text-center" style="font-size: 5vh"/>
+        </div>
+        <h:dataTable id="table"
+                     class="table table-striped table-bordered container align-items-center border-dark"
                      value="#{roomListBean.roomList}"
                      var="room">
+
             <h:column>
                 <f:facet name="header">${msg['room.id']}</f:facet>
                 #{room.id}
@@ -47,8 +53,9 @@
 
             <h:column>
                 <f:facet name="header">${msg['button.delete']}</f:facet>
-                <h:form class="text-center">
-                    <h:commandButton onclick="return confirm('${msg['room.remove']}')" class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
+                <h:form id="remove-room" class="text-center">
+                    <h:commandButton id="remove-button"
+                                     onclick="return confirm('${msg['room.remove']}')" class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
                                      action="#{roomListBean.removeRoom(room.id)}"/>
                 </h:form>
             </h:column>

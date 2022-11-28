@@ -5,13 +5,16 @@ import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Employee;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 @Named
 @ViewScoped
@@ -84,7 +87,14 @@ public class EditEmployeeBean implements Serializable {
         if (statusCode == 200) {
             return "showEmployeeList";
         } else {
-            //TODO Display error message
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            String messageBundleName = facesContext.getApplication().getMessageBundle();
+            Locale locale = facesContext.getViewRoot().getLocale();
+            ResourceBundle bundle = ResourceBundle.getBundle(messageBundleName, locale);
+
+            facesContext.addMessage("editEmployeeForm:submit",
+                    new FacesMessage(bundle.getString("employee.edit.error")));
         }
         return "";
     }

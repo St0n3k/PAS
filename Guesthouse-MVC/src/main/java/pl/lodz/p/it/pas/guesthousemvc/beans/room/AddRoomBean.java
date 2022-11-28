@@ -5,9 +5,13 @@ import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -28,7 +32,14 @@ public class AddRoomBean {
         if (statusCode == 201) {
             return "showRoomList"; // redirects to room list
         } else {
-            //TODO Display error message
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            String messageBundleName = facesContext.getApplication().getMessageBundle();
+            Locale locale = facesContext.getViewRoot().getLocale();
+            ResourceBundle bundle = ResourceBundle.getBundle(messageBundleName, locale);
+
+            facesContext.addMessage("addRoomForm:submit",
+                    new FacesMessage(bundle.getString("room.add.error")));
         }
         return ""; // stays at current page
     }

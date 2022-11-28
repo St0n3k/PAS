@@ -43,7 +43,6 @@ public class AddClientBean implements Serializable {
 
             facesContext.addMessage("addClientForm:submit",
                     new FacesMessage(bundle.getString("client.add.error")));
-
         }
         return "";
     }

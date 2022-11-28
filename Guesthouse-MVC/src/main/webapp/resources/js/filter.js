@@ -1,6 +1,6 @@
 function filterClients() {
     let input = document.getElementById("filterInput");
-    let apiUrl = "http://localhost:8080/api/users/clients?username=" + input.value;
+    let apiUrl = "/api/users/clients?username=" + input.value;
     fetch(apiUrl)
         .then((response) => response.json())
         .then((data) => {

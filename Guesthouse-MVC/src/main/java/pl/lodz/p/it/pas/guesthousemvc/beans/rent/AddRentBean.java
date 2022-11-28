@@ -12,13 +12,13 @@ import pl.lodz.p.it.pas.model.user.User;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Named
@@ -130,7 +130,14 @@ public class AddRentBean {
         if (statusCode == 201) {
             return "showRentList";
         } else {
-            //TODO Display error message
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            String messageBundleName = facesContext.getApplication().getMessageBundle();
+            Locale locale = facesContext.getViewRoot().getLocale();
+            ResourceBundle bundle = ResourceBundle.getBundle(messageBundleName, locale);
+
+            facesContext.addMessage("addRentForm:submit",
+                    new FacesMessage(bundle.getString("rent.add.error")));
         }
         return "";
     }
