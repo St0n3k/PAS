@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
@@ -11,38 +12,47 @@
     </ui:define>
 
     <ui:define name="left">
-        <ui:include src="./templates/menu.xhtml"/>
+        <ui:include src="./templates/menu.xhtml" />
     </ui:define>
 
     <ui:define name="content">
         <h:form class="text-center mb-2">
-            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showRoomList"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showRoomList" />
         </h:form>
 
         <h:form id="editRoomForm" class="container align-items-center text-center mb-2">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['room.roomNumber']}</span>
-                <h:inputText class="col-2" id="room_number" value="#{editRoomBean.updateRoomDTO.roomNumber}"/>
+                <h:inputText class="col-2" id="room_number" value="#{editRoomBean.updateRoomDTO.roomNumber}">
+                    <f:validateLongRange minimum="1" />
+                </h:inputText>
+                <h:message for="room_number" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['room.size']}</span>
-                <h:inputText class="col-2" id="size" value="#{editRoomBean.updateRoomDTO.size}"/>
+                <h:inputText class="col-2" id="size" value="#{editRoomBean.updateRoomDTO.size}">
+                    <f:validateLongRange minimum="1" />
+                </h:inputText>
+                <h:message for="size" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['room.price']}</span>
-                <h:inputText class="col-2" id="price" value="#{editRoomBean.updateRoomDTO.price}"/>
+                <h:inputText class="col-2" id="price" value="#{editRoomBean.updateRoomDTO.price}">
+                    <f:validateDoubleRange minimum="1.0" />
+                </h:inputText>
+                <h:message for="price" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
             <h:commandButton id="submit"
                              class="row mx-auto text-center btn btn-success w-25"
                              value="${msg['button.saveChanges']}"
-                             action="#{editRoomBean.updateRoom()}"/>
-            <br/>
-            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
+                             action="#{editRoomBean.updateRoom()}" />
+            <br />
+            <h:message for="submit" class="text-danger" style="font-size: 3vh" />
         </h:form>
     </ui:define>
 

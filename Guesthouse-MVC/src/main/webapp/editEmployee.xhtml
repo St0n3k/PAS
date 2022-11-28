@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="./templates/mainTemplate.xhtml">
 
@@ -11,38 +12,47 @@
     </ui:define>
 
     <ui:define name="left">
-        <ui:include src="./templates/menu.xhtml"/>
+        <ui:include src="./templates/menu.xhtml" />
     </ui:define>
 
     <ui:define name="content">
         <h:form class="text-center mb-2">
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}"
-                             action="showEmployeeList"/>
+                             action="showEmployeeList" />
         </h:form>
         <h:form id="editEmployeeForm" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
-                <h:inputText class="col-2" id="username" value="#{editEmployeeBean.updateUserDTO.username}"/>
+                <h:inputText class="col-2" id="username"
+                             required="true"
+                             value="#{editEmployeeBean.updateUserDTO.username}" />
+                <h:message for="username" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.firstName']}</span>
-                <h:inputText class="col-2" id="firstName" value="#{editEmployeeBean.updateUserDTO.firstName}"/>
+                <h:inputText class="col-2" id="firstName" value="#{editEmployeeBean.updateUserDTO.firstName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="firstName" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.lastName']}</span>
-                <h:inputText class="col-2" id="lastName" value="#{editEmployeeBean.updateUserDTO.lastName}"/>
+                <h:inputText class="col-2" id="lastName" value="#{editEmployeeBean.updateUserDTO.lastName}">
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                </h:inputText>
+                <h:message for="lastName" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
             <h:commandButton id="submit" class="row mx-auto text-center btn btn-info w-25"
                              action="#{editEmployeeBean.updateEmployee()}"
-                             value="${msg['button.saveChanges']}"/>
-            <br/>
-            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
+                             value="${msg['button.saveChanges']}" />
+            <br />
+            <h:message for="submit" class="text-danger" style="font-size: 3vh" />
         </h:form>
     </ui:define>
 

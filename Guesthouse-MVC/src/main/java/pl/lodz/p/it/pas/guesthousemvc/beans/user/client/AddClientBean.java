@@ -1,12 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 
-import lombok.Getter;
-import lombok.Setter;
-import pl.lodz.p.it.pas.dto.RegisterClientDTO;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
-
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -15,6 +9,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import pl.lodz.p.it.pas.dto.RegisterClientDTO;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 
 @Named
 @ViewScoped
@@ -42,7 +38,7 @@ public class AddClientBean implements Serializable {
             ResourceBundle bundle = ResourceBundle.getBundle(messageBundleName, locale);
 
             facesContext.addMessage("addClientForm:submit",
-                    new FacesMessage(bundle.getString("client.add.error")));
+                                    new FacesMessage(bundle.getString("client.add.error")));
         }
         return "";
     }

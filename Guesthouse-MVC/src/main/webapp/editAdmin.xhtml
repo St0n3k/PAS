@@ -11,24 +11,28 @@
     </ui:define>
 
     <ui:define name="left">
-        <ui:include src="./templates/menu.xhtml"/>
+        <ui:include src="./templates/menu.xhtml" />
     </ui:define>
 
     <ui:define name="content">
         <h:form class="text-center mb-2">
-            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showAdminList"/>
+            <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showAdminList" />
         </h:form>
         <h:form id="editAdminForm" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
-                <h:inputText class="col-2" id="username" value="#{editAdminBean.updateUserDTO.username}"/>
+                <h:inputText class="col-2" id="username"
+                             required="true"
+                             value="#{editAdminBean.updateUserDTO.username}" />
+                <h:message for="username" errorClass="text-danger" />
             </label>
-            <br/>
+            <br />
 
-            <h:commandButton id="submit" class="row mx-auto text-center btn btn-info w-25" action="#{editAdminBean.updateAdmin()}"
-                             value="${msg['button.saveChanges']}"/>
-            <br/>
-            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
+            <h:commandButton id="submit" class="row mx-auto text-center btn btn-info w-25"
+                             action="#{editAdminBean.updateAdmin()}"
+                             value="${msg['button.saveChanges']}" />
+            <br />
+            <h:message for="submit" class="text-danger" style="font-size: 3vh" />
         </h:form>
     </ui:define>
 
