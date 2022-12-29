@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -63,9 +64,17 @@ public abstract class User extends AbstractEntity implements Principal {
 
     @NotNull
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
-    public User(String username) {
+    @Override
+    @JsonIgnore
+    public String getName() {
+        return getUsername();
+    }
+
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
     }
 }

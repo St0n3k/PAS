@@ -10,12 +10,8 @@ import pl.lodz.pas.exception.user.AuthenticationException;
 import pl.lodz.pas.exception.user.InactiveUserException;
 import pl.lodz.pas.repository.impl.UserRepository;
 
-import javax.security.auth.login.CredentialException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 
 @ApplicationScoped

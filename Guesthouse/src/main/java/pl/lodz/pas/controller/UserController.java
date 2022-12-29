@@ -78,7 +78,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
-        Admin admin = userManager.registerAdmin(raDto.getUsername());
+        Admin admin = userManager.registerAdmin(raDto);
         return Response.status(Response.Status.CREATED).entity(admin).build();
     }
 

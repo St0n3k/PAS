@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
 import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
@@ -53,7 +54,8 @@ public class UserManager {
                                    rcDTO.getLastName(),
                                    rcDTO.getPersonalID(),
                                    address,
-                                   defaultClientTypeOptional.get());
+                                   defaultClientTypeOptional.get(),
+                                   rcDTO.getPassword());
 
         try {
             client = (Client) userRepository.add(client);
@@ -65,7 +67,7 @@ public class UserManager {
 
 
     public Employee registerEmployee(RegisterEmployeeDTO reDTO) throws CreateUserException {
-        Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName());
+        Employee employee = new Employee(reDTO.getUsername(), reDTO.getFirstName(), reDTO.getLastName(), reDTO.getPassword());
         employee = (Employee) userRepository.add(employee);
 
         if (employee == null) {
@@ -74,8 +76,8 @@ public class UserManager {
         return employee;
     }
 
-    public Admin registerAdmin(String username) throws CreateUserException {
-        Admin admin = new Admin(username);
+    public Admin registerAdmin(RegisterAdminDTO dto) throws CreateUserException {
+        Admin admin = new Admin(dto.getUsername(), dto.getPassword());
         admin = (Admin) userRepository.add(admin);
 
         if (admin == null) {

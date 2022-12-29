@@ -12,6 +12,8 @@ import pl.lodz.p.it.pas.common.MyValidator;
 import pl.lodz.p.it.pas.model.Address;
 import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 
+import javax.security.auth.Subject;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -40,8 +42,8 @@ public class Client extends User {
 
 
     public Client(String username, String firstName, String lastName, String personalId, Address address,
-                  ClientType clientType) {
-        super(username);
+                  ClientType clientType, String password) {
+        super(username, password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalId = personalId;

@@ -21,4 +21,7 @@ public class RegisterEmployeeDTO {
     @NotNull
     @Pattern(regexp = "[^\\d\\s!?_#$%^&*()@=+,.|/~`'\"\\\\]+")
     private String lastName;
+
+    @NotNull
+    private String password;
 }

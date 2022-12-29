@@ -2,6 +2,7 @@ package pl.lodz.pas.security;
 
 import io.jsonwebtoken.Claims;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.CallerPrincipal;

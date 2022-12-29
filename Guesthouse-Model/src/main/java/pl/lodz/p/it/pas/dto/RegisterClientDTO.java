@@ -38,4 +38,7 @@ public class RegisterClientDTO {
     @NotNull
     @Min(0)
     private Integer number;
+
+    @NotNull
+    private String password;
 }

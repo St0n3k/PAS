@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterAdminDTO {
     @NotNull
-    String username;
+    private String username;
+
+    @NotNull
+    private String password;
 }

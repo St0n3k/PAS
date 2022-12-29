@@ -20,8 +20,8 @@ public class Employee extends User {
     private String lastName;
 
 
-    public Employee(String username, String firstName, String lastName) {
-        super(username);
+    public Employee(String username, String firstName, String lastName, String password) {
+        super(username, password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.setRole("EMPLOYEE");
