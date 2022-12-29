@@ -2,7 +2,6 @@ package pl.lodz.p.it.pas.guesthousemvc.beans.auth;
 
 import lombok.Getter;
 import pl.lodz.p.it.pas.dto.LoginDTO;
-import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.AuthRESTClient;
 
 import javax.faces.application.FacesMessage;
@@ -10,7 +9,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -44,7 +42,7 @@ public class LoginBean implements Serializable {
             return "";
         }
         if (jwt != null) {
-            session.setJwt(jwt);
+            session.setLoggedInUser(jwt);
             return "showMainMenu";
         } else {
             FacesContext facesContext = FacesContext.getCurrentInstance();
