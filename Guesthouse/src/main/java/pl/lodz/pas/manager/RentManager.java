@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.pas.model.Rent;
@@ -39,6 +40,9 @@ public class RentManager {
     @Inject
     private RentRepository rentRepository;
 
+    @Inject
+    private SecurityContext securityContext;
+
 
     /**
      * Method for creating a new rent. Rent will be created if client and room exists in database, and if rent period
@@ -57,6 +61,7 @@ public class RentManager {
                                                       CreateRentException {
         Optional<User> optionalUser = userRepository.getById(createRentDTO.getClientId());
         Optional<Room> optionalRoom = roomRepository.getById(createRentDTO.getRoomId());
+
 
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException();

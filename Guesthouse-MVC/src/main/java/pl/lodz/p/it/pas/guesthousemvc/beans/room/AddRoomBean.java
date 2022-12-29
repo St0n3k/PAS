@@ -7,15 +7,17 @@ import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 @Named
-@RequestScoped
-public class AddRoomBean {
+@ViewScoped
+public class AddRoomBean implements Serializable {
 
     @Getter
     private final CreateRoomDTO room = new CreateRoomDTO();

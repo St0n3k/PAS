@@ -1,6 +1,8 @@
 package pl.lodz.pas.controller;
 
 import java.util.List;
+
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -14,6 +16,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
@@ -32,6 +35,7 @@ public class RentController {
 
     @Inject
     private RentManager rentManager;
+
 
 
     /**

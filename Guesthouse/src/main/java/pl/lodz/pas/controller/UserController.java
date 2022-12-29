@@ -1,6 +1,8 @@
 package pl.lodz.pas.controller;
 
 import java.util.List;
+
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -92,6 +94,7 @@ public class UserController {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response getAllUsers(@QueryParam("username") String username) {
         List<User> users = userManager.getAllUsers(username);
         return Response.status(Response.Status.OK).entity(users).build();

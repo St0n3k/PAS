@@ -13,10 +13,13 @@ import pl.lodz.pas.exception.room.CreateRoomException;
 import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.room.UpdateRoomException;
+import pl.lodz.pas.exception.user.AuthenticationException;
 import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.InactiveUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
+
+import javax.security.auth.login.CredentialException;
 
 @Provider
 public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationException> {
@@ -43,7 +46,8 @@ public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationExc
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if (e.getClass() == InactiveUserException.class) {
+        if (e.getClass() == InactiveUserException.class
+                || e.getClass() == AuthenticationException.class) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

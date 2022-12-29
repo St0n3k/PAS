@@ -16,6 +16,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.pas.model.AbstractEntity;
 
+import java.security.Principal;
+
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -40,7 +42,7 @@ import pl.lodz.p.it.pas.model.AbstractEntity;
 
 @Data
 @NoArgsConstructor
-public abstract class User extends AbstractEntity {
+public abstract class User extends AbstractEntity implements Principal {
 
     @Id
     @GeneratedValue(generator = "userId", strategy = GenerationType.IDENTITY)
@@ -58,6 +60,10 @@ public abstract class User extends AbstractEntity {
     @NotNull
     @Column(name = "role")
     private String role = "CLIENT";
+
+    @NotNull
+    @Column(name = "password")
+    private String password;
 
     public User(String username) {
         this.username = username;
