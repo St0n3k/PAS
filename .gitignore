@@ -13,3 +13,7 @@ buildNumber.properties
 
 *.iml
 HELP.md
+
+*/.vscode/*
+*/node_modules/*
+*/.angular/*
