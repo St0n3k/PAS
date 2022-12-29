@@ -2,7 +2,6 @@ package pl.lodz.pas.security;
 
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,6 +28,7 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
+
     }
 
     public Jws<Claims> parseJWT(String jwt) throws SignatureException {
