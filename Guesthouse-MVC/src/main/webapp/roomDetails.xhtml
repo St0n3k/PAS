@@ -5,6 +5,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 template="./templates/mainTemplate.xhtml">
 
     <ui:define name="top">
@@ -25,7 +26,7 @@
         <h:dataTable class="table table-striped table-bordered container align-items-center border-dark"
                      value="#{roomDetailsBean.rentList}"
                      var="rent">
-            <h:column>
+            <h:column rendered="#{utils.employee || utils.admin}">
                 <f:facet name="header">${msg["rent.id"]}</f:facet>
                 #{rent.id}
             </h:column>
@@ -40,23 +41,49 @@
                 #{rent.endTime}
             </h:column>
 
-            <h:column>
+            <h:column rendered="#{utils.employee || utils.admin}">
                 <f:facet name="header">${msg["rent.board"]}</f:facet>
                 <h:form>
                     <h:selectBooleanCheckbox style="pointer-events: none;" value="#{rent.board}"/>
                 </h:form>
             </h:column>
 
-            <h:column>
+            <h:column rendered="#{utils.employee || utils.admin}">
                 <f:facet name="header">${msg["rent.finalCost"]}</f:facet>
                 #{rent.finalCost}
             </h:column>
 
-            <h:column>
+            <h:column >
                 <f:facet name="header">${msg["room.roomNumber"]}</f:facet>
                 #{rent.room.roomNumber}
             </h:column>
         </h:dataTable>
+
+        <h:form rendered="#{utils.client}" id="rentForSelfForm"
+                class="container align-items-center text-center mb-2">
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.beginTime"]}</span>
+                <h:inputText a:type="datetime-local" class="col-2" value="#{rentForSelfBean.beginTime}" required="true"/>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.endTime"]}</span>
+                <h:inputText a:type="datetime-local" class="col-2" value="#{rentForSelfBean.endTime}" required="true"/>
+            </label>
+            <br/>
+
+            <label class="row container mx-auto justify-content-center">
+                <span class="col-2">${msg["rent.board"]}</span>
+                <h:selectBooleanCheckbox class="col-2" value="#{rentForSelfBean.dto.board}"/>
+            </label>
+            <br/>
+
+            <h:commandButton id="submit" class="row mx-auto text-center btn btn-warning w-25" value="${msg['nav.addRent']}"
+                             action="#{rentForSelfBean.rentRoom()}"/>
+            <br/>
+            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
+        </h:form>
     </ui:define>
 
 </ui:composition>

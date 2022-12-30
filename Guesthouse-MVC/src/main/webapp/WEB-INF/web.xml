@@ -16,6 +16,49 @@
     <security-role>
         <role-name>ANONYMOUS</role-name>
     </security-role>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin-pages</web-resource-name>
+            <url-pattern>/admins.xhtml</url-pattern>
+            <url-pattern>/employees.xhtml</url-pattern>
+
+            <url-pattern>/addAdmin.xhtml</url-pattern>
+            <url-pattern>/addEmployee.xhtml</url-pattern>
+
+            <url-pattern>/editAdmin.xhtml</url-pattern>
+            <url-pattern>/editEmployee.xhtml</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ADMIN</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>employee-pages</web-resource-name>
+            <url-pattern>/clients.xhtml</url-pattern>
+            <url-pattern>/rents.xhtml</url-pattern>
+
+            <url-pattern>/addClient.xhtml</url-pattern>
+            <url-pattern>/addRent.xhtml</url-pattern>
+
+            <url-pattern>/editClient.xhtml</url-pattern>
+            <url-pattern>/editRent.xhtml</url-pattern>
+
+            <url-pattern>/clientsFilter.xhtml</url-pattern>
+            <url-pattern>/addRoom.xhtml</url-pattern>
+            <url-pattern>/editRoom.xhtml</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>EMPLOYEE</role-name>
+            <role-name>ADMIN</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+<!--    <error-page>-->
+<!--        <location>/error.xhtml</location>-->
+<!--    </error-page>-->
     
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
