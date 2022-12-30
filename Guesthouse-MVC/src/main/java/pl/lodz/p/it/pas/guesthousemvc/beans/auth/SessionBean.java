@@ -36,14 +36,6 @@ public class SessionBean implements Serializable {
         return !FacesContext.getCurrentInstance().getExternalContext().isUserInRole("ANONYMOUS");
     }
 
-    public String getRole() {
-        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-        if (context.isUserInRole("CLIENT")) return "CLIENT";
-        if (context.isUserInRole("EMPLOYEE")) return "EMPLOYEE";
-        if (context.isUserInRole("ADMIN")) return "ADMIN";
-        return "ANONYMOUS";
-    }
-
     public String logout() {
         invalidateSession();
         return "showMainMenu";

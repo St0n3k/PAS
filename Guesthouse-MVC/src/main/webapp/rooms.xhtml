@@ -20,7 +20,7 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showMainMenu"/>
             <h:commandButton class="col-2 m-3 btn btn-success" value="${msg['rooms.refreshRooms']}"
                              action="#{roomListBean.refreshRoomList()}"/>
-            <h:commandButton class="col-2 m-3 btn btn-success" value="${msg['nav.addRoom']}" action="showAddRoomForm"/>
+            <h:commandButton rendered="#{utils.employee || utils.admin}" class="col-2 m-3 btn btn-success" value="${msg['nav.addRoom']}" action="showAddRoomForm"/>
         </h:form>
 
         <div class="text-center w-100">
@@ -51,7 +51,7 @@
                 #{room.price}
             </h:column>
 
-            <h:column>
+            <h:column rendered="#{utils.employee || utils.admin}">
                 <f:facet name="header">${msg['button.delete']}</f:facet>
                 <h:form id="remove-room" class="text-center">
                     <h:commandButton id="remove-button"
@@ -59,7 +59,7 @@
                                      action="#{roomListBean.removeRoom(room.id)}"/>
                 </h:form>
             </h:column>
-            <h:column>
+            <h:column rendered="#{utils.employee || utils.admin}">
                 <f:facet name="header">${msg['button.edit']}</f:facet>
                 <h:form class="text-center">
                     <h:commandButton class="text-center btn btn-success w-75" value="${msg['button.edit']}"
