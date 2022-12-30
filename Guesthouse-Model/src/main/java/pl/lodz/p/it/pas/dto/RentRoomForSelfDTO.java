@@ -27,9 +27,6 @@ public class RentRoomForSelfDTO {
 
     private boolean board;
 
-    @NotNull
-    private Long roomId;
-
     @AssertTrue
     private boolean isEndDateAfterBeginDate() {
         return endTime.isAfter(beginTime);

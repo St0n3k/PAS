@@ -1,9 +1,11 @@
 package pl.lodz.pas.controller;
 
+import java.security.Principal;
 import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -13,24 +15,40 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import pl.lodz.p.it.pas.dto.CreateRentDTO;
+import pl.lodz.p.it.pas.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.dto.UpdateRoomDTO;
+import pl.lodz.p.it.pas.model.user.Client;
+import pl.lodz.p.it.pas.model.user.User;
+import pl.lodz.pas.exception.rent.CreateRentException;
 import pl.lodz.pas.exception.room.CreateRoomException;
 import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.room.UpdateRoomException;
+import pl.lodz.pas.exception.user.InactiveUserException;
+import pl.lodz.pas.exception.user.UserNotFoundException;
+import pl.lodz.pas.manager.RentManager;
 import pl.lodz.pas.manager.RoomManager;
 
 @RequestScoped
 @Path("/rooms")
 public class RoomController {
 
+    @Context
+    private SecurityContext securityContext;
+
     @Inject
     private RoomManager roomManager;
+
+    @Inject
+    private RentManager rentManager;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,6 +64,27 @@ public class RoomController {
     public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
         Room room = roomManager.getRoomById(id);
         return Response.status(Response.Status.OK).entity(room).build();
+    }
+
+    @POST
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response rentRoomForSelf(@PathParam("id") Long roomID, @Valid RentRoomForSelfDTO rentRoomForSelfDTO)
+            throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
+        Principal principal = securityContext.getUserPrincipal();
+        if (principal instanceof Client client) {
+            Long clientID = client.getId();
+            CreateRentDTO createRentDTO = new CreateRentDTO(
+                    rentRoomForSelfDTO.getBeginTime(),
+                    rentRoomForSelfDTO.getEndTime(),
+                    rentRoomForSelfDTO.isBoard(),
+                    clientID,
+                    roomID);
+            Rent rent = rentManager.rentRoom(createRentDTO);
+            return Response.status(Response.Status.CREATED).entity(rent).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 

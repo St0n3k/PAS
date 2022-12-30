@@ -1,6 +1,7 @@
 package pl.lodz.p.it.pas.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -64,7 +65,7 @@ public abstract class User extends AbstractEntity implements Principal {
 
     @NotNull
     @Column(name = "password")
-    @JsonIgnore
+    @JsonbTransient
     private String password;
 
     @Override
