@@ -1,0 +1,38 @@
+<div
+    *ngIf="room === undefined"
+    class="my-3 card-title text-center">
+    <h2>Room not found!</h2>
+    <button
+        class="btn btn-success"
+        [routerLink]="['/rooms']">
+        Go back
+    </button>
+</div>
+<div
+    *ngIf="room !== undefined"
+    class="my-3">
+    <div class="card-title text-center">
+        <h2><i class="bi bi-door-open"></i> Room {{ room?.id }}</h2>
+    </div>
+    <div class="card col-sm-10 mx-auto">
+        <div class="table-responsive">
+            <table
+                class="table mb-0 bg-light table-hover text-center align-middle">
+                <tbody>
+                    <tr>
+                        <th class="border-end">Number</th>
+                        <td class="bg-white">{{ room?.roomNumber }}</td>
+                    </tr>
+                    <tr>
+                        <th class="border-end">Price</th>
+                        <td class="bg-white">{{ room?.price }}</td>
+                    </tr>
+                    <tr>
+                        <th class="border-end">Size</th>
+                        <td class="bg-white">{{ room?.size }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

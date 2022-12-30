@@ -1,1 +1,34 @@
-<p>rooms works!</p>
+<div class="my-3">
+    <div class="card-title text-center">
+        <h2><i class="bi bi-door-open"></i> Rooms</h2>
+    </div>
+    <div class="card col-sm-10 mx-auto">
+        <div class="table-responsive">
+            <table
+                class="table mb-0 bg-light table-hover table-striped text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Price</th>
+                        <th>Size</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let room of getRooms()">
+                        <td>{{ room.roomNumber }}</td>
+                        <td>{{ room.price }}</td>
+                        <td>{{ room.size }}</td>
+                        <td>
+                            <button
+                                class="btn btn-success"
+                                [routerLink]="['/rooms', room.id]">
+                                Details
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

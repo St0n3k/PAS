@@ -11,6 +11,7 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginRegisterGuard } from './guards/login-register.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { RoomDetailsComponent } from './components/room-details/room-details.component';
 
 const routes: Routes = [
     { path: '', component: HomepageComponent },
@@ -25,6 +26,7 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     { path: 'rooms', component: RoomsComponent },
+    { path: 'rooms/:roomID', component: RoomDetailsComponent },
     {
         path: 'clients',
         component: ClientsComponent,
@@ -35,7 +37,8 @@ const routes: Routes = [
         component: EmployeesComponent,
         canActivate: [AdminGuard]
     },
-    { path: '**', component: PagenotfoundComponent }
+    { path: '404', component: PagenotfoundComponent },
+    { path: '**', redirectTo: '404' }
 ];
 
 @NgModule({

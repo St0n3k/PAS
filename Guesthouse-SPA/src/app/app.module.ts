@@ -15,6 +15,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { RoomDetailsComponent } from './components/room-details/room-details.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
         PagenotfoundComponent,
         HomepageComponent,
         LoginComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        RoomDetailsComponent
     ],
     imports: [
         BrowserModule,
