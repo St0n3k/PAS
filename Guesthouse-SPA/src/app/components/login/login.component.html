@@ -1,0 +1,33 @@
+<div class="flex-sm-row">
+	<form class="mx-auto container col-sm-4 mt-3" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+		<h1 class="text-center">Login</h1>
+		<!-- Email input -->
+		<div class="mb-4 mt-3">
+			<input
+				placeholder="Username"
+				type="text"
+				id="form2Example1"
+				class="form-control"
+				formControlName="email"
+			/>
+		</div>
+
+		<!-- Password input -->
+		<div class="form-outline mb-4">
+			<input
+				placeholder="Password"
+				type="password"
+				id="form2Example2"
+				class="form-control"
+				formControlName="password"
+			/>
+		</div>
+
+		<!-- Submit button -->
+		<input
+			type="submit"
+			class="btn btn-primary btn-block mb-4 d-sm-block w-100 mx-auto"
+			value="Sign in"
+		/>
+	</form>
+</div>
