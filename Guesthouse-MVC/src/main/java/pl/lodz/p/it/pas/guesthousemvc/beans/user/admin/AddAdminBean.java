@@ -1,5 +1,9 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
+import lombok.Getter;
+import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -9,10 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import lombok.Getter;
-import pl.lodz.p.it.pas.dto.RegisterAdminDTO;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 
 @Named
 @ViewScoped

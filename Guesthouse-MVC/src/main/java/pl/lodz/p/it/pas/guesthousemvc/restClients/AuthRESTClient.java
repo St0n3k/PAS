@@ -1,8 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.restClients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import pl.lodz.p.it.pas.dto.LoginDTO;
 import pl.lodz.p.it.pas.dto.LoginResponse;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
@@ -29,5 +27,9 @@ public class AuthRESTClient {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(response.body(), LoginResponse.class).getJwt();
+    }
+
+    public String changePassword() {
+        throw new RuntimeException("Not implemented yet");
     }
 }

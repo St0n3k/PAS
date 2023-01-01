@@ -7,10 +7,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
+import pl.lodz.p.it.pas.guesthousemvc.beans.auth.SessionBean;
 import pl.lodz.p.it.pas.guesthousemvc.utils.Utils;
 import pl.lodz.p.it.pas.model.Rent;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,6 +26,9 @@ public class RentRESTClient {
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
+    @Inject
+    private SessionBean session;
+
     public RentRESTClient() {
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -33,6 +38,8 @@ public class RentRESTClient {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .GET()
+                .header("Authorization", "Bearer " + session.getJwt())
+                .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -44,6 +51,8 @@ public class RentRESTClient {
         HttpRequest request = HttpRequest.
                 newBuilder(URI.create(Utils.API_URL + "/rents/" + id))
                 .DELETE()
+                .header("Authorization", "Bearer " + session.getJwt())
+                .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -56,6 +65,7 @@ public class RentRESTClient {
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -68,6 +78,7 @@ public class RentRESTClient {
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -79,6 +90,7 @@ public class RentRESTClient {
                 .newBuilder(URI.create(Utils.API_URL + "/rents/" + id + "/board"))
                 .method("PATCH", HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
                 .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

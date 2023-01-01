@@ -1,13 +1,14 @@
 package pl.lodz.pas.repository.impl;
 
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.pas.repository.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 @Transactional

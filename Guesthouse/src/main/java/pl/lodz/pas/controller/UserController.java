@@ -1,7 +1,5 @@
 package pl.lodz.pas.controller;
 
-import java.util.List;
-
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -30,6 +28,8 @@ import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.UserManager;
 
+import java.util.List;
+
 @RequestScoped
 @Path("/users")
 public class UserController {
@@ -49,6 +49,7 @@ public class UserController {
     @Path("/clients")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response registerClient(@Valid RegisterClientDTO rcDTO) throws CreateUserException {
         Client client = userManager.registerClient(rcDTO);
         return Response.status(Response.Status.CREATED).entity(client).build();
@@ -68,6 +69,7 @@ public class UserController {
     @Path("/employees")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public Response registerEmployee(@Valid RegisterEmployeeDTO reDTO) throws CreateUserException {
         Employee employee = userManager.registerEmployee(reDTO);
         return Response.status(Response.Status.CREATED).entity(employee).build();
@@ -77,6 +79,7 @@ public class UserController {
     @Path("/admins")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public Response registerAdmin(@Valid RegisterAdminDTO raDto) throws CreateUserException {
         Admin admin = userManager.registerAdmin(raDto);
         return Response.status(Response.Status.CREATED).entity(admin).build();
@@ -86,6 +89,7 @@ public class UserController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
         User user = userManager.getUserById(id);
         return Response.status(Response.Status.OK).entity(user).build();
@@ -111,6 +115,7 @@ public class UserController {
     @GET
     @Path("/employees")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public Response getAllEmployees() {
         List<Employee> employee = userManager.getEmployees();
         return Response.status(Response.Status.OK).entity(employee).build();
@@ -119,6 +124,7 @@ public class UserController {
     @GET
     @Path("/admins")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public Response getAllAdmins() {
         List<Admin> admins = userManager.getAdmins();
         return Response.status(Response.Status.OK).entity(admins).build();
@@ -127,6 +133,7 @@ public class UserController {
     @GET
     @Path("/search/{username}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public Response getUserByUsername(@PathParam("username") String username) throws UserNotFoundException {
         User user = userManager.getUserByUsername(username);
         return Response.status(Response.Status.OK).entity(user).build();
@@ -143,6 +150,7 @@ public class UserController {
     @GET
     @Path("/{id}/rents")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response getAllRentsOfClient(@PathParam("id") Long clientId,
                                         @QueryParam("past") Boolean past) throws UserNotFoundException {
         List<Rent> rents = userManager.getAllRentsOfClient(clientId, past);
@@ -163,6 +171,7 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto)
         throws UserNotFoundException, UpdateUserException {
         User user = userManager.updateUser(id, dto);
@@ -181,6 +190,7 @@ public class UserController {
     @PUT
     @Path("/{id}/activate")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response activateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
         User user = userManager.activateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();
@@ -198,6 +208,7 @@ public class UserController {
     @PUT
     @Path("/{id}/deactivate")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response deactivateUser(@PathParam("id") Long id) throws UserNotFoundException, UpdateUserException {
         User user = userManager.deactivateUser(id);
         return Response.status(Response.Status.OK).entity(user).build();

@@ -1,21 +1,22 @@
 package pl.lodz.pas.manager;
 
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.pas.model.Rent;
-import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.dto.UpdateRoomDTO;
+import pl.lodz.p.it.pas.model.Rent;
+import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.pas.exception.room.CreateRoomException;
 import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
 import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.room.UpdateRoomException;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor

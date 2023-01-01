@@ -2,7 +2,6 @@ package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Admin;
-import pl.lodz.p.it.pas.model.user.Client;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;

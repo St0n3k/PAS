@@ -1,8 +1,5 @@
 package pl.lodz.pas.repository.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -12,6 +9,10 @@ import jakarta.transaction.Transactional;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.pas.repository.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 @Transactional

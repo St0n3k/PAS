@@ -1,6 +1,10 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.room;
 
 
+import lombok.Getter;
+import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
+import pl.lodz.p.it.pas.model.Room;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -14,10 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import lombok.Getter;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
-import pl.lodz.p.it.pas.model.Room;
 
 @Named
 @ViewScoped

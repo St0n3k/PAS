@@ -4,7 +4,6 @@ import lombok.Getter;
 import pl.lodz.p.it.pas.dto.CreateRoomDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RoomRESTClient;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;

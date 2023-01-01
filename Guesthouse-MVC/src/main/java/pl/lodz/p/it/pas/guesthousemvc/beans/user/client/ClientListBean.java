@@ -1,5 +1,8 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 
+import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
+import pl.lodz.p.it.pas.model.user.Client;
+
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -8,8 +11,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
-import pl.lodz.p.it.pas.model.user.Client;
 
 @Named
 @ViewScoped

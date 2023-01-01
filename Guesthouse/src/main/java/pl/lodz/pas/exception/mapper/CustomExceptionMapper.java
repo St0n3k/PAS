@@ -19,8 +19,6 @@ import pl.lodz.pas.exception.user.InactiveUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 
-import javax.security.auth.login.CredentialException;
-
 @Provider
 public class CustomExceptionMapper implements ExceptionMapper<BaseApplicationException> {
     @Override

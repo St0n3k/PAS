@@ -1,22 +1,18 @@
 package pl.lodz.pas.manager;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.pas.dto.CreateRentDTO;
+import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
 import pl.lodz.p.it.pas.model.user.Client;
 import pl.lodz.p.it.pas.model.user.ClientTypes.ClientType;
 import pl.lodz.p.it.pas.model.user.User;
-import pl.lodz.p.it.pas.dto.CreateRentDTO;
-import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
 import pl.lodz.pas.exception.InvalidInputException;
 import pl.lodz.pas.exception.rent.CreateRentException;
 import pl.lodz.pas.exception.rent.RemoveRentException;
@@ -27,6 +23,11 @@ import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.RoomRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor

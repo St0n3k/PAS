@@ -5,13 +5,10 @@ import lombok.Setter;
 import pl.lodz.p.it.pas.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.RentRESTClient;
 
-import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 
 @Named
@@ -31,13 +28,12 @@ public class RentForSelfBean {
     private String endTime;
 
 
-    @PostConstruct
-    private void init() {
-        Map<String, String> params =
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String id = params.get("room_id");
-        this.dto.setRoomId(Long.valueOf(id));
-    }
+//    @PostConstruct
+//    private void init() {
+//        Map<String, String> params =
+//                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+//        String id = params.get("room_id");
+//    }
 
     public void rentRoom() {
         this.dto.setBeginTime(LocalDateTime.parse(beginTime));

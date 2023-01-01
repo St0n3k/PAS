@@ -7,7 +7,6 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import pl.lodz.p.it.pas.dto.LoginResponse;
-import pl.lodz.p.it.pas.model.user.Client;
 import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.pas.exception.InvalidInputException;
 import pl.lodz.pas.exception.user.AuthenticationException;

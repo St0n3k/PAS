@@ -4,7 +4,6 @@ package pl.lodz.p.it.pas.guesthousemvc.beans.auth;
 import lombok.Data;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,7 +16,7 @@ import java.io.Serializable;
 @Data
 public class SessionBean implements Serializable {
 
-    private String jwt;
+    private String jwt = "";
 
     @Inject
     private HttpServletRequest httpServletRequest;

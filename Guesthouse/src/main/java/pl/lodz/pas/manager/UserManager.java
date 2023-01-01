@@ -1,8 +1,5 @@
 package pl.lodz.pas.manager;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -26,6 +23,10 @@ import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.repository.impl.ClientTypeRepository;
 import pl.lodz.pas.repository.impl.RentRepository;
 import pl.lodz.pas.repository.impl.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor

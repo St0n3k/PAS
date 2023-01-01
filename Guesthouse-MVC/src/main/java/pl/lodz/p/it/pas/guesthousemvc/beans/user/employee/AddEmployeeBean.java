@@ -1,7 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.employee;
 
 import lombok.Getter;
-import pl.lodz.p.it.pas.dto.RegisterClientDTO;
 import pl.lodz.p.it.pas.dto.RegisterEmployeeDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 

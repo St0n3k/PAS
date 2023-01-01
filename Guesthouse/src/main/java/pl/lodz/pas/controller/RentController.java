@@ -1,7 +1,5 @@
 package pl.lodz.pas.controller;
 
-import java.util.List;
-
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -16,10 +14,9 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
-import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.dto.CreateRentDTO;
 import pl.lodz.p.it.pas.dto.UpdateRentBoardDTO;
+import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.pas.exception.InvalidInputException;
 import pl.lodz.pas.exception.rent.CreateRentException;
 import pl.lodz.pas.exception.rent.RemoveRentException;
@@ -28,6 +25,8 @@ import pl.lodz.pas.exception.room.RoomNotFoundException;
 import pl.lodz.pas.exception.user.InactiveUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.RentManager;
+
+import java.util.List;
 
 @RequestScoped
 @Path("/rents")
@@ -51,6 +50,7 @@ public class RentController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response rentRoom(@Valid CreateRentDTO createRentDTO)
         throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Rent rent = rentManager.rentRoom(createRentDTO);
@@ -67,6 +67,7 @@ public class RentController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response getAllRents() {
         List<Rent> rents = rentManager.getAllRents();
         return Response.status(Response.Status.OK).entity(rents).build();
@@ -83,6 +84,7 @@ public class RentController {
     @PATCH
     @Path("/{id}/board")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response updateRentBoard(@PathParam("id") Long id, @Valid UpdateRentBoardDTO dto)
         throws InvalidInputException, RentNotFoundException {
         Rent rent = rentManager.updateRentBoard(id, dto);
@@ -97,6 +99,7 @@ public class RentController {
      */
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({"EMPLOYEE", "ADMIN"})
     public Response removeRent(@PathParam("id") Long rentId) throws RemoveRentException {
         rentManager.removeRent(rentId);
         return Response.status(Response.Status.NO_CONTENT).build();
