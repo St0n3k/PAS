@@ -38,7 +38,7 @@ public class RentRESTClient {
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create(Utils.API_URL + "/rents"))
                 .GET()
-                .header("Authorization", "Bearer " + session.getJwt())
+                .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
@@ -51,7 +51,7 @@ public class RentRESTClient {
         HttpRequest request = HttpRequest.
                 newBuilder(URI.create(Utils.API_URL + "/rents/" + id))
                 .DELETE()
-                .header("Authorization", "Bearer " + session.getJwt())
+                .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 

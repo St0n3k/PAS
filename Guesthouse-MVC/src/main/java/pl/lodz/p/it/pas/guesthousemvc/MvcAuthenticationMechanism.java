@@ -1,7 +1,8 @@
-package pl.lodz.p.it.pas.guesthousemvc.beans.auth;
+package pl.lodz.p.it.pas.guesthousemvc;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import pl.lodz.p.it.pas.guesthousemvc.beans.auth.SessionBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

@@ -293,5 +293,10 @@
             <to-view-id>/login.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>showChangePasswordForm</from-outcome>
+            <to-view-id>/changePassword.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 </faces-config>
