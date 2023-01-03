@@ -8,7 +8,7 @@ function filterClients() {
             let tbody = table.getElementsByTagName("tbody")[0];
             tbody.innerHTML = "";
 
-            for(let client of data){
+            for (let client of data) {
                 let tr = document.createElement("tr");
 
                 let user_id = document.createElement("td");
@@ -32,9 +32,9 @@ function filterClients() {
                 let active = document.createElement("td");
 
                 let checkbox = document.createElement("input")
-                checkbox.type="checkbox";
+                checkbox.type = "checkbox";
                 checkbox.checked = client.active;
-                checkbox.setAttribute("style","pointer-events: none;");
+                checkbox.setAttribute("style", "pointer-events: none;");
                 active.appendChild(checkbox);
 
                 tr.appendChild(user_id);

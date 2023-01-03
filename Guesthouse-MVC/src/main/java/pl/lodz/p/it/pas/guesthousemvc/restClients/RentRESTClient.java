@@ -72,10 +72,10 @@ public class RentRESTClient {
         return response.statusCode();
     }
 
-    public int rentRoomForSelf(RentRoomForSelfDTO dto) throws IOException, InterruptedException {
+    public int rentRoomForSelf(RentRoomForSelfDTO dto, Long roomId) throws IOException, InterruptedException {
         String requestBody = this.mapper.writeValueAsString(dto);
         HttpRequest request = HttpRequest
-                .newBuilder(URI.create(Utils.API_URL + "/rents"))
+                .newBuilder(URI.create(Utils.API_URL + "/rooms/" + roomId))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + session.getJwt())

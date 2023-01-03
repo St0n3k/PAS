@@ -53,7 +53,12 @@
                 #{rent.finalCost}
             </h:column>
 
-            <h:column >
+            <h:column rendered="#{sessionBean.authenticated}">
+                <f:facet name="header">${msg["user.username"]}</f:facet>
+                #{rent.client.username}
+            </h:column>
+
+            <h:column>
                 <f:facet name="header">${msg["room.roomNumber"]}</f:facet>
                 #{rent.room.roomNumber}
             </h:column>
@@ -63,7 +68,8 @@
                 class="container align-items-center text-center mb-2">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg["rent.beginTime"]}</span>
-                <h:inputText a:type="datetime-local" class="col-2" value="#{rentForSelfBean.beginTime}" required="true"/>
+                <h:inputText a:type="datetime-local" class="col-2" value="#{rentForSelfBean.beginTime}"
+                             required="true"/>
             </label>
             <br/>
 
@@ -79,7 +85,8 @@
             </label>
             <br/>
 
-            <h:commandButton id="submit" class="row mx-auto text-center btn btn-warning w-25" value="${msg['nav.addRent']}"
+            <h:commandButton id="submit" class="row mx-auto text-center btn btn-warning w-25"
+                             value="${msg['nav.addRent']}"
                              action="#{rentForSelfBean.rentRoom()}"/>
             <br/>
             <h:message for="submit" class="text-danger" style="font-size: 3vh"/>

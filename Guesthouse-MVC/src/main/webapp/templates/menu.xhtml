@@ -5,16 +5,26 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html">
     <h:form class="text-center">
-        <div class="col-2 m-3 btn btn-warning disabled w-75"><p class="text-center">ROLE: #{utils.role}</p></div>
-        <h:commandButton rendered="#{!sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-primary w-50" value="${msg['nav.login']}" action="showLoginForm" />
-        <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-danger w-50" value="${msg['nav.logout']}" action="#{sessionBean.logout()}" />
-        <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 btn btn-info w-50" value="${msg['nav.password']}" action="showChangePasswordForm" />
+        <ui:fragment rendered="#{sessionBean.authenticated}">
+            <div class="col-2 m-3 btn btn-warning disabled w-75"><p class="text-center">ROLE: #{utils.role}</p><p>USERNAME: #{utils.username}</p></div>
+        </ui:fragment>
+        <h:commandButton rendered="#{!sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-primary w-50"
+                         value="${msg['nav.login']}" action="showLoginForm"/>
+        <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-danger w-50"
+                         value="${msg['nav.logout']}" action="#{sessionBean.logout()}"/>
+        <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 btn btn-info w-50"
+                         value="${msg['nav.password']}" action="showChangePasswordForm"/>
         <h:commandButton class="col-2 m-3 mt-5 btn btn-danger w-50" value="${msg['nav.main']}" action="showMainMenu"/>
         <h:commandButton class="col-2 m-3 btn btn-success w-50" value="${msg['nav.rooms']}" action="showRoomList"/>
-        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-warning w-50" value="${msg['nav.rents']}" action="showRentList"/>
-        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-primary w-50" value="${msg['nav.clients']}" action="showClientList"/>
-        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-dark w-50" value="${msg['nav.clientsFilter']}" action="showClientsFilter"/>
-        <h:commandButton rendered="#{utils.admin}" class="col-2 m-3 btn btn-info w-50" value="${msg['nav.employees']}" action="showEmployeeList"/>
-        <h:commandButton rendered="#{utils.admin}" class="col-2 m-3 btn btn-secondary w-50" value="${msg['nav.admins']}" action="showAdminList"/>
+        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-warning w-50"
+                         value="${msg['nav.rents']}" action="showRentList"/>
+        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-primary w-50"
+                         value="${msg['nav.clients']}" action="showClientList"/>
+        <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-dark w-50"
+                         value="${msg['nav.clientsFilter']}" action="showClientsFilter"/>
+        <h:commandButton rendered="#{utils.admin}" class="col-2 m-3 btn btn-info w-50" value="${msg['nav.employees']}"
+                         action="showEmployeeList"/>
+        <h:commandButton rendered="#{utils.admin}" class="col-2 m-3 btn btn-secondary w-50" value="${msg['nav.admins']}"
+                         action="showAdminList"/>
     </h:form>
 </ui:composition>

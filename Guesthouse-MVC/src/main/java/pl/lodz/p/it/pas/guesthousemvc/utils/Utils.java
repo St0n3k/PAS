@@ -33,4 +33,8 @@ public class Utils {
         return "ANONYMOUS";
     }
 
+    public String getUsername() {
+        return FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+    }
+
 }

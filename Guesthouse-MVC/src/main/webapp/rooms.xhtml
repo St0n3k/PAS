@@ -20,7 +20,8 @@
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}" action="showMainMenu"/>
             <h:commandButton class="col-2 m-3 btn btn-success" value="${msg['rooms.refreshRooms']}"
                              action="#{roomListBean.refreshRoomList()}"/>
-            <h:commandButton rendered="#{utils.employee || utils.admin}" class="col-2 m-3 btn btn-success" value="${msg['nav.addRoom']}" action="showAddRoomForm"/>
+            <h:commandButton rendered="#{utils.employee || utils.admin}" class="col-2 m-3 btn btn-success"
+                             value="${msg['nav.addRoom']}" action="showAddRoomForm"/>
         </h:form>
 
         <div class="text-center w-100">
@@ -55,7 +56,8 @@
                 <f:facet name="header">${msg['button.delete']}</f:facet>
                 <h:form id="remove-room" class="text-center">
                     <h:commandButton id="remove-button"
-                                     onclick="return confirm('${msg['room.remove']}')" class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
+                                     onclick="return confirm('${msg['room.remove']}')"
+                                     class="text-center btn btn-danger w-75" value="${msg['button.delete']}"
                                      action="#{roomListBean.removeRoom(room.id)}"/>
                 </h:form>
             </h:column>

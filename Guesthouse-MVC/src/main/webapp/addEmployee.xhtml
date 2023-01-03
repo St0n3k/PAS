@@ -12,47 +12,47 @@
     </ui:define>
 
     <ui:define name="left">
-        <ui:include src="./templates/menu.xhtml" />
+        <ui:include src="./templates/menu.xhtml"/>
     </ui:define>
 
     <ui:define name="content">
         <h:form class="text-center mb-2">
             <h:commandButton class="col-2 m-3 btn btn-secondary" value="${msg['nav.return']}"
-                             action="showEmployeeList" />
+                             action="showEmployeeList"/>
         </h:form>
         <h:form id="addEmployeeForm" class="container align-items-center text-center">
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.username']}</span>
                 <h:inputText class="col-2" id="username"
                              required="true"
-                             value="#{addEmployeeBean.registerEmployeeDTO.username}" />
+                             value="#{addEmployeeBean.registerEmployeeDTO.username}"/>
             </label>
-            <br />
+            <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.firstName']}</span>
                 <h:inputText class="col-2" id="firstName" value="#{addEmployeeBean.registerEmployeeDTO.firstName}">
-                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
                 </h:inputText>
-                <h:message for="firstName" errorClass="text-danger" />
+                <h:message for="firstName" errorClass="text-danger"/>
             </label>
-            <br />
+            <br/>
 
             <label class="row container mx-auto justify-content-center">
                 <span class="col-2">${msg['user.lastName']}</span>
                 <h:inputText class="col-2" id="lastName" value="#{addEmployeeBean.registerEmployeeDTO.lastName}">
-                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+" />
+                    <f:validateRegex pattern="[^\d\s!?_#$%^&amp;*()@=+,.|/~`&apos;&quot;\\]+"/>
                 </h:inputText>
-                <h:message for="lastName" errorClass="text-danger" />
+                <h:message for="lastName" errorClass="text-danger"/>
             </label>
-            <br />
+            <br/>
 
             <h:commandButton id="submit"
                              class="row mx-auto text-center btn btn-info w-25"
                              action="#{addEmployeeBean.registerEmployee()}"
-                             value="${msg['nav.addEmployee']}" />
-            <br />
-            <h:message for="submit" class="text-danger" style="font-size: 3vh" />
+                             value="${msg['nav.addEmployee']}"/>
+            <br/>
+            <h:message for="submit" class="text-danger" style="font-size: 3vh"/>
         </h:form>
     </ui:define>
 
