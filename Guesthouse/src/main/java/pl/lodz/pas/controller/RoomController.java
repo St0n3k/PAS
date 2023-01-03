@@ -4,15 +4,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -62,7 +54,6 @@ public class RoomController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Response getRoomById(@PathParam("id") Long id) throws RoomNotFoundException {
         Room room = roomManager.getRoomById(id);
         return Response.status(Response.Status.OK).entity(room).build();
@@ -120,8 +111,8 @@ public class RoomController {
      * Endpoint which returns list of rents of given room
      *
      * @param roomId room id
-     * @param past flag which indicates if the result will be list of past rents or future rents.
-     * If this parameter is not set, the result of the method will be list of all rents of given room
+     * @param past   flag which indicates if the result will be list of past rents or future rents.
+     *               If this parameter is not set, the result of the method will be list of all rents of given room
      * @return list of rents that meet given criteria
      */
     @GET
@@ -137,7 +128,7 @@ public class RoomController {
     /**
      * Endpoint which is used to update room properties
      *
-     * @param id id of room to be updated
+     * @param id            id of room to be updated
      * @param updateRoomDTO object containing new properties of existing room
      */
     @PUT

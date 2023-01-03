@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Room } from '../model/room';
-import { Observable } from 'rxjs';
+import { Rent } from '../model/rent';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +18,12 @@ export class RoomService {
 
     getRoomById(id: number) {
         return this.http.get<Room>(`${environment.apiUrl}/rooms/${id}`, {
+            observe: 'response'
+        });
+    }
+
+    rentRoomForSelf(id: number, body: object) {
+        return this.http.post<Rent>(`${environment.apiUrl}/rooms/${id}`, body, {
             observe: 'response'
         });
     }

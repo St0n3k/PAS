@@ -30,7 +30,7 @@ const routes: Routes = [
     {
         path: 'clients',
         component: ClientsComponent,
-        canActivate: [AdminGuard, EmployeeGuard]
+        canActivate: [EmployeeGuard]
     },
     {
         path: 'employees',

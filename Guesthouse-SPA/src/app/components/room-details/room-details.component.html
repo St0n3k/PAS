@@ -12,7 +12,7 @@
     *ngIf="room !== undefined"
     class="my-3">
     <div class="card-title text-center">
-        <h2><i class="bi bi-door-open"></i> Room {{ room?.id }}</h2>
+        <h2><i class="bi bi-door-open"></i> Room {{ room?.roomNumber }}</h2>
     </div>
     <div class="card col-sm-10 mx-auto">
         <div class="table-responsive">
@@ -34,5 +34,101 @@
                 </tbody>
             </table>
         </div>
+        <button
+            type="button"
+            class="btn btn-success m-3 mx-sm-auto col-sm-3 d-flex justify-content-center"
+            (click)="this.showRentModal(rentModal)">
+            Rent
+        </button>
     </div>
 </div>
+
+<ng-template
+    #rentModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Rent room {{ room?.roomNumber }}</h4>
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="rentForSelfForm">
+            <div class="row text-center p-0 py-2 p-sm-4">
+                <div class="col-sm-6">
+                    <span class="d-block h4"> From:</span>
+                    <ngb-datepicker
+                        formControlName="beginDate"
+                        [minDate]="today"></ngb-datepicker>
+                </div>
+                <div class="col-sm-6">
+                    <span class="d-block mt-sm-auto mt-3 h4">To:</span>
+                    <ngb-datepicker
+                        formControlName="endDate"
+                        [minDate]="today"></ngb-datepicker>
+                </div>
+            </div>
+            <div
+                class="row d-flex justify-content-center form-check form-switch form-control-lg">
+                <div class="w-auto">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        formControlName="board"
+                        value="board"
+                        id="flexSwitchCheckDefault" />
+                    <label
+                        class="form-check-label"
+                        for="flexSwitchCheckDefault"
+                        >Board</label
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="modal.close('Close click')">
+            Cancel
+        </button>
+        <button
+            type="button"
+            class="btn btn-success"
+            (click)="this.showConfirmRentModal(confirmRentModal)">
+            Rent
+        </button>
+    </div>
+</ng-template>
+
+<ng-template
+    #confirmRentModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">Are you sure you want to rent this room?</div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="modal.close('Close click')">
+            No
+        </button>
+        <button
+            type="button"
+            class="btn btn-success"
+            (click)="modal.close(); this.rentRoomForSelf()">
+            Yes
+        </button>
+    </div>
+</ng-template>
