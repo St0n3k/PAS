@@ -13,10 +13,15 @@ export class LoginComponent implements OnInit {
         email: new FormControl('', [Validators.required]), //Validators.email]),
         password: new FormControl('', [Validators.required])
     });
+    fail = 0;
 
     constructor(private authService: AuthService, private router: Router) {}
 
     ngOnInit(): void {}
+
+    get passwordInput() {
+        return this.loginForm.get('password');
+    }
 
     onSubmit() {
         if (this.loginForm.valid) {
@@ -34,6 +39,7 @@ export class LoginComponent implements OnInit {
                         }
                     },
                     (error) => {
+                        this.fail = 1;
                         this.authService.clearUserData();
                         this.authService.authenticated.next(false);
                         this.clearPassword();

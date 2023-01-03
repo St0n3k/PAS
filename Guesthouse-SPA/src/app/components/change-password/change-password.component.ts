@@ -14,6 +14,8 @@ export class ChangePasswordComponent implements OnInit {
         newPassword: new FormControl('', [Validators.required]),
         newPasswordConfirm: new FormControl('', [Validators.required])
     });
+    fail = 0;
+    success = 0;
 
     constructor(private authService: AuthService, private router: Router) {}
 
@@ -51,11 +53,14 @@ export class ChangePasswordComponent implements OnInit {
                 .subscribe(
                     (result) => {
                         if (result.status == 200) {
+                            this.fail = 0;
+                            this.success = 1;
                             this.clearInputs();
                         }
                     },
                     (error) => {
-                        //TODO komunikat błędu
+                        this.fail = 1;
+                        this.success = 0;
                     }
                 );
         }

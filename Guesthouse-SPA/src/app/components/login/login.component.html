@@ -19,9 +19,27 @@
                 type="password"
                 id="form2Example2"
                 class="form-control"
-                formControlName="password" />
+                formControlName="password"
+                [ngClass]="{
+                    'is-valid':
+                        passwordInput &&
+                        passwordInput.touched &&
+                        passwordInput.valid,
+                    'is-invalid':
+                        (passwordInput &&
+                            passwordInput.touched &&
+                            passwordInput.getRawValue()?.length === 0) ||
+                        this.fail === 1
+                }" />
         </div>
-
+        <ngb-alert
+            (closed)="fail = 0"
+            *ngIf="fail === 1"
+            [dismissible]="true"
+            class="alert alert-danger fade show m-3"
+            type="danger">
+            <span>Wrong password or username.</span>
+        </ngb-alert>
         <input
             type="submit"
             class="btn btn-primary btn-block mb-4 d-sm-block w-100 mx-auto"

@@ -71,7 +71,12 @@ export class AuthService {
     }
 
     getRole() {
-        return localStorage.getItem('role');
+        let token = localStorage.getItem('jwt');
+        if (token === null) {
+            return '';
+        }
+        const tokenInfo = this.getDecodedJwtToken(token);
+        return tokenInfo.roles[0];
     }
 
     getEmail() {

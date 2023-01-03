@@ -29,7 +29,6 @@ export class EmployeeGuard implements CanActivate {
         | boolean
         | UrlTree {
         if (this.adminGuard.canActivate(route, state)) {
-            console.log('ADMIN');
             return true;
         }
         if (this.authService.getRole() != 'EMPLOYEE') {

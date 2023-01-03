@@ -1,4 +1,11 @@
-import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import {
+    Component,
+    Inject,
+    LOCALE_ID,
+    OnInit,
+    TemplateRef,
+    ViewChild
+} from '@angular/core';
 import { RoomService } from '../../services/room.service';
 import { Room } from '../../model/room';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,9 +18,9 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 //TODO kalendarz z zajętymi terminami z rentów
-//TODO przycisk do wynajęcia i modal z wyborem daty
 
 @Component({
     selector: 'app-room-details',
@@ -31,9 +38,18 @@ export class RoomDetailsComponent implements OnInit {
     roomID: number | undefined;
     room: Room | null | undefined;
     rentModal: NgbModalRef | undefined;
+    @ViewChild('rentErrorModal') rentErrorModal: TemplateRef<any> | undefined;
+
+    status = 0;
+    // 0 - ok
+    // 1 - conflict
+    // 2 - unathorized
+    // 3 - End date is before begin date
+    // 4 - anything else
 
     constructor(
         private roomService: RoomService,
+        private authService: AuthService,
         private route: ActivatedRoute,
         private router: Router,
         private modalService: NgbModal,
@@ -58,6 +74,10 @@ export class RoomDetailsComponent implements OnInit {
         }
     }
 
+    getRole() {
+        return this.authService.getRole();
+    }
+
     showRentModal(rentModal: any): void {
         this.rentModal = this.modalService.open(rentModal, {
             size: 'xl',
@@ -73,20 +93,36 @@ export class RoomDetailsComponent implements OnInit {
         });
     }
 
+    showRentErrorModal(): void {
+        this.modalService.open(this.rentErrorModal, {
+            centered: true,
+            scrollable: true
+        });
+    }
+
     rentRoomForSelf() {
         if (this.rentForSelfForm.valid) {
             let board = this.rentForSelfForm.getRawValue().board !== '';
             let beginTime = formatDate(
                 this.rentForSelfForm.getRawValue().beginDate!,
-                'yyyy-dd-MMTHH:MM:SS',
+                'yyyy-MM-ddTHH:MM:SS',
                 this.locale
             );
             let endTime = formatDate(
                 this.rentForSelfForm.getRawValue().endDate!,
-                'yyyy-dd-MMTHH:MM:SS',
+                'yyyy-MM-ddTHH:MM:SS',
                 this.locale
             );
-            console.log({ board, beginDate: beginTime, endDate: endTime });
+
+            if (
+                this.rentForSelfForm.getRawValue().endDate! <
+                this.rentForSelfForm.getRawValue().beginDate!
+            ) {
+                this.status = 3;
+                this.showRentErrorModal();
+                return;
+            }
+
             this.roomService
                 .rentRoomForSelf(this.roomID!, {
                     board,
@@ -96,13 +132,21 @@ export class RoomDetailsComponent implements OnInit {
                 .subscribe(
                     (result) => {
                         if (result.status == 201) {
-                            console.log('SUCCESS');
+                            this.status = 0;
                             this.rentModal?.close();
                         }
                     },
                     (error) => {
-                        console.log('FAILURE');
-                        //TODO handling errorów
+                        if (error.status == 409) {
+                            this.status = 1;
+                        } else if (error.status == 401) {
+                            this.status = 2;
+                        } else if (error.status == 400) {
+                            this.status = 3;
+                        } else {
+                            this.status = 4;
+                        }
+                        this.showRentErrorModal();
                     }
                 );
         }

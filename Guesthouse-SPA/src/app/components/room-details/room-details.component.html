@@ -35,6 +35,7 @@
             </table>
         </div>
         <button
+            *ngIf="getRole() === 'CLIENT'"
             type="button"
             class="btn btn-success m-3 mx-sm-auto col-sm-3 d-flex justify-content-center"
             (click)="this.showRentModal(rentModal)">
@@ -129,6 +130,55 @@
             class="btn btn-success"
             (click)="modal.close(); this.rentRoomForSelf()">
             Yes
+        </button>
+    </div>
+</ng-template>
+
+<ng-template
+    #rentErrorModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Error</h4>
+    </div>
+    <div class="modal-body">
+        <ngb-alert
+            *ngIf="status === 1"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span
+                >This room is already rented during the period you've
+                chosen.</span
+            >
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 2"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>You are unathorized to do this.</span>
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 3"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>End date is before begin date!</span>
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 4"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>Something went wrong!</span>
+        </ngb-alert>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-primary"
+            (click)="modal.close('Close click')">
+            Ok
         </button>
     </div>
 </ng-template>
