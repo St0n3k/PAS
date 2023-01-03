@@ -8,6 +8,7 @@
         <div class="col-2 m-3 btn btn-warning disabled w-75"><p class="text-center">ROLE: #{utils.role}</p></div>
         <h:commandButton rendered="#{!sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-primary w-50" value="${msg['nav.login']}" action="showLoginForm" />
         <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 mt-5 btn btn-danger w-50" value="${msg['nav.logout']}" action="#{sessionBean.logout()}" />
+        <h:commandButton rendered="#{sessionBean.authenticated}" class="col-2 m-3 btn btn-info w-50" value="${msg['nav.password']}" action="showChangePasswordForm" />
         <h:commandButton class="col-2 m-3 mt-5 btn btn-danger w-50" value="${msg['nav.main']}" action="showMainMenu"/>
         <h:commandButton class="col-2 m-3 btn btn-success w-50" value="${msg['nav.rooms']}" action="showRoomList"/>
         <h:commandButton rendered="#{utils.admin || utils.employee}" class="col-2 m-3 btn btn-warning w-50" value="${msg['nav.rents']}" action="showRentList"/>
