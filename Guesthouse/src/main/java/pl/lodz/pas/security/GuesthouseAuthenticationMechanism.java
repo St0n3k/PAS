@@ -39,8 +39,8 @@ public class GuesthouseAuthenticationMechanism implements HttpAuthenticationMech
         if (optionalUser.isEmpty()) {
             return httpMessageContext.notifyContainerAboutLogin("anonymous", new HashSet<>(Collections.singleton("GUEST")));
         }
-        ArrayList<String> roles = claims.get("roles", ArrayList.class);
+        String role = claims.get("role", String.class);
 
-        return httpMessageContext.notifyContainerAboutLogin(optionalUser.get(), new HashSet<>(roles));
+        return httpMessageContext.notifyContainerAboutLogin(optionalUser.get(), Collections.singleton(role));
     }
 }

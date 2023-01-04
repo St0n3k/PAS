@@ -20,6 +20,16 @@
 
     <security-constraint>
         <web-resource-collection>
+            <web-resource-name>all</web-resource-name>
+            <url-pattern>/</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
             <web-resource-name>admin-pages</web-resource-name>
             <url-pattern>/admins.xhtml</url-pattern>
             <url-pattern>/employees.xhtml</url-pattern>
@@ -56,6 +66,7 @@
             <role-name>ADMIN</role-name>
         </auth-constraint>
     </security-constraint>
+
 
     <!--    <error-page>-->
     <!--        <location>/error.xhtml</location>-->

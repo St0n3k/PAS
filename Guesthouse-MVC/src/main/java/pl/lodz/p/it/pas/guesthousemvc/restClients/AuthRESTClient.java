@@ -17,11 +17,11 @@ import java.net.http.HttpResponse;
 
 @RequestScoped
 public class AuthRESTClient {
+    @Inject
+    private SessionBean session;
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    @Inject
-    private SessionBean session;
 
     public String login(LoginDTO loginDTO) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/login"))

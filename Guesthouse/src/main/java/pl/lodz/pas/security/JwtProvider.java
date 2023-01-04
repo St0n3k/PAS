@@ -21,11 +21,11 @@ public class JwtProvider {
     //JWT expiration time = 1h
     private final int JWT_EXPIRATION_TIME = 3600000;
 
-    public String generateJWT(String subject, Set<String> roles) {
+    public String generateJWT(String subject, String role) {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .claim("roles", roles)
+                .claim("role", role)
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();

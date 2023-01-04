@@ -39,7 +39,7 @@ public class EditEmployeeBean implements Serializable {
         Map<String, String> params =
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String id = params.get("employee_id");
-        //String id = "3";
+
         this.employeeId = Long.valueOf(id);
         try {
             HttpResponse<String> response = userRESTClient.getClientById(this.employeeId);

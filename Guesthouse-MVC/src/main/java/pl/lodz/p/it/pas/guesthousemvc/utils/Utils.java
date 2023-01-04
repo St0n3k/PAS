@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 @Named
 public class Utils {
-    public static final String API_URL = "http://localhost:8080/api";
+    public static final String API_URL = "https://localhost:8181/api";
 
     public boolean isAnonymous() {
         return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("ANONYMOUS");

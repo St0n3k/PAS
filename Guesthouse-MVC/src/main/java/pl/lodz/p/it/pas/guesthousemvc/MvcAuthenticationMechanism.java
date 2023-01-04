@@ -28,7 +28,6 @@ public class MvcAuthenticationMechanism implements HttpAuthenticationMechanism {
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, HttpMessageContext httpMessageContext) throws AuthenticationException {
         if (session.getJwt().isBlank()) {
-            System.out.println("Session authentication as ANONYMOUS");
             return httpMessageContext.notifyContainerAboutLogin("anonymous", Collections.singleton("ANONYMOUS"));
         }
         String jwt = session.getJwt();
@@ -40,10 +39,10 @@ public class MvcAuthenticationMechanism implements HttpAuthenticationMechanism {
         }
 
         String username = claims.getSubject();
-        ArrayList<String> roles = claims.get("roles", ArrayList.class);
+        String role = claims.get("role", String.class);
 
         System.out.println(claims);
-        return httpMessageContext.notifyContainerAboutLogin(username, new HashSet<>(roles));
+        return httpMessageContext.notifyContainerAboutLogin(username, Collections.singleton(role));
     }
 
     public Claims parseJWTWithoutSign(String jwt) {
