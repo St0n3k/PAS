@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Admin;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.http.HttpResponse;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -25,6 +27,10 @@ public class EditAdminBean implements Serializable {
 
     private Long adminId;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private String ifMatch = "";
+
     private UpdateUserDTO updateUserDTO;
     private UpdateUserDTO oldUserDTO;
 
@@ -33,11 +39,18 @@ public class EditAdminBean implements Serializable {
         Map<String, String> params =
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String id = params.get("admin_id");
-        //String id = "3";
+
         this.adminId = Long.valueOf(id);
         try {
-            Admin admin = userRESTClient.getAdminById(this.adminId);
+            HttpResponse<String> response = userRESTClient.getClientById(this.adminId);
+            Admin admin = mapper.readValue(response.body(), Admin.class);
+
+            String ETag = response.headers().firstValue("ETag")
+                    .orElseThrow(RuntimeException::new);
+
+            ifMatch = mapper.readValue(ETag, String.class);
             this.updateUserDTO = new UpdateUserDTO(
+                    admin.getId(),
                     admin.getUsername(),
                     null,
                     null,
@@ -47,6 +60,7 @@ public class EditAdminBean implements Serializable {
                     null
             );
             this.oldUserDTO = new UpdateUserDTO(
+                    admin.getId(),
                     admin.getUsername(),
                     null,
                     null,
@@ -65,6 +79,7 @@ public class EditAdminBean implements Serializable {
 
     public String updateAdmin() throws IOException, InterruptedException {
         UpdateUserDTO dto = new UpdateUserDTO(
+                this.updateUserDTO.getId(),
                 this.updateUserDTO.getUsername(),
                 null,
                 null,
@@ -77,7 +92,7 @@ public class EditAdminBean implements Serializable {
             dto.setUsername(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.adminId, dto);
+        int statusCode = userRESTClient.updateUser(this.adminId, dto, ifMatch);
         if (statusCode == 200) {
             return "showAdminList";
         } else {

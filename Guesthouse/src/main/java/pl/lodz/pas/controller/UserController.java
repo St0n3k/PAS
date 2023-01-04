@@ -1,11 +1,14 @@
 package pl.lodz.pas.controller;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.shaded.gson.JsonObject;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -27,14 +30,21 @@ import pl.lodz.pas.exception.user.CreateUserException;
 import pl.lodz.pas.exception.user.UpdateUserException;
 import pl.lodz.pas.exception.user.UserNotFoundException;
 import pl.lodz.pas.manager.UserManager;
+import pl.lodz.pas.security.SignProvider;
 
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestScoped
 @Path("/users")
 public class UserController {
     @Inject
     private UserManager userManager;
+
+    @Inject
+    private SignProvider signProvider;
 
     /**
      * Endpoint which is used to register new client,
@@ -90,9 +100,14 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException {
+    public Response getUserById(@PathParam("id") Long id) throws UserNotFoundException, JOSEException {
         User user = userManager.getUserById(id);
-        return Response.status(Response.Status.OK).entity(user).build();
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
+
+        String ifMatch = signProvider.sign(jsonObject.toString());
+        return Response.status(Response.Status.OK).entity(user).tag(ifMatch).build();
     }
 
     @GET
@@ -161,20 +176,25 @@ public class UserController {
     /**
      * Endpoint used for updating given user
      *
-     * @param id id of the user
      * @param dto object containing new properties of user
      * @return status code
      * 200(OK) if update was successful
      * 409(CONFLICT) if update was unsuccessful (could be due to new username not being unique)
      */
     @PUT
-    @Path("/{id}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN", "EMPLOYEE"})
-    public Response updateUser(@PathParam("id") Long id, @Valid UpdateUserDTO dto)
-        throws UserNotFoundException, UpdateUserException {
-        User user = userManager.updateUser(id, dto);
+    public Response updateUser(@Valid UpdateUserDTO dto, @HeaderParam("If-Match") String ifMatch)
+            throws UserNotFoundException, UpdateUserException, ParseException, JOSEException {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", dto.getId());
+
+        if (!signProvider.verify(ifMatch, jsonObject.toString())) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        User user = userManager.updateUser(dto.getId(), dto);
         return Response.status(Response.Status.OK).entity(user).build();
     }
 

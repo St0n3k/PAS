@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.employee;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Employee;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.http.HttpResponse;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -25,6 +27,10 @@ public class EditEmployeeBean implements Serializable {
 
     private Long employeeId;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private String ifMatch = "";
+
     private UpdateUserDTO updateUserDTO;
     private UpdateUserDTO oldUserDTO;
 
@@ -36,8 +42,15 @@ public class EditEmployeeBean implements Serializable {
         //String id = "3";
         this.employeeId = Long.valueOf(id);
         try {
-            Employee employee = userRESTClient.getEmployeeById(this.employeeId);
+            HttpResponse<String> response = userRESTClient.getClientById(this.employeeId);
+            Employee employee = mapper.readValue(response.body(), Employee.class);
+
+            String ETag = response.headers().firstValue("ETag")
+                    .orElseThrow(RuntimeException::new);
+
+            ifMatch = mapper.readValue(ETag, String.class);
             this.updateUserDTO = new UpdateUserDTO(
+                    employee.getId(),
                     employee.getUsername(),
                     employee.getFirstName(),
                     employee.getLastName(),
@@ -47,6 +60,7 @@ public class EditEmployeeBean implements Serializable {
                     null
             );
             this.oldUserDTO = new UpdateUserDTO(
+                    employee.getId(),
                     employee.getUsername(),
                     employee.getFirstName(),
                     employee.getLastName(),
@@ -65,6 +79,7 @@ public class EditEmployeeBean implements Serializable {
 
     public String updateEmployee() throws IOException, InterruptedException {
         UpdateUserDTO dto = new UpdateUserDTO(
+                updateUserDTO.getId(),
                 updateUserDTO.getUsername(),
                 updateUserDTO.getFirstName(),
                 updateUserDTO.getLastName(),
@@ -83,7 +98,7 @@ public class EditEmployeeBean implements Serializable {
             dto.setLastName(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.employeeId, dto);
+        int statusCode = userRESTClient.updateUser(this.employeeId, dto, ifMatch);
         if (statusCode == 200) {
             return "showEmployeeList";
         } else {

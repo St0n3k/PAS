@@ -1,5 +1,6 @@
 package pl.lodz.p.it.pas.guesthousemvc.beans.user.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.lodz.p.it.pas.dto.UpdateUserDTO;
 import pl.lodz.p.it.pas.guesthousemvc.restClients.UserRESTClient;
 import pl.lodz.p.it.pas.model.user.Client;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.http.HttpResponse;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -22,7 +24,11 @@ public class EditClientBean implements Serializable {
     @Inject
     private UserRESTClient userRESTClient;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private Long clientId;
+
+    private String ifMatch = "";
 
     private UpdateUserDTO updateUserDTO;
     private UpdateUserDTO oldUserDTO;
@@ -35,8 +41,17 @@ public class EditClientBean implements Serializable {
         String id = params.get("client_id");
         this.clientId = Long.valueOf(id);
         try {
-            Client client = userRESTClient.getClientById(this.clientId);
-            this.updateUserDTO = new UpdateUserDTO(client.getUsername(),
+            HttpResponse<String> response = userRESTClient.getClientById(this.clientId);
+            Client client = mapper.readValue(response.body(), Client.class);
+
+            String ETag = response.headers().firstValue("ETag")
+                    .orElseThrow(RuntimeException::new);
+
+            ifMatch = mapper.readValue(ETag, String.class);
+
+            this.updateUserDTO = new UpdateUserDTO(
+                    client.getId(),
+                    client.getUsername(),
                     client.getFirstName(),
                     client.getLastName(),
                     client.getPersonalId(),
@@ -44,7 +59,9 @@ public class EditClientBean implements Serializable {
                     client.getAddress().getStreet(),
                     client.getAddress().getHouseNumber()
             );
-            this.oldUserDTO = new UpdateUserDTO(client.getUsername(),
+            this.oldUserDTO = new UpdateUserDTO(
+                    client.getId(),
+                    client.getUsername(),
                     client.getFirstName(),
                     client.getLastName(),
                     client.getPersonalId(),
@@ -62,6 +79,7 @@ public class EditClientBean implements Serializable {
 
     public String updateClient() throws IOException, InterruptedException {
         UpdateUserDTO dto = new UpdateUserDTO(
+                updateUserDTO.getId(),
                 updateUserDTO.getUsername(),
                 updateUserDTO.getFirstName(),
                 updateUserDTO.getLastName(),
@@ -93,7 +111,8 @@ public class EditClientBean implements Serializable {
             dto.setNumber(null);
         }
 
-        int statusCode = userRESTClient.updateUser(this.clientId, dto);
+        System.out.println(dto);
+        int statusCode = userRESTClient.updateUser(this.clientId, dto, ifMatch);
         if (statusCode == 200) {
             return "showClientList";
         } else {

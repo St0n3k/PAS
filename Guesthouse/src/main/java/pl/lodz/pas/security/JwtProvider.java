@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.impl.crypto.JwtSigner;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -47,6 +48,7 @@ public class JwtProvider {
     }
 
     public String getToken(HttpServletRequest request) {
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -54,5 +56,6 @@ public class JwtProvider {
         }
         return null;
     }
+
 
 }

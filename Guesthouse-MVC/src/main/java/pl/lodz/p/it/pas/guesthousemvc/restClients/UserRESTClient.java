@@ -71,36 +71,33 @@ public class UserRESTClient {
         });
     }
 
-    public Client getClientById(Long id) throws IOException, InterruptedException {
+    public HttpResponse<String> getClientById(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id))
                 .GET()
                 .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), Client.class);
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public Employee getEmployeeById(Long id) throws IOException, InterruptedException {
+    public HttpResponse<String> getEmployeeById(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id))
                 .GET()
                 .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response);
-        return mapper.readValue(response.body(), Employee.class);
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public Admin getAdminById(Long id) throws IOException, InterruptedException {
+    public HttpResponse<String> getAdminById(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id))
                 .GET()
                 .header("Authorization", "Bearer " + session.getJwt())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response);
-        return mapper.readValue(response.body(), Admin.class);
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public int activateClient(Long id) throws IOException, InterruptedException {
@@ -156,11 +153,12 @@ public class UserRESTClient {
         return response.statusCode();
     }
 
-    public int updateUser(Long id, UpdateUserDTO dto) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users/" + id))
+    public int updateUser(Long id, UpdateUserDTO dto, String ifMatch) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(Utils.API_URL + "/users"))
                 .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(dto)))
                 .header("Content-type", "application/json")
                 .header("Authorization", "Bearer " + session.getJwt())
+                .header("If-Match", ifMatch)
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
