@@ -1,0 +1,191 @@
+<div
+    *ngIf="room === undefined"
+    class="my-3 card-title text-center">
+    <h2>Room not found!</h2>
+    <button
+        class="btn btn-success"
+        [routerLink]="['/rooms']">
+        Go back
+    </button>
+</div>
+<div
+    *ngIf="room !== undefined"
+    class="my-3">
+    <div class="card-title text-center">
+        <h2><i class="bi bi-door-open"></i> Room {{ room?.roomNumber }}</h2>
+    </div>
+    <div class="card col-sm-10 mx-auto">
+        <div class="table-responsive">
+            <table
+                class="table mb-0 bg-light table-hover text-center align-middle">
+                <tbody>
+                    <tr>
+                        <th class="border-end">Number</th>
+                        <td class="bg-white">{{ room?.roomNumber }}</td>
+                    </tr>
+                    <tr>
+                        <th class="border-end">Price</th>
+                        <td class="bg-white">{{ room?.price }}</td>
+                    </tr>
+                    <tr>
+                        <th class="border-end">Size</th>
+                        <td class="bg-white">{{ room?.size }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button
+            *ngIf="getRole() === 'CLIENT'"
+            type="button"
+            class="btn btn-success m-3 mx-sm-auto col-sm-3 d-flex justify-content-center"
+            (click)="this.showRentModal(rentModal)">
+            Rent
+        </button>
+        <ngb-alert
+            *ngIf="status === 0"
+            [dismissible]="true"
+            class="alert alert-success fade show m-3 mx-sm-auto col-sm-3"
+            type="success">
+            <span>Rent placed successfully!</span>
+        </ngb-alert>
+    </div>
+</div>
+
+<ng-template
+    #rentModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Rent room {{ room?.roomNumber }}</h4>
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="rentForSelfForm">
+            <div class="row text-center p-0 py-2 p-sm-4">
+                <div class="col-sm-6">
+                    <span class="d-block h4"> From:</span>
+                    <ngb-datepicker
+                        formControlName="beginDate"
+                        [minDate]="today"></ngb-datepicker>
+                </div>
+                <div class="col-sm-6">
+                    <span class="d-block mt-sm-auto mt-3 h4">To:</span>
+                    <ngb-datepicker
+                        formControlName="endDate"
+                        [minDate]="today"></ngb-datepicker>
+                </div>
+            </div>
+            <div
+                class="row d-flex justify-content-center form-check form-switch form-control-lg">
+                <div class="w-auto">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        formControlName="board"
+                        value="board"
+                        id="flexSwitchCheckDefault" />
+                    <label
+                        class="form-check-label"
+                        for="flexSwitchCheckDefault"
+                        >Board</label
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="modal.close('Close click')">
+            Cancel
+        </button>
+        <button
+            type="button"
+            class="btn btn-success"
+            (click)="this.showConfirmRentModal(confirmRentModal)">
+            Rent
+        </button>
+    </div>
+</ng-template>
+
+<ng-template
+    #confirmRentModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">Are you sure you want to rent this room?</div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="modal.close('Close click')">
+            No
+        </button>
+        <button
+            type="button"
+            class="btn btn-success"
+            (click)="modal.close(); this.rentRoomForSelf()">
+            Yes
+        </button>
+    </div>
+</ng-template>
+
+<ng-template
+    #rentErrorModal
+    let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Error</h4>
+    </div>
+    <div class="modal-body">
+        <ngb-alert
+            *ngIf="status === 1"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span
+                >This room is already rented during the period you've
+                chosen.</span
+            >
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 2"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>You are unathorized to do this.</span>
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 3"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>End date is before begin date!</span>
+        </ngb-alert>
+        <ngb-alert
+            *ngIf="status === 4"
+            [dismissible]="false"
+            class="alert alert-danger fade show"
+            type="danger">
+            <span>Something went wrong!</span>
+        </ngb-alert>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-primary"
+            (click)="modal.close('Close click')">
+            Ok
+        </button>
+    </div>
+</ng-template>
