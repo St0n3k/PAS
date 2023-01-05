@@ -40,7 +40,7 @@ export class RoomDetailsComponent implements OnInit {
     rentModal: NgbModalRef | undefined;
     @ViewChild('rentErrorModal') rentErrorModal: TemplateRef<any> | undefined;
 
-    status = 0;
+    status = -1;
     // 0 - ok
     // 1 - conflict
     // 2 - unathorized

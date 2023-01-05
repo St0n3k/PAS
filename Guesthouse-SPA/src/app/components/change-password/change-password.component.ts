@@ -11,8 +11,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class ChangePasswordComponent implements OnInit {
     changePasswordForm = new FormGroup({
         oldPassword: new FormControl('', [Validators.required]), //Validators.email]),
-        newPassword: new FormControl('', [Validators.required]),
-        newPasswordConfirm: new FormControl('', [Validators.required])
+        newPassword: new FormControl('', [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(60)
+        ]),
+        newPasswordConfirm: new FormControl('', [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(60)
+        ])
     });
     fail = 0;
     success = 0;
@@ -20,6 +28,10 @@ export class ChangePasswordComponent implements OnInit {
     constructor(private authService: AuthService, private router: Router) {}
 
     ngOnInit(): void {}
+
+    get oldPassword() {
+        return this.changePasswordForm.get('oldPassword');
+    }
 
     get newPasswordConfirm() {
         return this.changePasswordForm.get('newPasswordConfirm');

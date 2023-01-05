@@ -41,6 +41,13 @@
             (click)="this.showRentModal(rentModal)">
             Rent
         </button>
+        <ngb-alert
+            *ngIf="status === 0"
+            [dismissible]="true"
+            class="alert alert-success fade show m-3 mx-sm-auto col-sm-3"
+            type="success">
+            <span>Rent placed successfully!</span>
+        </ngb-alert>
     </div>
 </div>
 
