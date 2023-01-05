@@ -43,7 +43,7 @@ export class AuthService {
         const tokenInfo = this.getDecodedJwtToken(result.body.jwt);
         localStorage.setItem('email', result.body.email);
         localStorage.setItem('jwt', result.body.jwt);
-        localStorage.setItem('role', tokenInfo.roles[0]);
+        localStorage.setItem('role', tokenInfo.role);
     }
 
     register(email: string, username: string, password: string) {
@@ -76,7 +76,7 @@ export class AuthService {
             return '';
         }
         const tokenInfo = this.getDecodedJwtToken(token);
-        return tokenInfo.roles[0];
+        return tokenInfo.role;
     }
 
     getEmail() {
