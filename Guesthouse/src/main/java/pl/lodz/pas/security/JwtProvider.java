@@ -1,48 +1,52 @@
 package pl.lodz.pas.security;
 
 
+import java.util.Date;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.impl.crypto.JwtSigner;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Date;
-import java.util.Set;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class JwtProvider {
 
-    private final String SECRET = "iufewnfiuIFBEFI&e#73ht782NFUFE#t";
+    @Inject
+    @ConfigProperty(name = "pl.lodz.pas.security.jwt.secret")
+    private String SECRET;
 
     //JWT expiration time = 1h
-    private final int JWT_EXPIRATION_TIME = 3600000;
+    @Inject
+    @ConfigProperty(name = "pl.lodz.pas.security.jwt.expirationTime",
+                    defaultValue = "3600000")
+    private int JWT_EXPIRATION_TIME;
 
     public String generateJWT(String subject, String role) {
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .claim("role", role)
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
+                   .setSubject(subject)
+                   .setIssuedAt(new Date())
+                   .claim("role", role)
+                   .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
+                   .signWith(SignatureAlgorithm.HS512, SECRET)
+                   .compact();
 
     }
 
     public Jws<Claims> parseJWT(String jwt) throws SignatureException {
         return Jwts.parser()
-                .setSigningKey(SECRET)
-                .parseClaimsJws(jwt);
+                   .setSigningKey(SECRET)
+                   .parseClaimsJws(jwt);
     }
 
     public boolean validateToken(String jwt) {
         try {
             parseJWT(jwt);
             return true;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
