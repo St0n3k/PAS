@@ -1,5 +1,6 @@
 package pl.lodz.pas.security;
 
+import java.text.ParseException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -10,14 +11,15 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import jakarta.enterprise.context.ApplicationScoped;
-
-
-import java.text.ParseException;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class SignProvider {
 
-    private final String secret = "h78ht723h8hH7fh329fh32732hg32g83j29";
+    @Inject
+    @ConfigProperty(name = "pl.lodz.pas.security.jws.secret")
+    private String secret;
 
 
     public String sign(String payload) throws JOSEException {
@@ -27,7 +29,6 @@ public class SignProvider {
 
         return jws.serialize();
     }
-
 
 
     public boolean verify(String ifMatch, String payload) throws JOSEException, ParseException {
