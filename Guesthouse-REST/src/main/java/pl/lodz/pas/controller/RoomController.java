@@ -15,7 +15,7 @@ import pl.lodz.p.it.pas.dto.RentRoomForSelfDTO;
 import pl.lodz.p.it.pas.dto.UpdateRoomDTO;
 import pl.lodz.p.it.pas.model.Rent;
 import pl.lodz.p.it.pas.model.Room;
-import pl.lodz.p.it.pas.model.user.Client;
+import pl.lodz.p.it.pas.model.user.User;
 import pl.lodz.pas.exception.rent.CreateRentException;
 import pl.lodz.pas.exception.room.CreateRoomException;
 import pl.lodz.pas.exception.room.RoomHasActiveReservationsException;
@@ -67,8 +67,8 @@ public class RoomController {
     public Response rentRoomForSelf(@PathParam("id") Long roomID, @Valid RentRoomForSelfDTO rentRoomForSelfDTO)
             throws UserNotFoundException, RoomNotFoundException, InactiveUserException, CreateRentException {
         Principal principal = securityContext.getUserPrincipal();
-        if (principal instanceof Client client) {
-            Long clientID = client.getId();
+        if (principal instanceof User user) {
+            Long clientID = user.getId();
             CreateRentDTO createRentDTO = new CreateRentDTO(
                     rentRoomForSelfDTO.getBeginTime(),
                     rentRoomForSelfDTO.getEndTime(),
